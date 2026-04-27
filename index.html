@@ -126,6 +126,7 @@
         <button type="button" class="nav-btn" data-target="quant" onclick="showSection('quant')">Quantitative Practice</button>
         <button type="button" class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quizzes & Progress</button>
         <button type="button" class="nav-btn" data-target="frq" onclick="showSection('frq')">FRQ Practice</button>
+        <button type="button" class="nav-btn" data-target="equations" onclick="showSection('equations')">AP Bio Equations</button>
         <button type="button" class="nav-btn" data-target="final" onclick="showSection('final')">Final Exam Strategy</button>
       </nav>
 
@@ -253,6 +254,50 @@
             <div class="frq-card"><h3>FRQ 13: Chi-Square Genetics</h3><p>A monohybrid cross is expected to produce a 3:1 phenotype ratio. The observed offspring are 80 dominant and 20 recessive.</p><ol type="a"><li>Calculate the expected numbers for 100 offspring.</li><li>Calculate χ².</li><li>Identify degrees of freedom.</li><li>Explain whether the results support the expected ratio if the critical value is 3.84.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Expected 75 and 25. χ² = (80-75)²/75 + (20-25)²/25 = 1.33. df = 1. Since 1.33 < 3.84, fail to reject the null; results are consistent with expected ratio.</div></div>
 
             <div class="frq-card"><h3>FRQ 14: Cladograms & Biodiversity</h3><p>A cladogram shows species A and B sharing a more recent common ancestor with each other than with species C.</p><ol type="a"><li>Identify which two species are most closely related.</li><li>Explain what a node represents.</li><li>Describe how shared derived traits are used in cladograms.</li><li>Justify why DNA sequence comparisons can support evolutionary relationships.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> A and B are most closely related. A node represents a common ancestor. Shared derived traits define clades. More similar DNA sequences suggest more recent common ancestry.</div></div>
+          </div>
+        </article>
+
+        <article id="equations" class="card section searchable hidden" data-keywords="equations formulas hardy weinberg chi square rate graph water potential diffusion" >
+          <div class="card-header"><h2>AP Biology Equation Sheet (Commonly Provided)</h2><div class="pill-row"><span class="pill high">High-yield</span></div></div>
+          <div class="card-body">
+            <h3>Hardy–Weinberg</h3>
+            <div class="formula">p + q = 1
+p² + 2pq + q² = 1</div>
+            <ul>
+              <li>p = frequency of dominant allele</li>
+              <li>q = frequency of recessive allele</li>
+              <li>p² = homozygous dominant, 2pq = heterozygous, q² = homozygous recessive</li>
+            </ul>
+
+            <h3>Chi-Square</h3>
+            <div class="formula">χ² = Σ [(O − E)² / E]
+
+df = categories − 1</div>
+
+            <h3>Rate (Slope)</h3>
+            <div class="formula">rate = Δy / Δx</div>
+
+            <h3>Population Growth (Logistic)</h3>
+            <div class="formula">dN/dt = rN(1 − N/K)</div>
+
+            <h3>Water Potential</h3>
+            <div class="formula">Ψ = Ψs + Ψp
+
+Ψs = −iCRT</div>
+            <ul>
+              <li>Ψ = water potential</li>
+              <li>Ψs = solute potential</li>
+              <li>Ψp = pressure potential</li>
+              <li>i = ionization constant</li>
+              <li>C = molar concentration</li>
+              <li>R = pressure constant</li>
+              <li>T = temperature (K)</li>
+            </ul>
+
+            <h3>Surface Area to Volume (conceptual)</h3>
+            <div class="formula">SA:V decreases as size increases</div>
+
+            <div class="callout gold"><strong>Tip:</strong> You are not expected to memorize all equations, but you must know how to use them and interpret results biologically.</div>
           </div>
         </article>
 
