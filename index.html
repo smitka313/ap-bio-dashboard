@@ -87,6 +87,8 @@
     .feedback-hit { color: var(--green); font-weight: 800; }
     .feedback-miss { color: var(--red); font-weight: 800; }
     .feedback-list { margin: 8px 0 0 0; padding-left: 20px; }
+    .trap-feedback { margin-top: 10px; padding: 10px 12px; border-left: 5px solid var(--gold); background: var(--gold-2); border-radius: 10px; }
+    .correct-feedback { margin-top: 10px; padding: 10px 12px; border-left: 5px solid var(--green); background: var(--green-2); border-radius: 10px; }
     .frq-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
     .frq-feedback-btn { border: 0; border-radius: 999px; background: var(--green); color: white; font-weight: 800; padding: 9px 13px; cursor: pointer; }
     footer { text-align: center; color: var(--muted); padding: 30px 16px 60px; }
@@ -1408,10 +1410,35 @@ df = categories − 1</div>
       return { unit: unit, q: picked.q, choices: picked.choices, answer: picked.answer, explain: picked.explain, d: picked.d };
     }
 
+    function shuffleQuestion(item) {
+      var indices = item.choices.map(function(_, i){ return i; });
+      for (var i = indices.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = temp;
+      }
+      var newChoices = [];
+      var newAnswerIndex = 0;
+      for (var k = 0; k < indices.length; k++) {
+        newChoices.push(item.choices[indices[k]]);
+        if (indices[k] === item.answer) newAnswerIndex = k;
+      }
+      return {
+        unit: item.unit,
+        q: item.q,
+        choices: newChoices,
+        answer: newAnswerIndex,
+        explain: item.explain,
+        d: item.d
+      };
+    }
+
     function renderQuiz() {
       var box = document.getElementById('quizContainer');
       if (!box) return;
-      var item = chooseQuestion();
+      var rawItem = chooseQuestion();
+      var item = shuffleQuestion(rawItem);
       currentQuizItem = item;
       var html = '<h3>' + item.unit + ' Quiz <span class="pill">' + item.d + '</span></h3><p><strong>' + item.q + '</strong></p>';
       for (var i = 0; i < item.choices.length; i++) {
@@ -1419,12 +1446,52 @@ df = categories − 1</div>
       }
       html += '<div id="quizFeedback" class="answer show small">Choose an answer.</div>';
       box.innerHTML = html;
-      var choices = box.querySelectorAll('.choice');
+      var choices = box.querySelectorAll('.choice');('.choice');
       for (var c = 0; c < choices.length; c++) {
         choices[c].addEventListener('click', function() {
           gradeQuiz(Number(this.getAttribute('data-choice')), item);
         });
       }
+    }
+
+    function getDistractorFeedback(item, selectedText) {
+      var q = (item.q || '').toLowerCase();
+      var selected = (selectedText || '').toLowerCase();
+
+      if (q.indexOf('water') !== -1 || q.indexOf('osmosis') !== -1 || q.indexOf('hypertonic') !== -1 || q.indexOf('hypotonic') !== -1) {
+        return 'AP-style trap: water movement questions often reverse the gradient. Water moves toward lower water potential / higher solute concentration.';
+      }
+      if (q.indexOf('enzyme') !== -1 || q.indexOf('activation energy') !== -1 || q.indexOf('denature') !== -1) {
+        return 'AP-style trap: enzymes lower activation energy, but they do not change ΔG, equilibrium, or get consumed by the reaction.';
+      }
+      if (q.indexOf('respiration') !== -1 || q.indexOf('oxygen') !== -1 || q.indexOf('etc') !== -1 || q.indexOf('atp') !== -1) {
+        return 'AP-style trap: oxygen is the final electron acceptor in cellular respiration; ATP synthase uses a proton gradient to produce ATP.';
+      }
+      if (q.indexOf('photosynthesis') !== -1 || q.indexOf('calvin') !== -1 || q.indexOf('light reaction') !== -1) {
+        return 'AP-style trap: light reactions make ATP/NADPH and release O₂; the Calvin cycle fixes CO₂ into sugars.';
+      }
+      if (q.indexOf('signal') !== -1 || q.indexOf('ligand') !== -1 || q.indexOf('receptor') !== -1) {
+        return 'AP-style trap: signaling follows reception → transduction → response. Receptor shape determines whether the ligand can bind.';
+      }
+      if (q.indexOf('cell cycle') !== -1 || q.indexOf('cancer') !== -1 || q.indexOf('checkpoint') !== -1) {
+        return 'AP-style trap: cancer usually involves loss of regulation at checkpoints, proto-oncogenes, oncogenes, tumor suppressors, or apoptosis pathways.';
+      }
+      if (q.indexOf('meiosis') !== -1 || q.indexOf('crossing over') !== -1 || q.indexOf('linked') !== -1 || q.indexOf('recombination') !== -1) {
+        return 'AP-style trap: crossing over occurs in prophase I; linked genes are inherited together more often unless crossing over separates them.';
+      }
+      if (q.indexOf('transcription') !== -1 || q.indexOf('translation') !== -1 || q.indexOf('mutation') !== -1 || q.indexOf('operon') !== -1) {
+        return 'AP-style trap: DNA changes can affect mRNA codons, amino acid sequence, protein structure, and phenotype—but not every mutation changes phenotype.';
+      }
+      if (q.indexOf('hardy') !== -1 || q.indexOf('allele') !== -1 || q.indexOf('fitness') !== -1 || q.indexOf('natural selection') !== -1 || q.indexOf('evolution') !== -1) {
+        return 'AP-style trap: populations evolve, not individuals. Fitness means reproductive success, and Hardy-Weinberg is a null model for no evolution.';
+      }
+      if (q.indexOf('carrying capacity') !== -1 || q.indexOf('ecosystem') !== -1 || q.indexOf('trophic') !== -1 || q.indexOf('biodiversity') !== -1) {
+        return 'AP-style trap: energy flows through ecosystems while matter cycles. Carrying capacity depends on available resources and environmental limits.';
+      }
+      if (selected.indexOf('always') !== -1 || selected.indexOf('never') !== -1 || selected.indexOf('only') !== -1) {
+        return 'AP-style trap: extreme wording like “always,” “never,” or “only” is often incorrect in biology unless the concept is very specific.';
+      }
+      return 'AP-style trap: identify the biological mechanism, then eliminate choices that are true-sounding but do not explain the mechanism in the question.';
     }
 
     function gradeQuiz(choice, item) {
@@ -1446,7 +1513,15 @@ df = categories − 1</div>
       }
       updateBadges(state);
       saveQuizState(state);
-      document.getElementById('quizFeedback').innerHTML = (isCorrect ? '<strong>Correct!</strong> ' : '<strong>Not quite.</strong> ') + item.explain;
+      var selectedText = item.choices[choice];
+      var correctText = item.choices[item.answer];
+      var feedbackHtml = '';
+      if (isCorrect) {
+        feedbackHtml = '<strong>Correct!</strong><div class="correct-feedback">' + item.explain + '</div>';
+      } else {
+        feedbackHtml = '<strong>Not quite.</strong> Correct answer: <strong>' + correctText + '</strong><div class="trap-feedback">' + getDistractorFeedback(item, selectedText) + '</div><div class="correct-feedback"><strong>Why the correct answer works:</strong> ' + item.explain + '</div>';
+      }
+      document.getElementById('quizFeedback').innerHTML = feedbackHtml;
       renderProgress();
     }
 
