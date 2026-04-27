@@ -178,21 +178,73 @@
           <div class="card-body"><details open><summary>Hardy-Weinberg</summary><div><div class="formula">p + q = 1<br>p² + 2pq + q² = 1</div><div class="practice"><strong>Practice:</strong> 9% show a recessive trait. Find q, p, and percent heterozygous.<br><button class="answer-btn">Reveal answer</button><div class="answer">q² = 0.09, q = 0.30, p = 0.70, 2pq = 0.42 = 42% heterozygous.</div></div></div></details><details><summary>Chi-Square</summary><div><div class="formula">χ² = Σ [(O - E)² / E]<br>df = categories - 1</div><div class="practice"><strong>Practice:</strong> Expected 3:1 in 100 offspring. Observed: 80 dominant, 20 recessive. Calculate χ².<br><button class="answer-btn">Reveal answer</button><div class="answer">Expected 75 and 25. χ² = 25/75 + 25/25 = 1.33. df = 1. If critical value is 3.84, fail to reject the null.</div></div></div></details><details><summary>Graph Analysis & Rates</summary><div><div class="formula">rate = Δy / Δx</div><div class="practice"><strong>Practice:</strong> O₂ production: 0 min = 0 mL, 2 min = 10 mL, 4 min = 25 mL. Calculate rates.<br><button class="answer-btn">Reveal answer</button><div class="answer">0-2 min: 5 mL/min. 2-4 min: 7.5 mL/min.</div></div></div></details></div>
         </article>
 
-        <article id="quiz" class="card section searchable hidden" data-keywords="quiz quizzes progress gamified points badges tracking adaptive practice">
-          <div class="card-header"><h2>Quizzes & Progress</h2><div class="pill-row"><span class="pill critical">Auto-graded</span><span class="pill high">Adaptive practice</span><span class="pill ced">Local tracking</span></div></div>
+        <article id="quiz" class="card section searchable hidden" data-keywords="quiz quizzes progress gamified points badges tracking adaptive practice student progress tracker name period export teacher">
+          <div class="card-header"><h2>Quizzes & Student Progress Tracker</h2><div class="pill-row"><span class="pill critical">Auto-graded</span><span class="pill high">Adaptive practice</span><span class="pill ced">Local student tracking</span></div></div>
           <div class="card-body">
+            <div class="callout warning"><strong>Privacy note:</strong> Progress is saved only on this device/browser using local storage. For teacher collection, students should use the CSV export button and submit the file in Schoology.</div>
             <div class="two-col">
+              <div class="callout">
+                <h3>Student Info</h3>
+                <label><strong>Name</strong><br><input id="studentName" type="text" placeholder="Student name" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;"></label>
+                <label><strong>Class / Period</strong><br><input id="studentPeriod" type="text" placeholder="Example: Period 3" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;"></label>
+                <button class="quiz-btn" id="saveStudentBtn">Save Student Info</button>
+              </div>
               <div class="callout"><h3>Progress</h3><p><strong>Points:</strong> <span id="points">0</span></p><p><strong>Mastery:</strong> <span id="mastery">0%</span></p><div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div><p><strong>Correct:</strong> <span id="correctCount">0</span> / <span id="attemptCount">0</span></p><p><strong>Weakest area:</strong> <span id="weakestUnit">Not enough data yet</span></p><div id="badgeArea"></div><button class="quiz-btn" id="exportBtn">Export Progress CSV</button> <button class="quiz-btn" id="resetBtn" style="background: var(--red);">Reset</button></div>
-              <div class="callout gold"><h3>Adaptive Practice</h3><p id="adaptiveText">Answer quiz questions to unlock targeted practice based on your weakest unit.</p><button class="quiz-btn" id="adaptiveBtn">Give Me Adaptive Practice</button></div>
             </div>
+
+            <details open><summary>Unit-by-Unit Progress</summary><div>
+              <table id="unitProgressTable"><tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr></table>
+            </div></details>
+
+            <div class="callout gold"><h3>Adaptive Practice</h3><p id="adaptiveText">Answer quiz questions to unlock targeted practice based on your weakest unit.</p><button class="quiz-btn" id="adaptiveBtn">Give Me Adaptive Practice</button></div>
             <div id="quizContainer" class="quiz-box"></div>
             <button class="quiz-btn" id="nextQuizBtn">Next Question</button>
           </div>
         </article>
 
-        <article id="frq" class="card section searchable hidden" data-keywords="FRQ free response practice claim evidence reasoning scoring rubric experiment design answers prompts">
-          <div class="card-header"><h2>FRQ Practice Center</h2><div class="pill-row"><span class="pill critical">Write to score points</span></div></div>
-          <div class="card-body"><div class="callout gold"><strong>FRQ formula:</strong> Answer the exact verb. Describe = what happens. Explain = why/how it happens. Justify = connect evidence to claim. Predict = state expected outcome.</div><div class="frq-card"><h3>FRQ 1: Enzymes & Energetics</h3><p>A graph shows enzyme activity increasing from 10°C to 37°C and decreasing sharply above 45°C.</p><ol type="a"><li>Describe the trend.</li><li>Explain why activity decreases at high temperature.</li><li>Predict the effect of changing pH far from the optimum.</li><li>Justify your prediction using protein structure.</li></ol><textarea placeholder="Student response..."></textarea></div><div class="frq-card"><h3>FRQ 2: Gene Expression</h3><p>A point mutation changes a codon in a gene that codes for an enzyme.</p><ol type="a"><li>Describe transcription and translation.</li><li>Explain how the mutation could affect protein function.</li><li>Predict one possible phenotypic effect.</li><li>Justify using structure-function reasoning.</li></ol><textarea placeholder="Student response..."></textarea></div></div>
+        <article id="frq" class="card section searchable hidden" data-keywords="FRQ free response practice claim evidence reasoning scoring rubric experiment design answers prompts enzymes energetics gene expression evolution cell transport ecology heredity chi square hardy weinberg">
+          <div class="card-header"><h2>FRQ Practice Center</h2><div class="pill-row"><span class="pill critical">Write to score points</span><span class="pill high">CED-style prompts</span></div></div>
+          <div class="card-body">
+            <div class="callout gold"><strong>FRQ formula:</strong> Answer the exact verb. Describe = what happens. Explain = why/how it happens. Justify = connect evidence to claim. Predict = state expected outcome. Calculate = show setup, answer, and units when needed.</div>
+
+            <details open><summary>How to Score More FRQ Points</summary><div>
+              <ul>
+                <li>Label responses clearly as a, b, c, d.</li>
+                <li>Use biological vocabulary: allele frequency, active site, concentration gradient, signal transduction, carrying capacity.</li>
+                <li>Do not just name a process; explain the mechanism.</li>
+                <li>When data are provided, cite the data directly.</li>
+                <li>For experimental design, include independent variable, dependent variable, control, constants, and expected result.</li>
+              </ul>
+            </div></details>
+
+            <div class="frq-card"><h3>FRQ 1: Enzymes & Energetics</h3><p>A graph shows enzyme activity increasing from 10°C to 37°C and decreasing sharply above 45°C.</p><ol type="a"><li>Describe the trend shown in the graph.</li><li>Explain why activity decreases at high temperature.</li><li>Predict the effect of changing pH far from the optimum.</li><li>Justify your prediction using protein structure.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Award points for identifying the optimum temperature, explaining denaturation/changed active site, predicting reduced activity at nonoptimal pH, and connecting disrupted bonds/tertiary structure to reduced substrate binding.</div></div>
+
+            <div class="frq-card"><h3>FRQ 2: Cellular Respiration Data</h3><p>A researcher measures oxygen consumption in germinating seeds at 10°C, 22°C, and 35°C.</p><ol type="a"><li>Identify the dependent variable.</li><li>Explain why oxygen consumption can be used as a measure of cellular respiration.</li><li>Predict which temperature will likely show the highest respiration rate.</li><li>Justify your prediction using enzyme activity and metabolism.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> DV = oxygen consumption/rate. Oxygen is final electron acceptor in the ETC. Prediction should be supported by temperature effects on enzymes; extreme temperatures may reduce activity by disrupting protein structure.</div></div>
+
+            <div class="frq-card"><h3>FRQ 3: Photosynthesis Experiment</h3><p>Students use floating leaf disks to test photosynthesis rate under different light intensities.</p><ol type="a"><li>Identify the independent variable.</li><li>Identify one appropriate control.</li><li>Explain why disks float as photosynthesis occurs.</li><li>Predict how increasing light intensity affects the rate until another factor becomes limiting.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> IV = light intensity. Control could be dark/no light or constant CO₂/temperature. Disks float because O₂ accumulates in leaf tissue. Rate increases until another limiting factor such as CO₂ or enzyme capacity limits photosynthesis.</div></div>
+
+            <div class="frq-card"><h3>FRQ 4: Cell Transport & Osmosis</h3><p>A plant cell is placed in a hypertonic solution.</p><ol type="a"><li>Describe the direction of net water movement.</li><li>Explain the effect on the plant cell.</li><li>Predict the long-term outcome if the cell remains in the solution.</li><li>Justify using membrane properties and water potential/osmosis.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Water leaves the cell toward the higher solute concentration. The cell loses turgor pressure and plasmolyzes. Explanation should include selectively permeable membrane and osmosis down water potential gradient.</div></div>
+
+            <div class="frq-card"><h3>FRQ 5: Cell Communication</h3><p>A mutation changes the shape of a membrane receptor involved in a hormone signaling pathway.</p><ol type="a"><li>Describe the normal sequence of a signal transduction pathway.</li><li>Explain how the receptor mutation could affect the pathway.</li><li>Predict one possible cellular response if the ligand cannot bind.</li><li>Justify your prediction using structure-function reasoning.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Normal pathway: reception, transduction, response. Altered receptor shape can prevent ligand binding or activation. Cellular response may be reduced/absent because signal is not transmitted or amplified.</div></div>
+
+            <div class="frq-card"><h3>FRQ 6: Cell Cycle & Cancer</h3><p>A mutation in a tumor suppressor gene prevents a checkpoint protein from functioning.</p><ol type="a"><li>Describe the role of checkpoints in the cell cycle.</li><li>Explain how loss of checkpoint function can lead to cancer.</li><li>Predict how apoptosis could affect damaged cells.</li><li>Justify why mutations in regulatory genes can have large effects.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Checkpoints prevent division of damaged cells. Loss allows uncontrolled division and mutation accumulation. Apoptosis eliminates damaged cells. Regulatory genes affect many downstream cell cycle events.</div></div>
+
+            <div class="frq-card"><h3>FRQ 7: Meiosis & Heredity</h3><p>Two genes are located on the same chromosome. Offspring phenotypes do not match the expected independent assortment ratio.</p><ol type="a"><li>Explain why linked genes may not assort independently.</li><li>Describe how crossing over can produce recombinant offspring.</li><li>Predict how distance between genes affects recombination frequency.</li><li>Justify your prediction.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Linked genes are inherited together because they are on the same chromosome. Crossing over can separate alleles. Farther apart genes have higher recombination frequency because crossovers are more likely between them.</div></div>
+
+            <div class="frq-card"><h3>FRQ 8: Gene Expression & Mutation</h3><p>A point mutation changes a codon in a gene that codes for an enzyme.</p><ol type="a"><li>Describe transcription and translation.</li><li>Explain how the mutation could affect protein function.</li><li>Predict one possible phenotypic effect.</li><li>Justify using structure-function reasoning.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Transcription makes mRNA from DNA; translation uses codons to assemble amino acids. Mutation may change amino acid sequence, folding, active site, and enzyme function; phenotype depends on protein role.</div></div>
+
+            <div class="frq-card"><h3>FRQ 9: Gene Regulation</h3><p>Bacteria are grown in a medium containing lactose but no glucose.</p><ol type="a"><li>Predict whether the lac operon will be active.</li><li>Explain the role of lactose/allolactose in regulation.</li><li>Explain why absence of glucose increases lac operon transcription.</li><li>Justify how this regulation benefits the cell.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> lac operon active. Allolactose binds repressor, preventing it from blocking transcription. Low glucose increases cAMP-CAP activation. This allows efficient lactose metabolism only when useful.</div></div>
+
+            <div class="frq-card"><h3>FRQ 10: Hardy-Weinberg</h3><p>In a population of 500 individuals, 45 individuals show a recessive phenotype.</p><ol type="a"><li>Calculate q².</li><li>Calculate q and p.</li><li>Calculate the expected frequency of heterozygotes.</li><li>Identify one condition required for Hardy-Weinberg equilibrium.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> q² = 45/500 = 0.09. q = 0.30. p = 0.70. 2pq = 2(0.70)(0.30) = 0.42. Conditions include no selection, no mutation, no migration, large population, or random mating.</div></div>
+
+            <div class="frq-card"><h3>FRQ 11: Natural Selection</h3><p>A bacterial population becomes increasingly resistant to an antibiotic after repeated exposure.</p><ol type="a"><li>Explain how natural selection leads to resistance.</li><li>Describe the role of genetic variation.</li><li>Predict the change in allele frequency over time.</li><li>Justify using evolutionary principles.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Resistant variants survive/reproduce more under antibiotic pressure. Variation may arise by mutation. Resistance allele frequency increases because resistant individuals have higher fitness in that environment.</div></div>
+
+            <div class="frq-card"><h3>FRQ 12: Ecology + Evolution</h3><p>A drought reduces available food and water in an ecosystem. A small mammal population declines sharply.</p><ol type="a"><li>Explain how carrying capacity changes.</li><li>Describe how population growth is affected.</li><li>Predict how natural selection may act on the population.</li><li>Justify using ecology and evolution together.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Carrying capacity decreases due to reduced resources. Population growth slows or becomes negative. Traits improving survival/reproduction during drought may increase. Ecology creates selection pressure that drives evolutionary change.</div></div>
+
+            <div class="frq-card"><h3>FRQ 13: Chi-Square Genetics</h3><p>A monohybrid cross is expected to produce a 3:1 phenotype ratio. The observed offspring are 80 dominant and 20 recessive.</p><ol type="a"><li>Calculate the expected numbers for 100 offspring.</li><li>Calculate χ².</li><li>Identify degrees of freedom.</li><li>Explain whether the results support the expected ratio if the critical value is 3.84.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> Expected 75 and 25. χ² = (80-75)²/75 + (20-25)²/25 = 1.33. df = 1. Since 1.33 < 3.84, fail to reject the null; results are consistent with expected ratio.</div></div>
+
+            <div class="frq-card"><h3>FRQ 14: Cladograms & Biodiversity</h3><p>A cladogram shows species A and B sharing a more recent common ancestor with each other than with species C.</p><ol type="a"><li>Identify which two species are most closely related.</li><li>Explain what a node represents.</li><li>Describe how shared derived traits are used in cladograms.</li><li>Justify why DNA sequence comparisons can support evolutionary relationships.</li></ol><textarea placeholder="Student response..."></textarea><button type="button" class="answer-btn">Reveal scoring guide</button><div class="answer"><strong>Scoring guide:</strong> A and B are most closely related. A node represents a common ancestor. Shared derived traits define clades. More similar DNA sequences suggest more recent common ancestry.</div></div>
+          </div>
         </article>
 
         <article id="final" class="card section searchable hidden" data-keywords="final exam strategy common mistakes vocabulary claim evidence reasoning cram review">
@@ -218,8 +270,6 @@
         navButtons[j].classList.toggle('active', navButtons[j].getAttribute('data-target') === targetId);
       }
       if (searchInput) searchInput.value = '';
-      window.location.hash = targetId;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     window.showSection = showSection;
@@ -322,6 +372,12 @@
       document.getElementById('correctCount').textContent = state.correct;
       document.getElementById('attemptCount').textContent = state.attempted;
       document.getElementById('weakestUnit').textContent = weakestUnit(state);
+
+      var savedName = localStorage.getItem('apBioStudentName') || '';
+      var savedPeriod = localStorage.getItem('apBioStudentPeriod') || '';
+      if (document.getElementById('studentName')) document.getElementById('studentName').value = savedName;
+      if (document.getElementById('studentPeriod')) document.getElementById('studentPeriod').value = savedPeriod;
+
       var badgeArea = document.getElementById('badgeArea');
       var labels = { first: 'First Correct!', five: '5 Correct', mastery: '80%+ Mastery' };
       if (state.badges.length) {
@@ -329,6 +385,26 @@
       } else {
         badgeArea.innerHTML = '<p class="small">No badges yet.</p>';
       }
+
+      renderUnitProgressTable(state);
+    }
+
+    function renderUnitProgressTable(state) {
+      var table = document.getElementById('unitProgressTable');
+      if (!table) return;
+      var units = ['Unit 1', 'Unit 2', 'Unit 3', 'Unit 4', 'Unit 5', 'Unit 6', 'Unit 7', 'Units 8-9'];
+      var html = '<tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr>';
+      for (var i = 0; i < units.length; i++) {
+        var unit = units[i];
+        var stats = state.unitStats[unit] || { correct: 0, attempted: 0 };
+        var pct = stats.attempted ? Math.round((stats.correct / stats.attempted) * 100) : 0;
+        var action = 'Start practice';
+        if (stats.attempted >= 3 && pct < 70) action = 'Review notes + retry quiz';
+        if (stats.attempted >= 3 && pct >= 70) action = 'Move to FRQ practice';
+        if (stats.attempted >= 5 && pct >= 85) action = 'Mastery: maintain with mixed review';
+        html += '<tr><td>' + unit + '</td><td>' + stats.correct + '</td><td>' + stats.attempted + '</td><td>' + pct + '%</td><td>' + action + '</td></tr>';
+      }
+      table.innerHTML = html;
     }
 
     function renderQuiz() {
@@ -372,6 +448,16 @@
       renderProgress();
     }
 
+    var saveStudentBtn = document.getElementById('saveStudentBtn');
+    if (saveStudentBtn) saveStudentBtn.addEventListener('click', function() {
+      var name = document.getElementById('studentName') ? document.getElementById('studentName').value.trim() : '';
+      var period = document.getElementById('studentPeriod') ? document.getElementById('studentPeriod').value.trim() : '';
+      localStorage.setItem('apBioStudentName', name);
+      localStorage.setItem('apBioStudentPeriod', period);
+      saveStudentBtn.textContent = 'Saved!';
+      setTimeout(function() { saveStudentBtn.textContent = 'Save Student Info'; }, 1200);
+    });
+
     var nextQuizBtn = document.getElementById('nextQuizBtn');
     if (nextQuizBtn) nextQuizBtn.addEventListener('click', function() { currentQuestion += 1; renderQuiz(); });
 
@@ -397,9 +483,18 @@
     var exportBtn = document.getElementById('exportBtn');
     if (exportBtn) exportBtn.addEventListener('click', function() {
       var state = loadQuizState();
-      var rows = [['Date', new Date().toLocaleString()], ['Points', state.points], ['Correct', state.correct], ['Attempted', state.attempted], ['Mastery', mastery(state) + '%'], ['Weakest Unit', weakestUnit(state)], [], ['Unit', 'Correct', 'Attempted']];
-      for (var unit in state.unitStats) rows.push([unit, state.unitStats[unit].correct, state.unitStats[unit].attempted]);
-      var csv = rows.map(function(row) { return row.map(function(cell) { return '"' + String(cell == null ? '' : cell).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+      var studentName = localStorage.getItem('apBioStudentName') || '';
+      var studentPeriod = localStorage.getItem('apBioStudentPeriod') || '';
+      var rows = [['Student Name', studentName], ['Class / Period', studentPeriod], ['Date', new Date().toLocaleString()], ['Points', state.points], ['Correct', state.correct], ['Attempted', state.attempted], ['Mastery', mastery(state) + '%'], ['Weakest Unit', weakestUnit(state)], [], ['Unit', 'Correct', 'Attempted', 'Mastery']];
+      var exportUnits = ['Unit 1', 'Unit 2', 'Unit 3', 'Unit 4', 'Unit 5', 'Unit 6', 'Unit 7', 'Units 8-9'];
+      for (var u = 0; u < exportUnits.length; u++) {
+        var unit = exportUnits[u];
+        var stats = state.unitStats[unit] || { correct: 0, attempted: 0 };
+        var pct = stats.attempted ? Math.round((stats.correct / stats.attempted) * 100) + '%' : '0%';
+        rows.push([unit, stats.correct, stats.attempted, pct]);
+      }
+      var csv = rows.map(function(row) { return row.map(function(cell) { return '"' + String(cell == null ? '' : cell).replace(/"/g, '""') + '"'; }).join(','); }).join('
+');
       var blob = new Blob([csv], { type: 'text/csv' });
       var url = URL.createObjectURL(blob);
       var link = document.createElement('a');
@@ -414,12 +509,7 @@
     renderProgress();
     renderQuiz();
 
-    if (window.location.hash) {
-      var initial = window.location.hash.replace('#', '');
-      if (document.getElementById(initial)) showSection(initial);
-    } else {
-      showSection('overview');
-    }
+    showSection('overview');
   </script>
 </body>
 </html>
