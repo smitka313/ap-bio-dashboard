@@ -96,6 +96,11 @@
     .exam-choice { display: block; margin: 8px 0; padding: 9px 11px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; background: #fff; }
     .exam-choice input { margin-right: 8px; }
     .exam-scorebox { border-left: 5px solid var(--blue); background: var(--blue-2); padding: 14px; border-radius: 12px; margin-top: 14px; }
+    .model-answer { margin-top: 10px; padding: 12px; border-radius: 12px; background: var(--green-2); border-left: 5px solid var(--green); display: none; }
+    .model-answer.show { display: block; }
+    .lesson-card { border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin: 12px 0; background: #fff; }
+    .mistake-card { border-left: 5px solid var(--red); background: #fff; border-radius: 14px; padding: 12px; margin: 10px 0; border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .data-table { max-width: 620px; }
     footer { text-align: center; color: var(--muted); padding: 30px 16px 60px; }
 
     @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } nav { position: static; } .toolbar-inner { grid-template-columns: 1fr; } .two-col { grid-template-columns: 1fr; } }
@@ -132,6 +137,8 @@
         <button type="button" class="nav-btn" data-target="unit8" onclick="showSection('unit8')">Units 8-9: Ecology & Biodiversity</button>
         <button type="button" class="nav-btn" data-target="quant" onclick="showSection('quant')">Quantitative Practice</button>
         <button type="button" class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quizzes & Progress</button>
+        <button type="button" class="nav-btn" data-target="mistakes" onclick="showSection('mistakes')">Mistake Tracker</button>
+        <button type="button" class="nav-btn" data-target="graphs" onclick="showSection('graphs')">Graph/Data Practice</button>
         <button type="button" class="nav-btn" data-target="frq" onclick="showSection('frq')">FRQ Practice</button>
         <button type="button" class="nav-btn" data-target="exam" onclick="showSection('exam')">AP Exam Simulation</button>
         <button type="button" class="nav-btn" data-target="skills" onclick="showSection('skills')">Scoring Skills</button>
@@ -679,6 +686,28 @@
             </div>
             <div id="quizContainer" class="quiz-box"></div>
             <button class="quiz-btn" id="nextQuizBtn">Next Question</button>
+          </div>
+        </article>
+
+        <article id="mistakes" class="card section searchable hidden" data-keywords="mistake tracker missed questions wrong answers review errors misconceptions">
+          <div class="card-header"><h2>Mistake Tracker</h2><div class="pill-row"><span class="pill critical">Error-based review</span><span class="pill high">Targets misconceptions</span></div></div>
+          <div class="card-body">
+            <div class="callout"><strong>How this helps:</strong> Missed quiz questions are saved here on this device. Students should review mistakes before retaking quizzes or starting exam simulation mode.</div>
+            <button class="quiz-btn" id="renderMistakesBtn">Refresh Mistake Log</button>
+            <button class="quiz-btn" id="clearMistakesBtn" style="background: var(--red);">Clear Mistake Log</button>
+            <div id="mistakeLog"><p class="small">No mistakes recorded yet.</p></div>
+          </div>
+        </article>
+
+        <article id="graphs" class="card section searchable hidden" data-keywords="graph data interpretation rate slope table gel electrophoresis population enzyme photosynthesis chi-square experimental design">
+          <div class="card-header"><h2>Graph & Data Interpretation Bank</h2><div class="pill-row"><span class="pill critical">High AP value</span><span class="pill ced">Science practice</span></div></div>
+          <div class="card-body">
+            <div class="callout gold"><strong>Data formula:</strong> Describe the trend with numbers, calculate when asked, then explain the biological mechanism.</div>
+            <div class="practice"><h3>Data Set 1: Enzyme Rate</h3><table class="data-table"><tr><th>Temperature (°C)</th><th>Rate (units/min)</th></tr><tr><td>10</td><td>4</td></tr><tr><td>25</td><td>12</td></tr><tr><td>37</td><td>22</td></tr><tr><td>55</td><td>3</td></tr></table><p><strong>Question:</strong> Describe the trend and explain the rate at 55°C.</p><button class="answer-btn">Reveal answer</button><div class="answer">Rate increases from 10°C to 37°C, then drops sharply at 55°C. The high temperature likely denatures the enzyme by altering tertiary structure and the active site.</div></div>
+            <div class="practice"><h3>Data Set 2: Photosynthesis</h3><table class="data-table"><tr><th>Light Intensity</th><th>O₂ bubbles/min</th></tr><tr><td>Low</td><td>6</td></tr><tr><td>Medium</td><td>18</td></tr><tr><td>High</td><td>21</td></tr></table><p><strong>Question:</strong> Explain why the rate levels off from medium to high light.</p><button class="answer-btn">Reveal answer</button><div class="answer">Photosynthesis increases with light at first, but levels off when another factor such as CO₂ availability, temperature, or enzyme capacity becomes limiting.</div></div>
+            <div class="practice"><h3>Data Set 3: Population Growth</h3><table class="data-table"><tr><th>Day</th><th>Population</th></tr><tr><td>0</td><td>20</td></tr><tr><td>5</td><td>60</td></tr><tr><td>10</td><td>140</td></tr><tr><td>15</td><td>190</td></tr><tr><td>20</td><td>200</td></tr></table><p><strong>Question:</strong> Identify the growth pattern and estimate carrying capacity.</p><button class="answer-btn">Reveal answer</button><div class="answer">The data show logistic growth because the population increases rapidly then levels off. Carrying capacity is approximately 200 individuals.</div></div>
+            <div class="practice"><h3>Data Set 4: Gel Electrophoresis</h3><p>Lane A has bands near 100 bp and 800 bp. Lane B has bands near 100 bp, 400 bp, and 800 bp.</p><p><strong>Question:</strong> Which lane has more DNA fragments, and which fragments traveled farthest?</p><button class="answer-btn">Reveal answer</button><div class="answer">Lane B has more fragments. The 100 bp fragments traveled farthest because smaller DNA fragments move farther through the gel.</div></div>
+            <div class="practice"><h3>Data Set 5: Chi-Square</h3><p>Expected: 75 dominant, 25 recessive. Observed: 80 dominant, 20 recessive.</p><p><strong>Question:</strong> Calculate χ² and interpret if critical value = 3.84.</p><button class="answer-btn">Reveal answer</button><div class="answer">χ² = (80−75)²/75 + (20−25)²/25 = 25/75 + 25/25 = 1.33. Since 1.33 &lt; 3.84, fail to reject the null hypothesis.</div></div>
           </div>
         </article>
 
@@ -1329,6 +1358,58 @@ df = categories − 1</div>
 
     var quizQuestions = flattenQuizBank();
 
+    var miniLessons = {
+      'Unit 1':'Mini-lesson: For chemistry questions, always connect molecular structure to function. Water properties come from hydrogen bonding; protein function depends on amino acid sequence, R-group interactions, and folding.',
+      'Unit 2':'Mini-lesson: For membrane questions, identify the gradient, membrane permeability, transport protein if needed, and the consequence for the cell. Water moves toward lower water potential / higher solute concentration.',
+      'Unit 3':'Mini-lesson: For energetics, track electrons and protons. Respiration uses NADH/FADH₂ to power proton pumping; photosynthesis uses light energy to make ATP/NADPH for carbon fixation.',
+      'Unit 4':'Mini-lesson: For signaling, write the chain: ligand binds receptor → transduction/amplification → cellular response. For cell cycle, checkpoints prevent damaged cells from dividing.',
+      'Unit 5':'Mini-lesson: For heredity, explain chromosome movement. Crossing over and independent assortment create variation; linked genes are inherited together unless recombination separates them.',
+      'Unit 6':'Mini-lesson: For gene expression, use the chain DNA change → mRNA/codon → amino acid/protein structure → phenotype. For regulation, explain why turning genes on/off saves resources.',
+      'Unit 7':'Mini-lesson: Evolution changes allele frequencies in populations. Natural selection acts on phenotypes, but only heritable traits change allele frequencies across generations.',
+      'Unit 8':'Mini-lesson: In ecology, energy flows while matter cycles. Population size depends on resources, interactions, carrying capacity, and environmental change.'
+    };
+
+    var frqModelAnswers = [
+      'Model answer: Enzyme activity increases from 10°C to about 37°C, then decreases sharply above 45°C. The decrease occurs because high temperature disrupts bonds that maintain tertiary structure, changing the active site and reducing substrate binding. A pH far from the optimum would also reduce activity because pH can disrupt ionic and hydrogen bonding. This earns points by describing the trend, explaining mechanism, predicting effect, and justifying with protein structure.',
+      'Model answer: The dependent variable is oxygen consumption rate. Oxygen consumption measures cellular respiration because oxygen is the final electron acceptor in the electron transport chain. The highest rate would likely occur at a moderate temperature where enzymes function efficiently. Extremely low or high temperatures reduce enzyme activity or denature proteins. This earns points for variable identification, mechanism, prediction, and justification.',
+      'Model answer: The independent variable is light intensity. A control could be leaf disks kept in the dark or disks held at constant CO₂ and temperature. Disks float because oxygen produced during photosynthesis accumulates in leaf tissue and increases buoyancy. Increasing light raises photosynthesis rate until another factor becomes limiting. This earns points for experimental design and mechanism.',
+      'Model answer: Water moves out of the plant cell by osmosis because the surrounding solution is hypertonic and has lower water potential. The cell loses turgor pressure and the membrane may pull away from the wall, causing plasmolysis. If left there, the cell may remain plasmolyzed and lose normal function. This earns points for direction, effect, prediction, and justification.',
+      'Model answer: A normal signaling pathway includes reception, transduction, and response. If a receptor mutation changes receptor shape, the ligand may not bind or activate the pathway. The cellular response may be reduced or absent because the signal is not relayed or amplified. This earns points by linking structure to signaling function.',
+      'Model answer: Linked genes may not assort independently because they are located on the same chromosome and tend to be inherited together. Crossing over in prophase I can exchange DNA between homologous chromosomes and create recombinant offspring. Genes farther apart have higher recombination frequency because crossovers are more likely to occur between them. This earns points for linkage, recombination, prediction, and justification.',
+      'Model answer: Transcription uses DNA as a template to make mRNA, and translation uses mRNA codons to assemble amino acids into a polypeptide. A point mutation may change a codon, alter an amino acid, change protein folding or the active site, and affect phenotype. The effect depends on whether protein structure/function changes. This earns points for the full DNA-to-phenotype chain.',
+      'Model answer: The lac operon will be active when lactose is present and glucose is absent. Allolactose binds the repressor, preventing it from blocking transcription. Low glucose increases cAMP-CAP activation, increasing transcription. This benefits the cell by producing lactose-digesting enzymes only when lactose is available and preferred glucose is absent.',
+      'Model answer: q² = 45/500 = 0.09, so q = 0.30 and p = 0.70. The expected heterozygote frequency is 2pq = 2(0.70)(0.30) = 0.42. Hardy-Weinberg equilibrium requires conditions such as no selection, no mutation, no migration, large population size, and random mating.',
+      'Model answer: Antibiotic resistance increases by natural selection. Some bacteria already have heritable resistance due to mutation or variation. When antibiotic is present, resistant bacteria survive and reproduce more than nonresistant bacteria, increasing the resistance allele frequency over generations. This earns points for variation, selection pressure, and allele frequency change.',
+      'Model answer: A drought decreases carrying capacity by reducing food and water. Population growth slows or becomes negative as resources become limited. Natural selection may favor traits that improve survival or reproduction under dry conditions. This connects ecology to evolution because environmental change creates selection pressure.',
+      'Model answer: For 100 offspring in a 3:1 ratio, expected values are 75 dominant and 25 recessive. χ² = (80−75)²/75 + (20−25)²/25 = 1.33. Degrees of freedom = 1. Since 1.33 is less than 3.84, fail to reject the null hypothesis; the data are consistent with the expected ratio.',
+      'Model answer: Species A and B are most closely related because they share a more recent common ancestor with each other than with species C. A node represents a common ancestor. Shared derived traits define clades, and DNA sequence similarity supports evolutionary relationships because more similar sequences suggest more recent common ancestry.'
+    ];
+
+    function addFrqModelAnswerButtons() {
+      var cards = document.querySelectorAll('.frq-card');
+      for (var i = 0; i < cards.length; i++) {
+        if (cards[i].getAttribute('data-model-ready') === 'yes') continue;
+        var tools = cards[i].querySelector('.frq-tools');
+        if (!tools) continue;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'quiz-btn';
+        btn.textContent = 'View Model Answer';
+        tools.appendChild(btn);
+        var div = document.createElement('div');
+        div.className = 'model-answer';
+        div.innerHTML = '<strong>Model answer + scoring explanation:</strong><br>' + (frqModelAnswers[i] || 'Model answer should describe, explain, predict, and justify using evidence from the prompt.');
+        tools.parentNode.appendChild(div);
+        btn.addEventListener('click', function() {
+          var model = this.parentNode.parentNode.querySelector('.model-answer');
+          if (!model) return;
+          model.classList.toggle('show');
+          this.textContent = model.classList.contains('show') ? 'Hide Model Answer' : 'View Model Answer';
+        });
+        cards[i].setAttribute('data-model-ready', 'yes');
+      }
+    }
+
     var examFrqPrompts = [
       {title:'Enzymes & Energetics', prompt:'A graph shows enzyme activity increasing from 10°C to 37°C and decreasing sharply above 45°C. Describe the trend, explain the decrease at high temperature, predict the effect of nonoptimal pH, and justify using protein structure.'},
       {title:'Cellular Respiration Data', prompt:'A researcher measures oxygen consumption in germinating seeds at different temperatures. Identify the dependent variable, explain why oxygen consumption measures respiration, predict the highest rate, and justify using enzyme activity.'},
@@ -1564,6 +1645,48 @@ df = categories − 1</div>
       }
     }
 
+    function getChoiceExplanation(item, choiceIndex) {
+      if (choiceIndex === item.answer) return 'Correct: this choice directly matches the biological mechanism tested in the question. ' + item.explain;
+      return getDistractorFeedback(item, item.choices[choiceIndex]);
+    }
+
+    function getAllChoiceExplanations(item) {
+      var labels = ['A','B','C','D','E'];
+      var html = '<details class="answer show"><summary><strong>Full answer explanations</strong></summary><div><ul>';
+      for (var i = 0; i < item.choices.length; i++) {
+        html += '<li><strong>' + labels[i] + '.</strong> ' + getChoiceExplanation(item, i) + '</li>';
+      }
+      html += '</ul></div></details>';
+      return html;
+    }
+
+    function saveMistake(item, selectedText, correctText) {
+      var mistakes = [];
+      try { mistakes = JSON.parse(localStorage.getItem('apBioMistakes')) || []; } catch (e) { mistakes = []; }
+      mistakes.unshift({ unit:item.unit, difficulty:item.d, question:item.q, selected:selectedText, correct:correctText, explanation:item.explain, date:new Date().toLocaleString() });
+      if (mistakes.length > 80) mistakes = mistakes.slice(0, 80);
+      try { localStorage.setItem('apBioMistakes', JSON.stringify(mistakes)); } catch (e) {}
+    }
+
+    function renderMistakeLog() {
+      var box = document.getElementById('mistakeLog');
+      if (!box) return;
+      var mistakes = [];
+      try { mistakes = JSON.parse(localStorage.getItem('apBioMistakes')) || []; } catch (e) { mistakes = []; }
+      if (!mistakes.length) { box.innerHTML = '<p class="small">No mistakes recorded yet.</p>'; return; }
+      var html = '';
+      for (var i = 0; i < mistakes.length; i++) {
+        var m = mistakes[i];
+        html += '<div class="mistake-card"><p><strong>' + m.unit + '</strong> <span class="pill">' + m.difficulty + '</span></p><p><strong>Question:</strong> ' + m.question + '</p><p><strong>Your answer:</strong> ' + m.selected + '</p><p><strong>Correct answer:</strong> ' + m.correct + '</p><p><strong>Review:</strong> ' + m.explanation + '</p><p class="small">' + m.date + '</p></div>';
+      }
+      box.innerHTML = html;
+    }
+
+    var renderMistakesBtn = document.getElementById('renderMistakesBtn');
+    if (renderMistakesBtn) renderMistakesBtn.addEventListener('click', renderMistakeLog);
+    var clearMistakesBtn = document.getElementById('clearMistakesBtn');
+    if (clearMistakesBtn) clearMistakesBtn.addEventListener('click', function(){ localStorage.removeItem('apBioMistakes'); renderMistakeLog(); });
+
     function getDistractorFeedback(item, selectedText) {
       var q = (item.q || '').toLowerCase();
       var selected = (selectedText || '').toLowerCase();
@@ -1627,9 +1750,10 @@ df = categories − 1</div>
       var correctText = item.choices[item.answer];
       var feedbackHtml = '';
       if (isCorrect) {
-        feedbackHtml = '<strong>Correct!</strong><div class="correct-feedback">' + item.explain + '</div>';
+        feedbackHtml = '<strong>Correct!</strong><div class="correct-feedback">' + item.explain + '</div>' + getAllChoiceExplanations(item);
       } else {
-        feedbackHtml = '<strong>Not quite.</strong> Correct answer: <strong>' + correctText + '</strong><div class="trap-feedback">' + getDistractorFeedback(item, selectedText) + '</div><div class="correct-feedback"><strong>Why the correct answer works:</strong> ' + item.explain + '</div>';
+        saveMistake(item, selectedText, correctText);
+        feedbackHtml = '<strong>Not quite.</strong> Correct answer: <strong>' + correctText + '</strong><div class="trap-feedback">' + getDistractorFeedback(item, selectedText) + '</div><div class="correct-feedback"><strong>Why the correct answer works:</strong> ' + item.explain + '</div>' + getAllChoiceExplanations(item);
       }
       document.getElementById('quizFeedback').innerHTML = feedbackHtml;
       renderProgress();
@@ -1685,7 +1809,7 @@ df = categories − 1</div>
         'Unit 7': 'Targeting Unit 7: Use p + q = 1 and p² + 2pq + q² = 1 to calculate carrier frequency from q².',
         'Unit 8': 'Targeting Unit 8: Explain how reduced resources affect carrying capacity and natural selection.'
       };
-      document.getElementById('adaptiveText').textContent = promptMap[weak] || 'Adaptive mode is on. The next question will target under-practiced or weakest units.';
+      document.getElementById('adaptiveText').innerHTML = (promptMap[weak] || 'Adaptive mode is on. The next question will target under-practiced or weakest units.') + '<div class="lesson-card"><strong>Mini-lesson:</strong> ' + (miniLessons[weak] || 'Keep practicing. The system will identify weak units as you answer more questions.') + '</div>';
       renderQuiz();
     });
 
@@ -1715,7 +1839,10 @@ df = categories − 1</div>
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-    });nds / 60);
+    });
+
+    function formatExamTime(seconds) {
+      var m = Math.floor(seconds / 60);
       var s = seconds % 60;
       return m + ':' + (s < 10 ? '0' : '') + s;
     }
@@ -1831,6 +1958,8 @@ df = categories − 1</div>
     if (submitExamBtn) submitExamBtn.addEventListener('click', submitExamSimulation);
 
     renderProgress();
+    renderMistakeLog();
+    addFrqModelAnswerButtons();
     updateQuizControlHelp();
     renderQuiz();
 
