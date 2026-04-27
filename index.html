@@ -1066,15 +1066,23 @@
         [],
         ['Unit', 'Correct', 'Attempted', 'Percent']
       ];
-      Object.entries(state.unitStats || {}).forEach(([unit, stats]) => rows.push([unit, stats.correct, stats.attempted, Math.round((stats.correct / stats.attempted) * 100) + '%']));
-      const csv = rows.map(row => row.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('
-');
+
+      Object.entries(state.unitStats || {}).forEach(([unit, stats]) => {
+        rows.push([unit, stats.correct, stats.attempted, Math.round((stats.correct / stats.attempted) * 100) + '%']);
+      });
+
+      const csv = rows
+        .map(row => row.map(cell => '"' + String(cell ?? '').replace(/"/g, '""') + '"').join(','))
+        .join('\n');
+
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = 'ap-biology-progress-report.csv';
+      document.body.appendChild(a);
       a.click();
+      a.remove();
       URL.revokeObjectURL(url);
     }
 
