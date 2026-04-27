@@ -91,6 +91,11 @@
     .correct-feedback { margin-top: 10px; padding: 10px 12px; border-left: 5px solid var(--green); background: var(--green-2); border-radius: 10px; }
     .frq-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
     .frq-feedback-btn { border: 0; border-radius: 999px; background: var(--green); color: white; font-weight: 800; padding: 9px 13px; cursor: pointer; }
+    .exam-timer { font-size: 1.35rem; font-weight: 900; color: var(--red); }
+    .exam-question { border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin: 14px 0; background: #fff; }
+    .exam-choice { display: block; margin: 8px 0; padding: 9px 11px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; background: #fff; }
+    .exam-choice input { margin-right: 8px; }
+    .exam-scorebox { border-left: 5px solid var(--blue); background: var(--blue-2); padding: 14px; border-radius: 12px; margin-top: 14px; }
     footer { text-align: center; color: var(--muted); padding: 30px 16px 60px; }
 
     @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } nav { position: static; } .toolbar-inner { grid-template-columns: 1fr; } .two-col { grid-template-columns: 1fr; } }
@@ -128,6 +133,7 @@
         <button type="button" class="nav-btn" data-target="quant" onclick="showSection('quant')">Quantitative Practice</button>
         <button type="button" class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quizzes & Progress</button>
         <button type="button" class="nav-btn" data-target="frq" onclick="showSection('frq')">FRQ Practice</button>
+        <button type="button" class="nav-btn" data-target="exam" onclick="showSection('exam')">AP Exam Simulation</button>
         <button type="button" class="nav-btn" data-target="skills" onclick="showSection('skills')">Scoring Skills</button>
         <button type="button" class="nav-btn" data-target="equations" onclick="showSection('equations')">AP Bio Equations</button>
         <button type="button" class="nav-btn" data-target="final" onclick="showSection('final')">Final Exam Strategy</button>
@@ -722,6 +728,42 @@
           </div>
         </article>
 
+        <article id="exam" class="card section searchable hidden" data-keywords="ap exam simulation timed mcq frq practice test mock exam score">
+          <div class="card-header"><h2>AP Exam Simulation Mode</h2><div class="pill-row"><span class="pill critical">Timed practice</span><span class="pill high">CED-weighted</span><span class="pill ced">MCQ + FRQ</span></div></div>
+          <div class="card-body">
+            <div class="callout"><strong>Purpose:</strong> This mode simulates AP-style pressure with a CED-weighted multiple-choice set and FRQ writing practice. It is shorter than the real AP exam but trains pacing, stamina, and mixed-topic recall.</div>
+            <div class="two-col">
+              <div class="callout gold">
+                <h3>Simulation Settings</h3>
+                <label><strong>MCQ Count</strong><br>
+                  <select id="examMcqCount" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;">
+                    <option value="15">15-question sprint</option>
+                    <option value="30" selected>30-question half simulation</option>
+                    <option value="60">60-question full MCQ practice</option>
+                  </select>
+                </label>
+                <label><strong>FRQ Count</strong><br>
+                  <select id="examFrqCount" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;">
+                    <option value="2">2 FRQs</option>
+                    <option value="4" selected>4 FRQs</option>
+                    <option value="6">6 FRQs</option>
+                  </select>
+                </label>
+                <button class="quiz-btn" id="startExamBtn">Start Exam Simulation</button>
+                <button class="quiz-btn" id="submitExamBtn" style="background: var(--green);">Submit Exam</button>
+              </div>
+              <div class="callout">
+                <h3>Status</h3>
+                <p class="exam-timer" id="examTimer">Not started</p>
+                <p id="examStatus">Choose settings, then start the simulation.</p>
+                <div id="examResults"></div>
+              </div>
+            </div>
+            <details open><summary>MCQ Section</summary><div id="examMcqContainer"><p class="small">Start the simulation to generate CED-weighted MCQs.</p></div></details>
+            <details open><summary>FRQ Section</summary><div id="examFrqContainer"><p class="small">Start the simulation to generate FRQs.</p></div></details>
+          </div>
+        </article>
+
         <article id="skills" class="card section searchable hidden" data-keywords="scoring skills data analysis experimental design command terms graph math misconceptions cross unit connections frq sprint last minute lab" >
           <div class="card-header"><h2>AP Bio Scoring Skills: How to Turn Knowledge Into Points</h2><div class="pill-row"><span class="pill critical">4 → 5 skills</span><span class="pill high">FRQ + data</span></div></div>
           <div class="card-body">
@@ -1258,7 +1300,49 @@ df = categories − 1</div>
       return all;
     }
 
+    function chooseCedWeightedUnit() {
+      var weights = {'Unit 1':10,'Unit 2':12,'Unit 3':15,'Unit 4':13,'Unit 5':10,'Unit 6':15,'Unit 7':18,'Unit 8':12};
+      var pool = [];
+      for (var unit in weights) {
+        for (var i = 0; i < weights[unit]; i++) pool.push(unit);
+      }
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function makeCedWeightedExamMcqs(count) {
+      var selected = [];
+      var used = {};
+      var safety = 0;
+      while (selected.length < count && safety < 2000) {
+        safety++;
+        var unit = chooseCedWeightedUnit();
+        var bank = quizBank[unit] || [];
+        if (!bank.length) continue;
+        var raw = bank[Math.floor(Math.random() * bank.length)];
+        var key = unit + '|' + raw.q;
+        if (used[key]) continue;
+        used[key] = true;
+        selected.push(shuffleQuestion({unit:unit,q:raw.q,choices:raw.choices,answer:raw.answer,explain:raw.explain,d:raw.d}));
+      }
+      return selected;
+    }
+
     var quizQuestions = flattenQuizBank();
+
+    var examFrqPrompts = [
+      {title:'Enzymes & Energetics', prompt:'A graph shows enzyme activity increasing from 10°C to 37°C and decreasing sharply above 45°C. Describe the trend, explain the decrease at high temperature, predict the effect of nonoptimal pH, and justify using protein structure.'},
+      {title:'Cellular Respiration Data', prompt:'A researcher measures oxygen consumption in germinating seeds at different temperatures. Identify the dependent variable, explain why oxygen consumption measures respiration, predict the highest rate, and justify using enzyme activity.'},
+      {title:'Photosynthesis Experiment', prompt:'Students use floating leaf disks to test photosynthesis under different light intensities. Identify the independent variable, identify a control, explain why disks float, and predict the effect of increasing light.'},
+      {title:'Cell Transport & Osmosis', prompt:'A plant cell is placed in a hypertonic solution. Describe water movement, explain the effect on the cell, predict the long-term outcome, and justify using osmosis.'},
+      {title:'Cell Communication', prompt:'A mutation changes the shape of a membrane receptor. Describe signal transduction, explain the mutation effect, predict a cellular response, and justify using structure-function reasoning.'},
+      {title:'Meiosis & Heredity', prompt:'Two linked genes do not produce the expected independent assortment ratio. Explain linkage, describe crossing over, predict how distance affects recombination, and justify.'},
+      {title:'Gene Expression & Mutation', prompt:'A point mutation changes a codon in an enzyme-coding gene. Describe transcription/translation, explain how protein function may change, predict phenotype, and justify.'},
+      {title:'Natural Selection', prompt:'A bacterial population becomes antibiotic resistant. Explain natural selection, describe variation, predict allele frequency change, and justify.'},
+      {title:'Ecology + Evolution', prompt:'A drought reduces food and water in an ecosystem. Explain carrying capacity change, describe population growth effects, predict natural selection, and justify.'},
+      {title:'Chi-Square Genetics', prompt:'A monohybrid cross expected to produce a 3:1 ratio gives 80 dominant and 20 recessive offspring. Calculate expected values, χ², df, and interpret using critical value 3.84.'}
+    ];
+
+    var examState = { active:false, timer:null, remaining:0, mcqs:[], frqs:[] };
 
     var defaultState = { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
     var currentQuestion = 0;
@@ -1356,24 +1440,50 @@ df = categories − 1</div>
     }
 
     function chooseAdaptiveUnit(state) {
+      // CED weighting (approximate exam weight)
+      var weights = {
+        'Unit 1': 0.10,
+        'Unit 2': 0.12,
+        'Unit 3': 0.15,
+        'Unit 4': 0.13,
+        'Unit 5': 0.10,
+        'Unit 6': 0.15,
+        'Unit 7': 0.18,
+        'Unit 8': 0.12
+      };
+
       var units = Object.keys(quizBank);
-      var underPracticed = [];
+
+      // boost weakest unit
+      var weakest = null;
+      var weakestScore = 2;
       for (var i = 0; i < units.length; i++) {
         var stats = state.unitStats[units[i]] || { correct: 0, attempted: 0 };
-        if (stats.attempted < 3) underPracticed.push(units[i]);
-      }
-      if (underPracticed.length) return underPracticed[Math.floor(Math.random() * underPracticed.length)];
-
-      var weakest = units[0];
-      var weakestScore = 2;
-      for (var j = 0; j < units.length; j++) {
-        var acc = getUnitAccuracy(state, units[j]);
-        if (acc !== null && acc < weakestScore) {
-          weakestScore = acc;
-          weakest = units[j];
+        if (stats.attempted >= 3) {
+          var acc = stats.correct / stats.attempted;
+          if (acc < weakestScore) {
+            weakestScore = acc;
+            weakest = units[i];
+          }
         }
       }
-      return weakest;
+
+      // build weighted pool
+      var pool = [];
+      for (var j = 0; j < units.length; j++) {
+        var unit = units[j];
+        var weight = weights[unit] || 0.1;
+
+        // boost weakest unit heavily
+        if (unit === weakest) weight *= 2.5;
+
+        var count = Math.round(weight * 100);
+        for (var k = 0; k < count; k++) {
+          pool.push(unit);
+        }
+      }
+
+      return pool[Math.floor(Math.random() * pool.length)];
     }
 
     function chooseDifficulty(state, unit) {
@@ -1446,7 +1556,7 @@ df = categories − 1</div>
       }
       html += '<div id="quizFeedback" class="answer show small">Choose an answer.</div>';
       box.innerHTML = html;
-      var choices = box.querySelectorAll('.choice');('.choice');
+      var choices = box.querySelectorAll('.choice');
       for (var c = 0; c < choices.length; c++) {
         choices[c].addEventListener('click', function() {
           gradeQuiz(Number(this.getAttribute('data-choice')), item);
@@ -1605,7 +1715,120 @@ df = categories − 1</div>
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-    });
+    });nds / 60);
+      var s = seconds % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function startExamSimulation() {
+      var mcqCountEl = document.getElementById('examMcqCount');
+      var frqCountEl = document.getElementById('examFrqCount');
+      var mcqCount = mcqCountEl ? Number(mcqCountEl.value) : 30;
+      var frqCount = frqCountEl ? Number(frqCountEl.value) : 4;
+
+      examState.mcqs = makeCedWeightedExamMcqs(mcqCount);
+      examState.frqs = examFrqPrompts.slice().sort(function() { return Math.random() - 0.5; }).slice(0, frqCount);
+      examState.active = true;
+      examState.remaining = mcqCount === 60 ? 5400 : mcqCount === 30 ? 2700 : 1200;
+
+      if (examState.timer) clearInterval(examState.timer);
+      examState.timer = setInterval(function() {
+        examState.remaining--;
+        var timerEl = document.getElementById('examTimer');
+        if (timerEl) timerEl.textContent = formatExamTime(examState.remaining);
+        if (examState.remaining <= 0) submitExamSimulation();
+      }, 1000);
+
+      renderExamSimulation();
+    }
+
+    function renderExamSimulation() {
+      var mcqBox = document.getElementById('examMcqContainer');
+      var frqBox = document.getElementById('examFrqContainer');
+      var status = document.getElementById('examStatus');
+      var timerEl = document.getElementById('examTimer');
+      var results = document.getElementById('examResults');
+      if (!mcqBox || !frqBox) return;
+
+      if (timerEl) timerEl.textContent = formatExamTime(examState.remaining);
+      if (status) status.textContent = 'Simulation running. Answer all MCQs and write FRQ responses before submitting.';
+      if (results) results.innerHTML = '';
+
+      var mcqHtml = '';
+      for (var i = 0; i < examState.mcqs.length; i++) {
+        var item = examState.mcqs[i];
+        mcqHtml += '<div class="exam-question"><h3>MCQ ' + (i + 1) + ' <span class="pill">' + item.unit + '</span> <span class="pill high">' + item.d + '</span></h3><p><strong>' + item.q + '</strong></p>';
+        for (var c = 0; c < item.choices.length; c++) {
+          mcqHtml += '<label class="exam-choice"><input type="radio" name="examq' + i + '" value="' + c + '">' + item.choices[c] + '</label>';
+        }
+        mcqHtml += '</div>';
+      }
+      mcqBox.innerHTML = mcqHtml;
+
+      var frqHtml = '';
+      for (var f = 0; f < examState.frqs.length; f++) {
+        frqHtml += '<div class="frq-card"><h3>FRQ ' + (f + 1) + ': ' + examState.frqs[f].title + '</h3><p>' + examState.frqs[f].prompt + '</p><textarea class="exam-frq-response" placeholder="Write your FRQ response..."></textarea></div>';
+      }
+      frqBox.innerHTML = frqHtml;
+    }
+
+    function countWords(text) {
+      var pieces = text.trim().split(' ');
+      var count = 0;
+      for (var i = 0; i < pieces.length; i++) {
+        if (pieces[i]) count++;
+      }
+      return count;
+    }
+
+    function submitExamSimulation() {
+      if (!examState.mcqs.length) return;
+      if (examState.timer) clearInterval(examState.timer);
+
+      var correct = 0;
+      var unitStats = {};
+      for (var i = 0; i < examState.mcqs.length; i++) {
+        var item = examState.mcqs[i];
+        if (!unitStats[item.unit]) unitStats[item.unit] = { correct: 0, attempted: 0 };
+        unitStats[item.unit].attempted++;
+        var selected = document.querySelector('input[name="examq' + i + '"]:checked');
+        if (selected && Number(selected.value) === item.answer) {
+          correct++;
+          unitStats[item.unit].correct++;
+        }
+      }
+
+      var pct = Math.round((correct / examState.mcqs.length) * 100);
+      var frqResponses = document.querySelectorAll('.exam-frq-response');
+      var frqCompleted = 0;
+      for (var r = 0; r < frqResponses.length; r++) {
+        if (countWords(frqResponses[r].value) >= 25) frqCompleted++;
+      }
+
+      var html = '<div class="exam-scorebox"><h3>Exam Simulation Results</h3>';
+      html += '<p><strong>MCQ Score:</strong> ' + correct + ' / ' + examState.mcqs.length + ' (' + pct + '%)</p>';
+      html += '<p><strong>FRQs with developed responses:</strong> ' + frqCompleted + ' / ' + frqResponses.length + '</p>';
+      html += '<h4>Unit Breakdown</h4><ul>';
+      for (var unit in unitStats) {
+        var u = unitStats[unit];
+        html += '<li>' + unit + ': ' + u.correct + '/' + u.attempted + ' (' + Math.round((u.correct / u.attempted) * 100) + '%)</li>';
+      }
+      html += '</ul><p class="small">Use weak units from this report for targeted quiz mode and FRQ review.</p></div>';
+
+      var results = document.getElementById('examResults');
+      if (results) results.innerHTML = html;
+      var status = document.getElementById('examStatus');
+      if (status) status.textContent = 'Simulation submitted.';
+      var timerEl = document.getElementById('examTimer');
+      if (timerEl) timerEl.textContent = 'Submitted';
+      examState.active = false;
+    }
+
+    var startExamBtn = document.getElementById('startExamBtn');
+    if (startExamBtn) startExamBtn.addEventListener('click', startExamSimulation);
+
+    var submitExamBtn = document.getElementById('submitExamBtn');
+    if (submitExamBtn) submitExamBtn.addEventListener('click', submitExamSimulation);
 
     renderProgress();
     updateQuizControlHelp();
