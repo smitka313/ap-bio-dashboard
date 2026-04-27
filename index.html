@@ -1464,25 +1464,44 @@ df = categories − 1</div>
     if (nextQuizBtn) nextQuizBtn.addEventListener('click', function() { currentQuestion += 1; renderQuiz(); });
 
     var quizMode = document.getElementById('quizMode');
-    if (quizMode) quizMode.addEventListener('change', function() { renderQuiz(); });
+    function updateQuizControlHelp() {
+      var modeEl = document.getElementById('quizMode');
+      var unitEl = document.getElementById('quizUnitSelect');
+      if (!modeEl || !unitEl) return;
+      unitEl.disabled = modeEl.value !== 'unit';
+      unitEl.style.opacity = modeEl.value === 'unit' ? '1' : '0.55';
+    }
+
+    if (quizMode) quizMode.addEventListener('change', function() {
+      updateQuizControlHelp();
+      renderQuiz();
+    });
 
     var quizUnitSelect = document.getElementById('quizUnitSelect');
-    if (quizUnitSelect) quizUnitSelect.addEventListener('change', function() { if (quizMode && quizMode.value === 'unit') renderQuiz(); });
+    if (quizUnitSelect) quizUnitSelect.addEventListener('change', function() {
+      if (quizMode && quizMode.value !== 'unit') quizMode.value = 'unit';
+      updateQuizControlHelp();
+      renderQuiz();
+    });
 
     var adaptiveBtn = document.getElementById('adaptiveBtn');
     if (adaptiveBtn) adaptiveBtn.addEventListener('click', function() {
+      var modeEl = document.getElementById('quizMode');
+      if (modeEl) modeEl.value = 'adaptive';
+      updateQuizControlHelp();
       var weak = weakestUnit(loadQuizState());
       var promptMap = {
-        'Unit 1': 'Explain how hydrogen bonding leads to one water property and one biological consequence.',
-        'Unit 2': 'Predict water movement for a cell in a hypertonic solution and justify with osmosis.',
-        'Unit 3': 'Explain how a proton gradient is used to make ATP during cellular respiration.',
-        'Unit 4': 'Trace a signal transduction pathway from ligand binding to cellular response.',
-        'Unit 5': 'Explain how crossing over and independent assortment increase genetic variation.',
-        'Unit 6': 'Explain how a mutation can alter protein structure and phenotype.',
-        'Unit 7': 'Use p + q = 1 and p² + 2pq + q² = 1 to calculate carrier frequency from q².',
-        'Unit 8': 'Explain how reduced resources affect carrying capacity and natural selection.'
+        'Unit 1': 'Targeting Unit 1: Explain how hydrogen bonding leads to one water property and one biological consequence.',
+        'Unit 2': 'Targeting Unit 2: Predict water movement for a cell in a hypertonic solution and justify with osmosis.',
+        'Unit 3': 'Targeting Unit 3: Explain how a proton gradient is used to make ATP during cellular respiration.',
+        'Unit 4': 'Targeting Unit 4: Trace a signal transduction pathway from ligand binding to cellular response.',
+        'Unit 5': 'Targeting Unit 5: Explain how crossing over and independent assortment increase genetic variation.',
+        'Unit 6': 'Targeting Unit 6: Explain how a mutation can alter protein structure and phenotype.',
+        'Unit 7': 'Targeting Unit 7: Use p + q = 1 and p² + 2pq + q² = 1 to calculate carrier frequency from q².',
+        'Unit 8': 'Targeting Unit 8: Explain how reduced resources affect carrying capacity and natural selection.'
       };
-      document.getElementById('adaptiveText').textContent = promptMap[weak] || 'Answer more quiz questions to generate targeted adaptive practice.';
+      document.getElementById('adaptiveText').textContent = promptMap[weak] || 'Adaptive mode is on. The next question will target under-practiced or weakest units.';
+      renderQuiz();
     });
 
     var resetBtn = document.getElementById('resetBtn');
@@ -1514,6 +1533,7 @@ df = categories − 1</div>
     });
 
     renderProgress();
+    updateQuizControlHelp();
     renderQuiz();
 
     showSection('overview');
