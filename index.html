@@ -978,6 +978,11 @@ df = categories − 1</div>
     var searchInput = document.getElementById('search');
 
     function showSection(targetId) {
+      var target = document.getElementById(targetId);
+      if (!target) {
+        console.warn('Missing dashboard section:', targetId);
+        return;
+      }
       for (var i = 0; i < sections.length; i++) {
         sections[i].classList.toggle('hidden', sections[i].id !== targetId);
       }
@@ -987,7 +992,17 @@ df = categories − 1</div>
       if (searchInput) searchInput.value = '';
     }
 
+    function checkNavigationTargets() {
+      var missing = [];
+      for (var i = 0; i < navButtons.length; i++) {
+        var targetId = navButtons[i].getAttribute('data-target');
+        if (!document.getElementById(targetId)) missing.push(targetId);
+      }
+      if (missing.length) console.warn('Navigation targets missing:', missing.join(', '));
+    }
+
     window.showSection = showSection;
+    checkNavigationTargets();
 
     for (var n = 0; n < navButtons.length; n++) {
       navButtons[n].addEventListener('click', function(event) {
