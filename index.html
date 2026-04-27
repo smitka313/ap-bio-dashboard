@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smitka's AP Biology Ultimate Study Kit</title>
+  <title>AP Biology Ultimate Study Dashboard</title>
   <style>
     :root {
       --bg: #f6f8fb;
@@ -97,7 +97,7 @@
 </head>
 <body>
   <header>
-    <h1>Smitka's AP Biology Ultimate Study Kit</h1>
+    <h1>AP Biology Ultimate Study Dashboard</h1>
     <p>CED-aligned unit review, quantitative practice, auto-graded quizzes, progress tracking, adaptive practice, and FRQ practice.</p>
   </header>
 
@@ -647,6 +647,28 @@
             </div></details>
 
             <div class="callout gold"><h3>Adaptive Practice</h3><p id="adaptiveText">Answer quiz questions to unlock targeted practice based on your weakest unit.</p><button class="quiz-btn" id="adaptiveBtn">Give Me Adaptive Practice</button></div>
+            <div class="callout">
+              <h3>Quiz Controls</h3>
+              <label><strong>Mode</strong><br>
+                <select id="quizMode" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;">
+                  <option value="adaptive">Adaptive: target weakest areas</option>
+                  <option value="mixed">Mixed review</option>
+                  <option value="unit">Specific unit</option>
+                </select>
+              </label>
+              <label><strong>Specific Unit</strong><br>
+                <select id="quizUnitSelect" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;">
+                  <option value="Unit 1">Unit 1: Chemistry of Life</option>
+                  <option value="Unit 2">Unit 2: Cell Structure & Function</option>
+                  <option value="Unit 3">Unit 3: Cellular Energetics</option>
+                  <option value="Unit 4">Unit 4: Cell Communication & Cell Cycle</option>
+                  <option value="Unit 5">Unit 5: Heredity</option>
+                  <option value="Unit 6">Unit 6: Gene Expression & Regulation</option>
+                  <option value="Unit 7">Unit 7: Natural Selection</option>
+                  <option value="Unit 8">Unit 8: Ecology & Biodiversity</option>
+                </select>
+              </label>
+            </div>
             <div id="quizContainer" class="quiz-box"></div>
             <button class="quiz-btn" id="nextQuizBtn">Next Question</button>
           </div>
@@ -1004,19 +1026,242 @@ df = categories − 1</div>
       });
     }
 
-    var quizQuestions = [
-      { unit: 'Unit 1', q: 'Which interaction is primarily responsible for water cohesion?', choices: ['Ionic bonds', 'Hydrogen bonds', 'Peptide bonds', 'Phosphodiester bonds'], answer: 1, explain: 'Water cohesion results from hydrogen bonding between water molecules.' },
-      { unit: 'Unit 2', q: 'A plant cell placed in a hypertonic solution will most likely...', choices: ['Become turgid', 'Undergo plasmolysis', 'Lyse', 'Stop osmosis completely'], answer: 1, explain: 'Water leaves the cell, causing the membrane to pull away from the wall.' },
-      { unit: 'Unit 3', q: 'In cellular respiration, oxygen functions as the...', choices: ['First electron donor', 'Final electron acceptor', 'Main enzyme', 'Source of glucose'], answer: 1, explain: 'Oxygen accepts electrons at the end of the ETC.' },
-      { unit: 'Unit 4', q: 'Which sequence best represents cell signaling?', choices: ['Response → receptor → signal', 'Signal → receptor → transduction → response', 'DNA → RNA → protein', 'Meiosis → fertilization → mitosis'], answer: 1, explain: 'Signal transduction begins with reception and ends with cellular response.' },
-      { unit: 'Unit 5', q: 'Crossing over occurs during...', choices: ['Prophase I', 'Metaphase II', 'Cytokinesis', 'G1'], answer: 0, explain: 'Crossing over occurs in prophase I of meiosis.' },
-      { unit: 'Unit 6', q: 'The lac operon is best described as...', choices: ['Repressible', 'Inducible', 'Always off', 'Only eukaryotic'], answer: 1, explain: 'The lac operon is inducible and turns on when lactose is available.' },
-      { unit: 'Unit 7', q: 'In Hardy-Weinberg, q² represents...', choices: ['Dominant allele frequency', 'Heterozygous genotype frequency', 'Homozygous recessive genotype frequency', 'Total population size'], answer: 2, explain: 'q² is the frequency of homozygous recessive individuals.' },
-      { unit: 'Units 8-9', q: 'In a phylogenetic tree, a node represents...', choices: ['An extinct organism only', 'A common ancestor', 'A mutation rate', 'Carrying capacity'], answer: 1, explain: 'A node represents the most recent common ancestor of the branches from that node.' }
-    ];
+    var quizBank = {
+      'Unit 1': [
+        {d:'easy',q:'Which interaction is primarily responsible for water cohesion?',choices:['Ionic bonds','Hydrogen bonds','Peptide bonds','Phosphodiester bonds'],answer:1,explain:'Hydrogen bonds between water molecules create cohesion.'},
+        {d:'easy',q:'Which property of water helps stabilize temperature in organisms and environments?',choices:['Low specific heat','High specific heat','Low polarity','Low heat of vaporization'],answer:1,explain:'High specific heat allows water to resist temperature change.'},
+        {d:'easy',q:'What type of bond links amino acids together?',choices:['Glycosidic','Peptide','Ester','Phosphodiester'],answer:1,explain:'Amino acids are joined by peptide bonds.'},
+        {d:'easy',q:'Which macromolecule stores genetic information?',choices:['Lipids','Proteins','Nucleic acids','Carbohydrates'],answer:2,explain:'DNA and RNA are nucleic acids that store/transmit information.'},
+        {d:'easy',q:'Which reaction builds biological polymers by removing water?',choices:['Hydrolysis','Dehydration synthesis','Denaturation','Fermentation'],answer:1,explain:'Dehydration synthesis removes water to form covalent bonds.'},
+        {d:'easy',q:'Which molecule is amphipathic and forms membranes?',choices:['Glucose','Phospholipid','Amino acid','Nucleotide'],answer:1,explain:'Phospholipids have hydrophilic heads and hydrophobic tails.'},
+        {d:'easy',q:'Which part of an amino acid gives it unique chemical properties?',choices:['Amino group','Carboxyl group','R group','Central carbon'],answer:2,explain:'The R group determines amino acid properties and interactions.'},
+        {d:'easy',q:'What happens during hydrolysis?',choices:['Water breaks bonds','Water is removed to form bonds','ATP is made','DNA is transcribed'],answer:0,explain:'Hydrolysis uses water to break covalent bonds.'},
+        {d:'medium',q:'Why can water move upward in plant xylem?',choices:['Cohesion and adhesion','Peptide bonding','DNA replication','Active transport only'],answer:0,explain:'Cohesion among water molecules and adhesion to xylem walls help move water.'},
+        {d:'medium',q:'Which level of protein structure is directly determined by amino acid sequence?',choices:['Primary','Secondary','Tertiary','Quaternary'],answer:0,explain:'Primary structure is the amino acid sequence.'},
+        {d:'medium',q:'A mutation changes one amino acid from nonpolar to charged. What is most likely affected?',choices:['Protein folding','DNA backbone only','Water polarity','Cell size only'],answer:0,explain:'R-group chemistry affects folding and protein structure.'},
+        {d:'medium',q:'Which statement about enzymes is correct?',choices:['They increase activation energy','They change ΔG','They lower activation energy','They are consumed by reactions'],answer:2,explain:'Enzymes lower activation energy and are not consumed.'},
+        {d:'medium',q:'Why does high temperature often reduce enzyme activity?',choices:['It removes all substrates','It changes protein shape','It creates DNA','It lowers water polarity'],answer:1,explain:'High temperature can disrupt bonds maintaining tertiary structure.'},
+        {d:'medium',q:'Which carbohydrate provides structural support in plant cell walls?',choices:['Glycogen','Starch','Cellulose','Lactose'],answer:2,explain:'Cellulose is a structural polysaccharide in plant walls.'},
+        {d:'medium',q:'Which bond links nucleotides in a nucleic acid strand?',choices:['Peptide','Glycosidic','Phosphodiester','Hydrogen'],answer:2,explain:'Phosphodiester bonds form the sugar-phosphate backbone.'},
+        {d:'medium',q:'Why does ice float on liquid water?',choices:['Ice is denser','Hydrogen bonds space molecules apart','Ice is nonpolar','Covalent bonds break'],answer:1,explain:'Hydrogen bonding creates a less dense lattice in ice.'},
+        {d:'medium',q:'A protein loses function after pH changes. Which explanation is strongest?',choices:['pH changes DNA code','pH disrupts interactions stabilizing shape','pH removes all amino acids','pH creates glucose'],answer:1,explain:'pH can disrupt ionic/hydrogen bonding and alter active sites.'},
+        {d:'hard',q:'A student claims enzymes make reactions spontaneous. What correction is best?',choices:['Enzymes change ΔG','Enzymes lower activation energy but not ΔG','Enzymes supply reactants','Enzymes become products'],answer:1,explain:'Enzymes speed reactions by lowering activation energy; they do not change spontaneity.'},
+        {d:'hard',q:'Which observation best supports structure-function in proteins?',choices:['All proteins have identical shapes','Changing R-group interactions can alter activity','Proteins contain no carbon','Proteins are always hydrophobic'],answer:1,explain:'Altered interactions can change folding and function.'},
+        {d:'hard',q:'Which change would most likely affect an enzyme active site?',choices:['Changing tertiary structure','Adding water to solution','Increasing chromosome number','Moving ribosomes'],answer:0,explain:'The active site depends on protein 3D shape.'},
+        {d:'hard',q:'Why are lipids useful for long-term energy storage?',choices:['They are highly reduced and store many C-H bond electrons','They dissolve easily in water','They are polymers of amino acids','They contain codons'],answer:0,explain:'C-H bonds store lots of chemical energy.'},
+        {d:'hard',q:'Which evidence would show a reaction is enzyme-catalyzed?',choices:['Lower activation energy than uncatalyzed reaction','Higher ΔG','Reactants disappear instantly','Equilibrium changes'],answer:0,explain:'Catalysts lower activation energy.'},
+        {d:'hard',q:'Why can water dissolve many salts?',choices:['Nonpolar bonding','Polarity allows attraction to ions','Peptide bonds form','Water lacks charge distribution'],answer:1,explain:'Partial charges on water interact with ions.'},
+        {d:'hard',q:'A protein has multiple polypeptide subunits. Which structure level is involved?',choices:['Primary','Secondary','Tertiary','Quaternary'],answer:3,explain:'Quaternary structure involves multiple subunits.'},
+        {d:'hard',q:'Which statement best links nucleic acid structure to function?',choices:['Base pairing enables accurate copying','Lipids code for proteins','R-groups pair by hydrogen bonding','Cellulose stores genes'],answer:0,explain:'Complementary base pairing supports replication and expression.'}
+      ],
+      'Unit 2': [
+        {d:'easy',q:'Which cell structure regulates what enters and leaves the cell?',choices:['Nucleus','Plasma membrane','Ribosome','Nucleolus'],answer:1,explain:'The plasma membrane is selectively permeable.'},
+        {d:'easy',q:'Osmosis is the movement of...',choices:['Water','Proteins','DNA','Lipids'],answer:0,explain:'Osmosis is diffusion of water across a membrane.'},
+        {d:'easy',q:'Active transport requires...',choices:['ATP or energy','Only water','No proteins','No gradient'],answer:0,explain:'Active transport uses energy to move against gradients.'},
+        {d:'easy',q:'Which organelle is the site of protein synthesis?',choices:['Ribosome','Golgi','Lysosome','Vacuole'],answer:0,explain:'Ribosomes build proteins.'},
+        {d:'easy',q:'Which organelle modifies and ships proteins?',choices:['Golgi apparatus','Nucleus','Mitochondrion','Chloroplast'],answer:0,explain:'The Golgi modifies, sorts, and ships products.'},
+        {d:'easy',q:'A hypertonic solution causes animal cells to...',choices:['Swell','Shrink','Divide','Make ATP'],answer:1,explain:'Water leaves cells in hypertonic solutions.'},
+        {d:'easy',q:'Which molecule crosses membranes most easily?',choices:['Small nonpolar molecule','Large ion','Protein','Charged sugar'],answer:0,explain:'Small nonpolar molecules diffuse through lipid bilayers.'},
+        {d:'easy',q:'Which organelle contains digestive enzymes?',choices:['Lysosome','Nucleus','Ribosome','Chloroplast'],answer:0,explain:'Lysosomes digest and recycle materials.'},
+        {d:'medium',q:'Why are cells generally small?',choices:['Smaller cells have better surface area-to-volume ratio','DNA cannot exist in large cells','Large cells lack membranes','Small cells cannot divide'],answer:0,explain:'High SA:V improves exchange.'},
+        {d:'medium',q:'Facilitated diffusion differs from simple diffusion because it uses...',choices:['ATP','Transport proteins','DNA polymerase','Ribosomes'],answer:1,explain:'Facilitated diffusion uses channels or carriers.'},
+        {d:'medium',q:'A plant cell in a hypotonic solution becomes...',choices:['Turgid','Plasmolyzed','Lysed immediately','Dehydrated'],answer:0,explain:'Water enters and turgor pressure increases.'},
+        {d:'medium',q:'Which is part of the endomembrane system?',choices:['Rough ER','Mitochondrial matrix','Chloroplast stroma','Ribosomal RNA'],answer:0,explain:'ER and Golgi are part of the endomembrane system.'},
+        {d:'medium',q:'Why do ions require membrane proteins?',choices:['They are charged and cannot easily cross hydrophobic core','They are nonpolar','They are always too large','They contain peptide bonds'],answer:0,explain:'Charged particles are blocked by the hydrophobic interior.'},
+        {d:'medium',q:'Endocytosis is used to...',choices:['Bring large materials into cells','Make ATP','Copy DNA','Separate homologs'],answer:0,explain:'Endocytosis imports bulk material.'},
+        {d:'medium',q:'Which structure increases surface area in intestinal cells?',choices:['Microvilli','Nucleus','Flagella only','Lysosomes'],answer:0,explain:'Microvilli increase membrane surface area.'},
+        {d:'medium',q:'Water moves from higher water potential to...',choices:['Higher solute potential','Lower water potential','Higher pressure always','No gradient'],answer:1,explain:'Water moves down its water potential gradient.'},
+        {d:'medium',q:'Which organelle is involved in lipid synthesis?',choices:['Smooth ER','Rough ER only','Nucleolus','Lysosome'],answer:0,explain:'Smooth ER synthesizes lipids.'},
+        {d:'hard',q:'A cell with many mitochondria likely has...',choices:['High energy demand','No membrane transport','No DNA','Low ATP use'],answer:0,explain:'Mitochondria produce ATP for energy-demanding cells.'},
+        {d:'hard',q:'Which observation indicates plasmolysis?',choices:['Membrane pulls away from plant cell wall','Animal cell bursts','Nucleus divides','Ribosomes detach'],answer:0,explain:'Plasmolysis occurs when plant cells lose water.'},
+        {d:'hard',q:'What directly determines membrane fluidity?',choices:['Phospholipid tails and cholesterol','DNA sequence only','Cell wall thickness','Ribosome number'],answer:0,explain:'Fatty acid saturation and cholesterol affect fluidity.'},
+        {d:'hard',q:'A poison blocks ATP production. Which transport is most directly affected?',choices:['Active transport','Simple diffusion','Osmosis through aquaporins','Facilitated diffusion down gradient'],answer:0,explain:'Active transport requires energy.'},
+        {d:'hard',q:'Why do eukaryotic cells use internal membranes?',choices:['They compartmentalize reactions','They prevent all diffusion','They replace DNA','They eliminate enzymes'],answer:0,explain:'Compartmentalization increases efficiency and regulation.'},
+        {d:'hard',q:'What causes a dialysis bag to gain mass in a sucrose solution experiment?',choices:['Water enters due to solute gradient','Sucrose always leaves rapidly','ATP pumps water','DNA absorbs water'],answer:0,explain:'Water moves toward higher solute concentration if membrane permits water.'},
+        {d:'hard',q:'Which best explains selective permeability?',choices:['Hydrophobic core restricts polar/charged solutes','All molecules pass equally','Cell wall controls all entry','Proteins block water always'],answer:0,explain:'Membrane chemistry controls movement.'},
+        {d:'hard',q:'Which pathway describes secretion of a protein?',choices:['Ribosome/RER → Golgi → vesicle → membrane','Nucleus → mitochondria → lysosome','Chloroplast → vacuole → DNA','Golgi → nucleus → ribosome'],answer:0,explain:'Secreted proteins move through ER, Golgi, and vesicles.'}
+      ],
+      'Unit 3': [
+        {d:'easy',q:'Where does glycolysis occur?',choices:['Cytoplasm','Mitochondrial matrix','Thylakoid','Nucleus'],answer:0,explain:'Glycolysis occurs in the cytoplasm.'},
+        {d:'easy',q:'Oxygen is the final electron acceptor in...',choices:['ETC','Glycolysis','Calvin cycle','Translation'],answer:0,explain:'Oxygen accepts electrons at the end of the respiratory ETC.'},
+        {d:'easy',q:'Light reactions produce...',choices:['ATP and NADPH','Glucose only','CO2 only','Lactose'],answer:0,explain:'Light reactions make ATP and NADPH.'},
+        {d:'easy',q:'The Calvin cycle fixes...',choices:['CO2','O2','N2','ATP'],answer:0,explain:'The Calvin cycle fixes carbon dioxide.'},
+        {d:'easy',q:'ATP synthase uses energy from...',choices:['Proton gradient','DNA code','Amino acids','Cell wall'],answer:0,explain:'Chemiosmosis uses proton gradients.'},
+        {d:'easy',q:'Fermentation regenerates...',choices:['NAD+','DNA','Oxygen','Glucose'],answer:0,explain:'Fermentation regenerates NAD+ for glycolysis.'},
+        {d:'easy',q:'Which organelle performs cellular respiration?',choices:['Mitochondrion','Chloroplast only','Golgi','Nucleus'],answer:0,explain:'Mitochondria are the main site of respiration.'},
+        {d:'easy',q:'Which organelle performs photosynthesis?',choices:['Chloroplast','Mitochondrion','Ribosome','Lysosome'],answer:0,explain:'Photosynthesis occurs in chloroplasts.'},
+        {d:'medium',q:'What happens if oxygen is unavailable in aerobic respiration?',choices:['ETC backs up and ATP production falls','Calvin cycle increases','DNA stops existing','Glycolysis cannot produce any ATP'],answer:0,explain:'Without oxygen, electrons cannot leave the ETC.'},
+        {d:'medium',q:'Which stage produces most ATP in respiration?',choices:['Oxidative phosphorylation','Glycolysis','Pyruvate oxidation','Fermentation'],answer:0,explain:'ETC/chemiosmosis produces most ATP.'},
+        {d:'medium',q:'Why are NADH and FADH2 important?',choices:['They carry electrons','They are enzymes only','They are DNA bases','They absorb light directly'],answer:0,explain:'They deliver electrons to the ETC.'},
+        {d:'medium',q:'A competitive inhibitor affects enzymes by...',choices:['Binding active site','Changing DNA','Destroying substrate','Producing ATP'],answer:0,explain:'Competitive inhibitors compete for the active site.'},
+        {d:'medium',q:'Which photosynthesis product comes from splitting water?',choices:['O2','CO2','Glucose carbon','NADP+'],answer:0,explain:'Water splitting releases oxygen.'},
+        {d:'medium',q:'Increasing light intensity increases photosynthesis until...',choices:['Another factor becomes limiting','ATP disappears','Plants stop respiring','Chlorophyll becomes DNA'],answer:0,explain:'CO2, temperature, or enzyme capacity may limit rate.'},
+        {d:'medium',q:'Chemiosmosis in chloroplasts occurs across the...',choices:['Thylakoid membrane','Nuclear membrane','Plasma membrane only','Golgi membrane'],answer:0,explain:'Protons accumulate in the thylakoid space.'},
+        {d:'medium',q:'Which process releases CO2 in respiration?',choices:['Krebs cycle','Light reactions','ETC oxygen binding only','Translation'],answer:0,explain:'Carbon dioxide is released during pyruvate oxidation and Krebs.'},
+        {d:'medium',q:'Plants perform cellular respiration...',choices:['All the time','Only in darkness','Never','Only during flowering'],answer:0,explain:'Plants need ATP from respiration continuously.'},
+        {d:'hard',q:'A toxin blocks ATP synthase. What happens?',choices:['Proton gradient cannot drive ATP production','Oxygen becomes glucose','DNA replication stops directly','Calvin cycle makes more ATP'],answer:0,explain:'ATP synthase converts gradient energy to ATP.'},
+        {d:'hard',q:'Why does temperature affect respiration rate?',choices:['Enzyme activity changes','Oxygen turns into ATP','DNA leaves cells','Light intensity changes automatically'],answer:0,explain:'Respiration steps are enzyme-catalyzed.'},
+        {d:'hard',q:'If NADP+ is unavailable, what directly slows?',choices:['Light reactions electron transfer','Glycolysis','Osmosis','Meiosis'],answer:0,explain:'NADP+ accepts electrons to form NADPH.'},
+        {d:'hard',q:'Which best links ETC function to ATP synthesis?',choices:['Electron energy pumps protons, creating a gradient','Oxygen pumps glucose','ATP synthase splits DNA','CO2 stores electrons'],answer:0,explain:'Electron transport establishes the proton gradient.'},
+        {d:'hard',q:'In leaf disk assays, disks float because...',choices:['Oxygen accumulates in leaf tissue','CO2 becomes heavier','Glucose dissolves cellulose','Water leaves all cells'],answer:0,explain:'Photosynthetic O2 makes disks buoyant.'},
+        {d:'hard',q:'Why does fermentation yield less ATP than respiration?',choices:['No ETC-driven proton gradient','No glycolysis occurs','Glucose is not used','NAD+ is destroyed'],answer:0,explain:'Fermentation relies only on glycolysis for ATP.'},
+        {d:'hard',q:'Where is the proton gradient formed in mitochondria?',choices:['Across inner mitochondrial membrane','Across nuclear envelope','Inside ribosome','Across cell wall'],answer:0,explain:'Protons are pumped into the intermembrane space.'},
+        {d:'hard',q:'Which statement about energy is AP-correct?',choices:['Energy is transformed and transferred','Energy is created by cells','Energy disappears as ATP','Matter becomes energy only'],answer:0,explain:'Energy transformations follow conservation principles.'}
+      ],
+      'Unit 4': [
+        {d:'easy',q:'Correct order of cell signaling is...',choices:['Reception → transduction → response','Response → reception → transduction','DNA → RNA → protein','Meiosis → mitosis'],answer:0,explain:'Signaling begins with reception.'},
+        {d:'easy',q:'A ligand binds to a...',choices:['Receptor','Codon','Ribosome','Chromosome'],answer:0,explain:'Ligands bind receptors.'},
+        {d:'easy',q:'Negative feedback generally...',choices:['Stabilizes a system','Amplifies forever','Stops DNA pairing','Causes meiosis'],answer:0,explain:'Negative feedback reduces stimulus.'},
+        {d:'easy',q:'Cell cycle order is...',choices:['G1 → S → G2 → M','S → G1 → M → G2','M → S → G1 → G2','G2 → G1 → S → M'],answer:0,explain:'This is the standard order.'},
+        {d:'easy',q:'Cancer involves...',choices:['Uncontrolled cell division','No mutations ever','Only osmosis','Normal checkpoints only'],answer:0,explain:'Cancer results from loss of cell-cycle control.'},
+        {d:'easy',q:'Apoptosis is...',choices:['Programmed cell death','DNA replication','Protein folding','Water movement'],answer:0,explain:'Apoptosis removes damaged/unneeded cells.'},
+        {d:'easy',q:'Endocrine signaling uses...',choices:['Long-distance hormones','Direct DNA bonding','Only local diffusion','Ribosome contact'],answer:0,explain:'Endocrine signals travel through body fluids.'},
+        {d:'easy',q:'Paracrine signaling affects...',choices:['Nearby cells','Only the same cell','Distant organs only','Gametes only'],answer:0,explain:'Paracrine signals act locally.'},
+        {d:'medium',q:'Why can one ligand cause a large cellular response?',choices:['Signal amplification','Genetic drift','Osmosis','Crossing over'],answer:0,explain:'Cascades amplify signals.'},
+        {d:'medium',q:'A receptor mutation prevents ligand binding. What is likely?',choices:['Reduced pathway activation','Increased osmosis always','More meiosis','No effect on signaling'],answer:0,explain:'No reception means reduced transduction.'},
+        {d:'medium',q:'Cyclins and CDKs regulate...',choices:['Cell cycle progression','Water potential','Transcription code only','Ecosystem carrying capacity'],answer:0,explain:'Cyclin-CDK complexes control checkpoints.'},
+        {d:'medium',q:'A tumor suppressor gene normally...',choices:['Helps prevent uncontrolled division','Causes all tumors','Codes for glucose','Builds cell walls'],answer:0,explain:'Tumor suppressors restrain cell division.'},
+        {d:'medium',q:'Positive feedback is best represented by...',choices:['Amplification until endpoint','Return to set point','Allele frequency equilibrium','Passive transport'],answer:0,explain:'Positive feedback amplifies responses.'},
+        {d:'medium',q:'Second messengers function in...',choices:['Signal transduction','DNA base pairing only','Glycolysis only','Meiosis I'],answer:0,explain:'They relay signals inside cells.'},
+        {d:'medium',q:'Phosphorylation cascades involve transfer of...',choices:['Phosphate groups','Water only','Codons','Oxygen'],answer:0,explain:'Kinases transfer phosphates.'},
+        {d:'medium',q:'A checkpoint detects DNA damage. What should happen?',choices:['Cycle pauses or apoptosis occurs','Cell divides faster','Membrane disappears','Protein synthesis stops forever'],answer:0,explain:'Checkpoints prevent damaged-cell division.'},
+        {d:'medium',q:'Autocrine signaling means a cell...',choices:['Signals itself','Signals distant organs','Cannot respond','Only signals bacteria'],answer:0,explain:'Autocrine signals affect the secreting cell.'},
+        {d:'hard',q:'Why are receptors specific?',choices:['Shape/chemistry determines ligand binding','They bind all molecules equally','They are DNA','They lack protein structure'],answer:0,explain:'Structure determines receptor-ligand specificity.'},
+        {d:'hard',q:'If a kinase is inactive, what may happen?',choices:['Signal cascade fails','Osmosis increases','Glucose becomes DNA','Chromosomes separate'],answer:0,explain:'Kinases often relay signals by phosphorylation.'},
+        {d:'hard',q:'Which mutation could convert a proto-oncogene to an oncogene?',choices:['Gain-of-function promoting division','Loss of all ribosomes','Reduced water potential','Silent mutation in noncoding DNA always'],answer:0,explain:'Oncogenes can overstimulate division.'},
+        {d:'hard',q:'Why is feedback important for homeostasis?',choices:['It adjusts responses to maintain internal conditions','It prevents all change','It creates alleles','It stops energy flow'],answer:0,explain:'Feedback helps regulate stable conditions.'},
+        {d:'hard',q:'A pathway activates a transcription factor. What response is likely?',choices:['Changed gene expression','Immediate DNA deletion','No protein changes ever','Plasmolysis'],answer:0,explain:'Transcription factors alter transcription.'},
+        {d:'hard',q:'Which is most likely after failed apoptosis in damaged cells?',choices:['Mutation accumulation','Improved DNA repair always','No cell division','Instant speciation'],answer:0,explain:'Damaged cells may survive and divide.'},
+        {d:'hard',q:'Signal transduction pathways are often conserved because...',choices:['They evolved early and are useful across taxa','They are random each generation','They do not involve proteins','They cannot mutate'],answer:0,explain:'Conserved pathways suggest common ancestry.'},
+        {d:'hard',q:'Which best explains specificity of response to the same hormone?',choices:['Different cells have different receptors/pathways','All cells respond identically','Hormones are DNA','Only cell walls respond'],answer:0,explain:'Cell type determines pathway and response.'}
+      ],
+      'Unit 5': [
+        {d:'easy',q:'Crossing over occurs during...',choices:['Prophase I','Metaphase II','G1','Cytokinesis'],answer:0,explain:'Crossing over occurs in prophase I.'},
+        {d:'easy',q:'Meiosis produces...',choices:['Haploid gametes','Identical diploid cells','Only body cells','No variation'],answer:0,explain:'Meiosis produces haploid gametes.'},
+        {d:'easy',q:'Independent assortment occurs because...',choices:['Homologous pairs align randomly','DNA is translated','Water moves','Proteins fold'],answer:0,explain:'Random alignment increases variation.'},
+        {d:'easy',q:'A genotype is...',choices:['Allele combination','Physical trait','Population size','Energy level'],answer:0,explain:'Genotype is genetic makeup.'},
+        {d:'easy',q:'A phenotype is...',choices:['Observable trait','Allele frequency','Chromosome map','DNA polymerase'],answer:0,explain:'Phenotype is expressed trait.'},
+        {d:'easy',q:'Product rule calculates probability of...',choices:['A and B','A or B','Only impossible events','Mutation rate'],answer:0,explain:'Product rule is for independent combined events.'},
+        {d:'easy',q:'Sum rule calculates probability of...',choices:['A or B','A and B','Protein folding','Osmosis'],answer:0,explain:'Sum rule is for either event.'},
+        {d:'easy',q:'Nondisjunction is failure of...',choices:['Chromosomes to separate','Proteins to fold','Water to move','Signals to bind'],answer:0,explain:'Nondisjunction causes abnormal chromosome number.'},
+        {d:'medium',q:'Linked genes are located...',choices:['On the same chromosome','On different planets','Only in mitochondria','Only in bacteria'],answer:0,explain:'Linked genes tend to be inherited together.'},
+        {d:'medium',q:'Genes farther apart on a chromosome have...',choices:['Higher recombination frequency','No recombination','Lower crossing over always','No alleles'],answer:0,explain:'More distance increases chance of crossover.'},
+        {d:'medium',q:'X-linked recessive traits often appear more in males because...',choices:['Males have one X chromosome','Males have two X chromosomes','Females lack alleles','Males cannot inherit X chromosomes'],answer:0,explain:'One recessive allele on the X can be expressed in males.'},
+        {d:'medium',q:'A heterozygote shows an intermediate phenotype. This is...',choices:['Incomplete dominance','Codominance','Complete dominance','Sex linkage'],answer:0,explain:'Incomplete dominance gives intermediate phenotype.'},
+        {d:'medium',q:'Both alleles are fully expressed in heterozygote. This is...',choices:['Codominance','Incomplete dominance','Recessive lethal','Epistasis only'],answer:0,explain:'Codominance expresses both alleles.'},
+        {d:'medium',q:'Random fertilization increases...',choices:['Genetic variation','Mutation repair only','Water potential','ATP synthesis'],answer:0,explain:'Any sperm can fuse with any egg.'},
+        {d:'medium',q:'Which process separates homologous chromosomes?',choices:['Meiosis I','Meiosis II','Mitosis only','Translation'],answer:0,explain:'Homologs separate in meiosis I.'},
+        {d:'medium',q:'Which process separates sister chromatids?',choices:['Meiosis II','Prophase I','Interphase only','Fertilization'],answer:0,explain:'Sister chromatids separate in meiosis II.'},
+        {d:'medium',q:'A testcross is useful to determine...',choices:['Unknown genotype','Protein shape','Water potential','ATP yield'],answer:0,explain:'Crossing with homozygous recessive reveals genotype.'},
+        {d:'hard',q:'Why do linked genes violate Mendel’s independent assortment?',choices:['They are physically close on the same chromosome','They mutate every generation','They are proteins','They cannot be inherited'],answer:0,explain:'Close genes tend to travel together.'},
+        {d:'hard',q:'A 1:1:1:1 testcross ratio suggests...',choices:['Independent assortment','Complete linkage','No meiosis','Nondisjunction always'],answer:0,explain:'Equal classes suggest unlinked genes.'},
+        {d:'hard',q:'Which event creates recombinant chromatids?',choices:['Crossing over','Cytokinesis','Translation','Osmosis'],answer:0,explain:'Crossing over exchanges DNA between homologs.'},
+        {d:'hard',q:'A trisomy results from...',choices:['Nondisjunction','Hydrolysis','Signal transduction','Fermentation'],answer:0,explain:'Nondisjunction can produce gametes with extra chromosomes.'},
+        {d:'hard',q:'Environmental influence on phenotype means...',choices:['Same genotype can produce different phenotypes in different conditions','DNA is not inherited','Genes do not matter','Only proteins inherit traits'],answer:0,explain:'Environment can affect expression of traits.'},
+        {d:'hard',q:'In pedigrees, autosomal recessive traits often...',choices:['Skip generations','Appear only in males','Require mitochondria','Never appear'],answer:0,explain:'Carriers can pass alleles without showing trait.'},
+        {d:'hard',q:'Which increases variation during meiosis?',choices:['Crossing over and independent assortment','DNA proofreading only','Mitosis','Negative feedback'],answer:0,explain:'Both shuffle alleles.'},
+        {d:'hard',q:'A recombination frequency of 12% suggests genes are...',choices:['About 12 map units apart','Unlinked on different species','Identical alleles','Never inherited'],answer:0,explain:'Recombination frequency approximates map distance.'}
+      ],
+      'Unit 6': [
+        {d:'easy',q:'Central dogma is...',choices:['DNA → RNA → protein','Protein → RNA → DNA','RNA → lipid → protein','ATP → DNA → water'],answer:0,explain:'Information generally flows DNA to RNA to protein.'},
+        {d:'easy',q:'Transcription produces...',choices:['RNA','Protein','Lipid','Cellulose'],answer:0,explain:'Transcription makes RNA.'},
+        {d:'easy',q:'Translation occurs at...',choices:['Ribosomes','Nucleus only','Golgi only','Cell wall'],answer:0,explain:'Ribosomes translate mRNA.'},
+        {d:'easy',q:'DNA replication is...',choices:['Semi-conservative','Random','Protein-only','Destructive'],answer:0,explain:'Each new DNA has one old and one new strand.'},
+        {d:'easy',q:'A pairs with...',choices:['T','G','C','U in DNA'],answer:0,explain:'A pairs with T in DNA.'},
+        {d:'easy',q:'A codon is found on...',choices:['mRNA','Lipid','Starch','Cellulose'],answer:0,explain:'mRNA codons specify amino acids.'},
+        {d:'easy',q:'PCR is used to...',choices:['Amplify DNA','Separate chromosomes','Make ATP','Digest proteins'],answer:0,explain:'PCR makes many copies of DNA.'},
+        {d:'easy',q:'Gel electrophoresis separates DNA by...',choices:['Size','Color','ATP content','Fitness'],answer:0,explain:'Smaller fragments move farther.'},
+        {d:'medium',q:'A frameshift mutation results from...',choices:['Insertion or deletion not multiple of three','Base substitution only','Silent codon','No DNA change'],answer:0,explain:'Frameshifts alter reading frame.'},
+        {d:'medium',q:'A nonsense mutation creates...',choices:['Stop codon','Same amino acid','Extra chromosome','No mRNA'],answer:0,explain:'Nonsense mutations prematurely stop translation.'},
+        {d:'medium',q:'The lac operon is...',choices:['Inducible','Repressible','Always off','Eukaryotic only'],answer:0,explain:'lac turns on when lactose is available.'},
+        {d:'medium',q:'The trp operon is...',choices:['Repressible','Inducible','Always on','Only viral'],answer:0,explain:'trp turns off when tryptophan is abundant.'},
+        {d:'medium',q:'RNA splicing removes...',choices:['Introns','Exons','Ribosomes','Amino acids'],answer:0,explain:'Introns are removed; exons remain.'},
+        {d:'medium',q:'Epigenetic changes affect...',choices:['Gene expression without changing DNA sequence','Allele sequence always','ATP structure','Water movement only'],answer:0,explain:'Epigenetic marks regulate expression.'},
+        {d:'medium',q:'Restriction enzymes...',choices:['Cut DNA at specific sequences','Translate mRNA','Make lipids','Pump protons'],answer:0,explain:'They cut DNA at recognition sites.'},
+        {d:'medium',q:'Transformation introduces...',choices:['Foreign DNA into cells','Water into cells','ATP into mitochondria','Proteins into genes'],answer:0,explain:'Transformation adds DNA.'},
+        {d:'medium',q:'CRISPR is used for...',choices:['Genome editing','Photosynthesis','Osmosis','Meiosis'],answer:0,explain:'CRISPR can target and edit DNA.'},
+        {d:'hard',q:'A silent mutation may have no phenotype because...',choices:['It codes for same amino acid','It deletes all DNA','It stops translation','It prevents transcription always'],answer:0,explain:'Genetic code redundancy can preserve amino acid.'},
+        {d:'hard',q:'Why can one gene produce different proteins in eukaryotes?',choices:['Alternative splicing','Same codon only','No introns','No ribosomes'],answer:0,explain:'Alternative splicing combines exons differently.'},
+        {d:'hard',q:'If promoter is mutated, what may happen?',choices:['Transcription may decrease','Translation always increases','Protein folds better','DNA becomes RNA directly'],answer:0,explain:'Promoters are needed for transcription initiation.'},
+        {d:'hard',q:'Which mutation is most likely severe?',choices:['Early frameshift','Silent substitution','Third-base wobble silent','Noncoding neutral'],answer:0,explain:'Early frameshifts alter many downstream amino acids.'},
+        {d:'hard',q:'Low glucose increases lac transcription through...',choices:['cAMP-CAP activation','Trp repressor','DNA ligase','Nondisjunction'],answer:0,explain:'cAMP-CAP promotes lac transcription.'},
+        {d:'hard',q:'A DNA band farthest from the well is...',choices:['Smallest fragment','Largest fragment','Most charged protein','Uncut chromosome'],answer:0,explain:'Small fragments move farther.'},
+        {d:'hard',q:'Gene expression affects phenotype by...',choices:['Producing functional proteins','Changing water polarity','Creating ecosystems','Preventing mutation'],answer:0,explain:'Proteins perform functions that influence traits.'},
+        {d:'hard',q:'A plasmid with antibiotic resistance helps identify transformed cells because...',choices:['Only transformed cells survive on antibiotic medium','All cells die','Resistance prevents DNA entry','Antibiotic makes DNA'],answer:0,explain:'Selection identifies cells with plasmid.'}
+      ],
+      'Unit 7': [
+        {d:'easy',q:'Evolution is change in...',choices:['Allele frequencies in populations','Individual needs','Protein shape only','Cell size only'],answer:0,explain:'Evolution occurs at population level.'},
+        {d:'easy',q:'Fitness means...',choices:['Reproductive success','Physical strength only','Large body size','Long lifespan only'],answer:0,explain:'Fitness is contribution to future generations.'},
+        {d:'easy',q:'Hardy-Weinberg q² represents...',choices:['Homozygous recessive frequency','Allele p','Heterozygotes','Population size'],answer:0,explain:'q² is homozygous recessive genotype frequency.'},
+        {d:'easy',q:'Mutation...',choices:['Introduces new alleles','Always helps','Always harms','Stops evolution'],answer:0,explain:'Mutation is a source of variation.'},
+        {d:'easy',q:'Gene flow is...',choices:['Movement of alleles between populations','Random mating only','No migration','Protein synthesis'],answer:0,explain:'Migration can move alleles.'},
+        {d:'easy',q:'Genetic drift is strongest in...',choices:['Small populations','Huge populations','Only plants','No populations'],answer:0,explain:'Chance events matter more in small populations.'},
+        {d:'easy',q:'A node on a phylogenetic tree represents...',choices:['Common ancestor','Current population size','Mutation rate only','Carrying capacity'],answer:0,explain:'Nodes represent common ancestors.'},
+        {d:'easy',q:'Natural selection acts directly on...',choices:['Phenotypes','Allele frequencies only','Genotypes hidden from environment','DNA polymerase'],answer:0,explain:'Environment interacts with phenotypes.'},
+        {d:'medium',q:'Directional selection...',choices:['Shifts trait distribution toward one extreme','Favors average only','Favors both extremes','Eliminates all variation'],answer:0,explain:'Directional selection favors one extreme.'},
+        {d:'medium',q:'Stabilizing selection...',choices:['Favors intermediate phenotype','Favors extremes','Creates two peaks','Requires no variation'],answer:0,explain:'Stabilizing selection favors average traits.'},
+        {d:'medium',q:'Disruptive selection...',choices:['Favors both extremes','Favors average','Stops reproduction','Requires no environment'],answer:0,explain:'Disruptive selection favors extremes.'},
+        {d:'medium',q:'Bottleneck effect is...',choices:['Drift after population size sharply decreases','Gene flow into large population','Mutation repair','Nonrandom mating only'],answer:0,explain:'A bottleneck randomly changes allele frequencies.'},
+        {d:'medium',q:'Founder effect occurs when...',choices:['Small group starts new population','Predators select prey','Genes are transcribed','Species go extinct only'],answer:0,explain:'A new population may have different allele frequencies.'},
+        {d:'medium',q:'Which is required for natural selection?',choices:['Heritable variation','Identical individuals','No reproduction','No environment'],answer:0,explain:'Selection requires heritable variation.'},
+        {d:'medium',q:'If q² = 0.16, q =...',choices:['0.4','0.16','0.84','0.6'],answer:0,explain:'Square root of 0.16 is 0.4.'},
+        {d:'medium',q:'If p = 0.7 and q = 0.3, heterozygote frequency is...',choices:['0.42','0.21','0.09','0.49'],answer:0,explain:'2pq = 2(0.7)(0.3)=0.42.'},
+        {d:'medium',q:'Reproductive isolation can lead to...',choices:['Speciation','Translation','Osmosis','ATP hydrolysis'],answer:0,explain:'Isolation can cause populations to diverge.'},
+        {d:'hard',q:'Why do individuals not evolve?',choices:['Their allele frequencies do not change; populations change over generations','They lack DNA','They never reproduce','They are not selected'],answer:0,explain:'Evolution is population-level allele frequency change.'},
+        {d:'hard',q:'Antibiotic resistance increases because...',choices:['Resistant bacteria survive/reproduce more under antibiotic pressure','Bacteria choose to mutate','Antibiotics create needed traits in all cells','All bacteria become stronger'],answer:0,explain:'Selection favors resistant variants.'},
+        {d:'hard',q:'Hardy-Weinberg is useful as...',choices:['Null model for no evolution','Proof of selection always','Measure of ATP','A food web model'],answer:0,explain:'It predicts genotype frequencies without evolutionary forces.'},
+        {d:'hard',q:'Which condition violates Hardy-Weinberg?',choices:['Natural selection','Random mating','Large population','No migration'],answer:0,explain:'Selection changes allele frequencies.'},
+        {d:'hard',q:'Similar DNA sequences in two species suggest...',choices:['Recent common ancestry','No evolution','Identical ecology','No mutation'],answer:0,explain:'DNA similarity is evidence of relatedness.'},
+        {d:'hard',q:'Prezygotic barriers...',choices:['Prevent fertilization','Reduce hybrid fertility after fertilization','Always cause drift','Change ATP yield'],answer:0,explain:'Prezygotic isolation occurs before zygote formation.'},
+        {d:'hard',q:'Postzygotic barriers...',choices:['Reduce hybrid viability or fertility','Prevent mating signals only','Stop gamete formation before fertilization','Create water gradients'],answer:0,explain:'They act after fertilization.'},
+        {d:'hard',q:'Environment changes can alter fitness because...',choices:['Traits advantageous in one environment may not be advantageous in another','Fitness is constant','Alleles know future conditions','Individuals evolve instantly'],answer:0,explain:'Fitness depends on environment.'}
+      ],
+      'Unit 8': [
+        {d:'easy',q:'Carrying capacity is...',choices:['Maximum population an environment can support','Birth rate only','Energy in ATP','Number of species extinct'],answer:0,explain:'K is the sustainable population size.'},
+        {d:'easy',q:'Energy in ecosystems...',choices:['Flows through trophic levels','Cycles perfectly','Is created by consumers','Never becomes heat'],answer:0,explain:'Energy flows and is lost as heat.'},
+        {d:'easy',q:'Matter in ecosystems...',choices:['Cycles','Only flows one way','Is destroyed','Becomes energy always'],answer:0,explain:'Matter cycles through biogeochemical cycles.'},
+        {d:'easy',q:'Primary producers...',choices:['Capture energy to make organic molecules','Eat consumers','Only decompose matter','Cannot respire'],answer:0,explain:'Producers convert energy into biomass.'},
+        {d:'easy',q:'A keystone species...',choices:['Has large effects relative to abundance','Is always most abundant','Is always a plant','Cannot go extinct'],answer:0,explain:'Keystone species strongly influence communities.'},
+        {d:'easy',q:'Mutualism means...',choices:['Both species benefit','One benefits one harmed','One benefits one unaffected','Both harmed'],answer:0,explain:'Mutualism benefits both partners.'},
+        {d:'easy',q:'Competition occurs when species...',choices:['Use the same limited resource','Never interact','Only help each other','Have different niches always'],answer:0,explain:'Competition involves limited resources.'},
+        {d:'easy',q:'Logistic growth is...',choices:['S-shaped','J-shaped forever','No growth','Random only'],answer:0,explain:'Logistic growth levels near K.'},
+        {d:'medium',q:'Density-dependent factors include...',choices:['Disease and competition','Volcanic eruption only','Season length only','Earthquake only'],answer:0,explain:'Density-dependent effects increase with density.'},
+        {d:'medium',q:'Density-independent factors include...',choices:['Weather events','Competition','Disease spread','Predation frequency'],answer:0,explain:'Weather can affect populations regardless of density.'},
+        {d:'medium',q:'Why is energy transfer between trophic levels inefficient?',choices:['Energy lost as heat/metabolism','Energy is recycled perfectly','Consumers make sunlight','Matter disappears'],answer:0,explain:'Much energy is used/lost before transfer.'},
+        {d:'medium',q:'Nitrogen fixation converts...',choices:['Atmospheric N2 to usable nitrogen forms','Glucose to ATP','CO2 to O2','Water to hydrogen bonds'],answer:0,explain:'Fixation makes nitrogen biologically available.'},
+        {d:'medium',q:'Carbon enters food webs mainly through...',choices:['Photosynthesis','Combustion only','Denitrification','Osmosis'],answer:0,explain:'Producers fix CO2.'},
+        {d:'medium',q:'Invasive species often spread because...',choices:['Few predators/competitors in new habitat','They cannot reproduce','They are always producers','They increase biodiversity always'],answer:0,explain:'Enemy release can aid invasions.'},
+        {d:'medium',q:'Higher biodiversity often increases...',choices:['Ecosystem resilience','Extinction rate always','Energy creation','No interactions'],answer:0,explain:'Diverse systems can better withstand disturbances.'},
+        {d:'medium',q:'Succession is...',choices:['Change in community composition over time','DNA replication','Osmosis in plants','Cell division'],answer:0,explain:'Succession occurs after disturbance or new habitat.'},
+        {d:'medium',q:'Niche partitioning reduces...',choices:['Competition','Photosynthesis','Mutation','Respiration'],answer:0,explain:'Species use resources differently.'},
+        {d:'hard',q:'A population levels off after rapid growth. Best explanation?',choices:['Resources limit growth near carrying capacity','Mutations stop all births','Energy is created','Predators disappear'],answer:0,explain:'Logistic growth slows near K.'},
+        {d:'hard',q:'Removing a top predator can cause...',choices:['Trophic cascade','DNA splicing','Hardy-Weinberg equilibrium always','No community change'],answer:0,explain:'Predators can regulate lower trophic levels.'},
+        {d:'hard',q:'Eutrophication often results from...',choices:['Nutrient runoff causing algal blooms and low oxygen','Too little nitrogen always','No decomposers','Increased water clarity only'],answer:0,explain:'Nutrients increase algae; decomposition lowers oxygen.'},
+        {d:'hard',q:'A drought lowers carrying capacity because...',choices:['Available resources decrease','Alleles vanish immediately','Photosynthesis stops forever','Predators become producers'],answer:0,explain:'Less water/food supports fewer individuals.'},
+        {d:'hard',q:'Which best links ecology and evolution?',choices:['Environmental change creates selection pressures','Evolution only occurs without ecology','Populations cannot respond','Energy creates alleles'],answer:0,explain:'Ecological conditions influence fitness.'},
+        {d:'hard',q:'Gross primary productivity minus respiration equals...',choices:['Net primary productivity','Carrying capacity','Chi-square','Water potential'],answer:0,explain:'NPP = GPP - respiration.'},
+        {d:'hard',q:'Commensalism occurs when...',choices:['One benefits and the other is unaffected','Both benefit','Both harmed','One benefits and one harmed'],answer:0,explain:'Commensalism benefits one with no clear effect on other.'},
+        {d:'hard',q:'Which graph feature best identifies carrying capacity?',choices:['Population size where curve levels off','Initial slope only','X-intercept','Lowest point always'],answer:0,explain:'K is the plateau of logistic growth.'}
+      ]
+    };
+
+    function flattenQuizBank() {
+      var all = [];
+      for (var unit in quizBank) {
+        for (var i = 0; i < quizBank[unit].length; i++) {
+          var item = quizBank[unit][i];
+          all.push({ unit: unit, q: item.q, choices: item.choices, answer: item.answer, explain: item.explain, d: item.d });
+        }
+      }
+      return all;
+    }
+
+    var quizQuestions = flattenQuizBank();
 
     var defaultState = { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
     var currentQuestion = 0;
+    var currentQuizItem = null;
+    var recentQuestionKeys = [];
 
     function copyDefaultState() {
       return { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
@@ -1102,11 +1347,73 @@ df = categories − 1</div>
       table.innerHTML = html;
     }
 
+    function getUnitAccuracy(state, unit) {
+      var stats = state.unitStats[unit] || { correct: 0, attempted: 0 };
+      if (!stats.attempted) return null;
+      return stats.correct / stats.attempted;
+    }
+
+    function chooseAdaptiveUnit(state) {
+      var units = Object.keys(quizBank);
+      var underPracticed = [];
+      for (var i = 0; i < units.length; i++) {
+        var stats = state.unitStats[units[i]] || { correct: 0, attempted: 0 };
+        if (stats.attempted < 3) underPracticed.push(units[i]);
+      }
+      if (underPracticed.length) return underPracticed[Math.floor(Math.random() * underPracticed.length)];
+
+      var weakest = units[0];
+      var weakestScore = 2;
+      for (var j = 0; j < units.length; j++) {
+        var acc = getUnitAccuracy(state, units[j]);
+        if (acc !== null && acc < weakestScore) {
+          weakestScore = acc;
+          weakest = units[j];
+        }
+      }
+      return weakest;
+    }
+
+    function chooseDifficulty(state, unit) {
+      var stats = state.unitStats[unit] || { correct: 0, attempted: 0 };
+      if (stats.attempted < 3) return 'easy';
+      var acc = stats.correct / stats.attempted;
+      if (acc < 0.60) return 'easy';
+      if (acc < 0.85) return 'medium';
+      return 'hard';
+    }
+
+    function chooseQuestion() {
+      var state = loadQuizState();
+      var modeEl = document.getElementById('quizMode');
+      var unitEl = document.getElementById('quizUnitSelect');
+      var mode = modeEl ? modeEl.value : 'adaptive';
+      var unit;
+      if (mode === 'unit') unit = unitEl ? unitEl.value : 'Unit 1';
+      else if (mode === 'mixed') {
+        var units = Object.keys(quizBank);
+        unit = units[Math.floor(Math.random() * units.length)];
+      } else {
+        unit = chooseAdaptiveUnit(state);
+      }
+
+      var targetDifficulty = chooseDifficulty(state, unit);
+      var pool = quizBank[unit].filter(function(item) { return item.d === targetDifficulty; });
+      if (!pool.length) pool = quizBank[unit];
+      var available = pool.filter(function(item) { return recentQuestionKeys.indexOf(unit + '|' + item.q) === -1; });
+      if (!available.length) available = pool;
+      var picked = available[Math.floor(Math.random() * available.length)];
+      recentQuestionKeys.push(unit + '|' + picked.q);
+      if (recentQuestionKeys.length > 20) recentQuestionKeys.shift();
+      return { unit: unit, q: picked.q, choices: picked.choices, answer: picked.answer, explain: picked.explain, d: picked.d };
+    }
+
     function renderQuiz() {
       var box = document.getElementById('quizContainer');
       if (!box) return;
-      var item = quizQuestions[currentQuestion % quizQuestions.length];
-      var html = '<h3>' + item.unit + ' Quiz</h3><p><strong>' + item.q + '</strong></p>';
+      var item = chooseQuestion();
+      currentQuizItem = item;
+      var html = '<h3>' + item.unit + ' Quiz <span class="pill">' + item.d + '</span></h3><p><strong>' + item.q + '</strong></p>';
       for (var i = 0; i < item.choices.length; i++) {
         html += '<button type="button" class="choice" data-choice="' + i + '">' + item.choices[i] + '</button>';
       }
@@ -1156,6 +1463,12 @@ df = categories − 1</div>
     var nextQuizBtn = document.getElementById('nextQuizBtn');
     if (nextQuizBtn) nextQuizBtn.addEventListener('click', function() { currentQuestion += 1; renderQuiz(); });
 
+    var quizMode = document.getElementById('quizMode');
+    if (quizMode) quizMode.addEventListener('change', function() { renderQuiz(); });
+
+    var quizUnitSelect = document.getElementById('quizUnitSelect');
+    if (quizUnitSelect) quizUnitSelect.addEventListener('change', function() { if (quizMode && quizMode.value === 'unit') renderQuiz(); });
+
     var adaptiveBtn = document.getElementById('adaptiveBtn');
     if (adaptiveBtn) adaptiveBtn.addEventListener('click', function() {
       var weak = weakestUnit(loadQuizState());
@@ -1167,7 +1480,7 @@ df = categories − 1</div>
         'Unit 5': 'Explain how crossing over and independent assortment increase genetic variation.',
         'Unit 6': 'Explain how a mutation can alter protein structure and phenotype.',
         'Unit 7': 'Use p + q = 1 and p² + 2pq + q² = 1 to calculate carrier frequency from q².',
-        'Units 8-9': 'Explain how reduced resources affect carrying capacity and natural selection.'
+        'Unit 8': 'Explain how reduced resources affect carrying capacity and natural selection.'
       };
       document.getElementById('adaptiveText').textContent = promptMap[weak] || 'Answer more quiz questions to generate targeted adaptive practice.';
     });
