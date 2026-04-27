@@ -126,6 +126,7 @@
         <button type="button" class="nav-btn" data-target="quant" onclick="showSection('quant')">Quantitative Practice</button>
         <button type="button" class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quizzes & Progress</button>
         <button type="button" class="nav-btn" data-target="frq" onclick="showSection('frq')">FRQ Practice</button>
+        <button type="button" class="nav-btn" data-target="skills" onclick="showSection('skills')">Scoring Skills</button>
         <button type="button" class="nav-btn" data-target="equations" onclick="showSection('equations')">AP Bio Equations</button>
         <button type="button" class="nav-btn" data-target="final" onclick="showSection('final')">Final Exam Strategy</button>
       </nav>
@@ -694,6 +695,131 @@
             <div class="frq-card"><h3>FRQ 13: Chi-Square Genetics</h3><p>A monohybrid cross is expected to produce a 3:1 phenotype ratio. The observed offspring are 80 dominant and 20 recessive.</p><ol type="a"><li>Calculate the expected numbers for 100 offspring.</li><li>Calculate χ².</li><li>Identify degrees of freedom.</li><li>Explain whether the results support the expected ratio if the critical value is 3.84.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Expected 75 and 25. χ² = (80-75)²/75 + (20-25)²/25 = 1.33. df = 1. Since 1.33 < 3.84, fail to reject the null; results are consistent with expected ratio.</div></div>
 
             <div class="frq-card"><h3>FRQ 14: Cladograms & Biodiversity</h3><p>A cladogram shows species A and B sharing a more recent common ancestor with each other than with species C.</p><ol type="a"><li>Identify which two species are most closely related.</li><li>Explain what a node represents.</li><li>Describe how shared derived traits are used in cladograms.</li><li>Justify why DNA sequence comparisons can support evolutionary relationships.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> A and B are most closely related. A node represents a common ancestor. Shared derived traits define clades. More similar DNA sequences suggest more recent common ancestry.</div></div>
+          </div>
+        </article>
+
+        <article id="skills" class="card section searchable hidden" data-keywords="scoring skills data analysis experimental design command terms graph math misconceptions cross unit connections frq sprint last minute lab" >
+          <div class="card-header"><h2>AP Bio Scoring Skills: How to Turn Knowledge Into Points</h2><div class="pill-row"><span class="pill critical">4 → 5 skills</span><span class="pill high">FRQ + data</span></div></div>
+          <div class="card-body">
+            <div class="callout"><strong>Why this section matters:</strong> Many students know biology but lose points because they do not describe data, answer the command term, justify claims, or connect mechanisms. This section trains the skills AP readers reward.</div>
+
+            <details open><summary>1. Command Terms: Answer the Verb</summary><div>
+              <table>
+                <tr><th>Command</th><th>What it means</th><th>Student move</th></tr>
+                <tr><td>Describe</td><td>Say what happens.</td><td>State the pattern, process, or observation clearly.</td></tr>
+                <tr><td>Explain</td><td>Say why or how.</td><td>Give a biological mechanism.</td></tr>
+                <tr><td>Predict</td><td>Say what will happen.</td><td>Give a specific expected outcome.</td></tr>
+                <tr><td>Justify</td><td>Use evidence/reasoning.</td><td>Connect data or scenario details to the claim.</td></tr>
+                <tr><td>Calculate</td><td>Use numbers.</td><td>Show setup, answer, and units when needed.</td></tr>
+                <tr><td>Identify</td><td>Name it.</td><td>Give the exact term or variable.</td></tr>
+              </table>
+              <div class="warning callout"><strong>Common error:</strong> Students answer “what” when the prompt asks “why.” If the verb is <em>explain</em>, a mechanism is required.</div>
+            </div></details>
+
+            <details><summary>2. Data Analysis Bootcamp</summary><div>
+              <h3>Graph Reading Formula</h3>
+              <div class="formula">As X changes from ___ to ___, Y changes from ___ to ___, which suggests ___ because ___.</div>
+              <ul>
+                <li><strong>Line graph:</strong> focus on trend and slope/rate.</li>
+                <li><strong>Bar graph:</strong> compare groups using values.</li>
+                <li><strong>Error bars:</strong> overlapping bars may suggest differences are not clearly supported.</li>
+                <li><strong>Table:</strong> look for patterns, maximum/minimum values, and changes over time.</li>
+              </ul>
+              <div class="practice"><strong>Practice:</strong> Enzyme activity increases from 10 units at pH 5 to 30 units at pH 7, then decreases to 12 units at pH 9. Write a data-based claim.<br><button class="answer-btn">Reveal sample answer</button><div class="answer">Enzyme activity increases from pH 5 to pH 7, then decreases at pH 9, suggesting the enzyme has an optimal pH near 7 because pH changes can alter protein structure and active site function.</div></div>
+            </div></details>
+
+            <details><summary>3. Experimental Design Trainer</summary><div>
+              <h3>Experimental Design Template</h3>
+              <table>
+                <tr><th>Part</th><th>What to write</th></tr>
+                <tr><td>Hypothesis</td><td>If the independent variable changes, then the dependent variable will change because...</td></tr>
+                <tr><td>Independent variable</td><td>The factor being changed.</td></tr>
+                <tr><td>Dependent variable</td><td>The measured result.</td></tr>
+                <tr><td>Control group</td><td>The comparison group without the experimental treatment.</td></tr>
+                <tr><td>Constants</td><td>Factors kept the same.</td></tr>
+                <tr><td>Replication</td><td>Repeated trials increase reliability.</td></tr>
+              </table>
+              <div class="practice"><strong>Practice:</strong> Design an experiment to test how pH affects enzyme activity.<br><button class="answer-btn">Reveal sample answer</button><div class="answer">Change pH levels as the independent variable and measure reaction rate as the dependent variable. Use the same enzyme concentration, substrate concentration, temperature, and reaction time. Include repeated trials at each pH. A control could use the enzyme at its known optimal pH or a reaction without enzyme for comparison.</div></div>
+            </div></details>
+
+            <details><summary>4. What a Point-Earning Answer Looks Like</summary><div>
+              <table>
+                <tr><th>Prompt</th><th>Weak answer</th><th>Point-earning answer</th></tr>
+                <tr><td>Explain why enzyme activity decreases at high temperature.</td><td>The enzyme stops working.</td><td>High temperature disrupts bonds that maintain the enzyme’s tertiary structure, altering the active site and reducing substrate binding.</td></tr>
+                <tr><td>Explain antibiotic resistance.</td><td>The bacteria get used to it.</td><td>Bacteria with resistance alleles survive and reproduce more, increasing the frequency of resistance alleles in the population.</td></tr>
+                <tr><td>Explain water movement in a hypertonic solution.</td><td>Water leaves.</td><td>Water moves out of the cell by osmosis because the surrounding solution has lower water potential due to higher solute concentration.</td></tr>
+              </table>
+            </div></details>
+
+            <details><summary>5. Mixed Graph + Math Practice</summary><div>
+              <div class="practice"><strong>Rate Practice:</strong> Product increases from 12 units at 2 minutes to 36 units at 6 minutes. Calculate rate and interpret biologically.<br><button class="answer-btn">Reveal answer</button><div class="answer">Rate = (36 − 12) / (6 − 2) = 24 / 4 = 6 units/min. Biologically, the reaction is producing product at an average rate of 6 units per minute during that interval.</div></div>
+              <div class="practice"><strong>Chi-square Practice:</strong> Expected 75 dominant and 25 recessive. Observed 80 dominant and 20 recessive. Interpret χ² = 1.33 if critical value = 3.84.<br><button class="answer-btn">Reveal answer</button><div class="answer">Because 1.33 is less than 3.84, fail to reject the null hypothesis. The observed results are not significantly different from the expected 3:1 ratio.</div></div>
+            </div></details>
+
+            <details><summary>6. Cross-Unit Connections</summary><div>
+              <table>
+                <tr><th>Connection</th><th>Why it matters</th></tr>
+                <tr><td>Unit 1 enzymes → Unit 3 respiration/photosynthesis</td><td>Enzyme structure affects reaction rates and metabolism.</td></tr>
+                <tr><td>Unit 2 membranes → Unit 4 signaling</td><td>Receptors and transport proteins depend on membrane structure.</td></tr>
+                <tr><td>Unit 5 meiosis → Unit 7 evolution</td><td>Meiosis creates variation that natural selection can act on.</td></tr>
+                <tr><td>Unit 6 mutation → Unit 7 natural selection</td><td>Mutations create alleles that may affect fitness.</td></tr>
+                <tr><td>Unit 8 ecology → Unit 7 evolution</td><td>Environmental change creates selection pressures.</td></tr>
+              </table>
+            </div></details>
+
+            <details><summary>7. Common Misconceptions</summary><div>
+              <ul>
+                <li>Individuals do not evolve; populations evolve.</li>
+                <li>Energy is transformed and transferred, not created.</li>
+                <li>Plants perform cellular respiration.</li>
+                <li>Fitness means reproductive success.</li>
+                <li>Enzymes do not change equilibrium or ΔG.</li>
+                <li>Water moves toward lower water potential / higher solute concentration.</li>
+                <li>Dominant does not mean more common or more beneficial.</li>
+              </ul>
+            </div></details>
+
+            <details><summary>8. Lab-Based Thinking</summary><div>
+              <ul>
+                <li><strong>Diffusion/osmosis:</strong> predict mass change based on solute gradients.</li>
+                <li><strong>Enzymes:</strong> measure reaction rate under different pH, temperature, or substrate levels.</li>
+                <li><strong>Photosynthesis:</strong> use oxygen production or floating leaf disks as evidence of rate.</li>
+                <li><strong>Respiration:</strong> use oxygen consumption or CO₂ production as evidence.</li>
+                <li><strong>Genetics:</strong> use chi-square to evaluate whether observed data fit expected ratios.</li>
+              </ul>
+              <div class="warning callout"><strong>Experimental flaw question:</strong> Look for missing control, small sample size, no replication, uncontrolled variables, or unclear dependent variable.</div>
+            </div></details>
+
+            <details><summary>9. Timed FRQ Sprint Mode</summary><div>
+              <p><strong>Goal:</strong> Practice concise responses under time pressure.</p>
+              <ol>
+                <li>Pick one FRQ from the FRQ section.</li>
+                <li>Set a 10-minute timer.</li>
+                <li>Answer each part in labeled lines: a, b, c, d.</li>
+                <li>Click “Check my FRQ,” then revise once.</li>
+              </ol>
+              <div class="callout gold"><strong>Scoring habit:</strong> One clear, correct sentence often earns more than a long vague paragraph.</div>
+            </div></details>
+
+            <details><summary>10. Last-Minute Review Mode</summary><div>
+              <ul>
+                <li>Structure determines function.</li>
+                <li>Water properties come from hydrogen bonding.</li>
+                <li>Enzymes lower activation energy.</li>
+                <li>Membranes are selectively permeable.</li>
+                <li>ATP powers cellular work.</li>
+                <li>Oxygen is the final electron acceptor in respiration.</li>
+                <li>Light reactions make ATP/NADPH; Calvin cycle fixes CO₂.</li>
+                <li>Signal pathways: reception → transduction → response.</li>
+                <li>Meiosis creates variation.</li>
+                <li>DNA → RNA → protein.</li>
+                <li>Mutations can affect protein function and phenotype.</li>
+                <li>Evolution changes allele frequencies in populations.</li>
+                <li>Fitness = reproductive success.</li>
+                <li>Energy flows; matter cycles.</li>
+                <li>Graphs: describe trend, cite data, explain mechanism.</li>
+              </ul>
+            </div></details>
           </div>
         </article>
 
