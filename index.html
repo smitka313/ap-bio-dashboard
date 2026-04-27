@@ -106,19 +106,19 @@
   <main>
     <div class="layout">
       <nav aria-label="Dashboard sections">
-        <button class="nav-btn active" data-target="overview">Overview</button>
-        <button class="nav-btn" data-target="unit1">Unit 1: Chemistry</button>
-        <button class="nav-btn" data-target="unit2">Unit 2: Cells</button>
-        <button class="nav-btn" data-target="unit3">Unit 3: Energetics</button>
-        <button class="nav-btn" data-target="unit4">Unit 4: Communication</button>
-        <button class="nav-btn" data-target="unit5">Unit 5: Heredity</button>
-        <button class="nav-btn" data-target="unit6">Unit 6: Gene Expression</button>
-        <button class="nav-btn" data-target="unit7">Unit 7: Natural Selection</button>
-        <button class="nav-btn" data-target="unit8">Units 8-9: Ecology & Biodiversity</button>
-        <button class="nav-btn" data-target="quant">Quantitative Practice</button>
-        <button class="nav-btn" data-target="quiz">Quizzes & Progress</button>
-        <button class="nav-btn" data-target="frq">FRQ Practice</button>
-        <button class="nav-btn" data-target="final">Final Exam Strategy</button>
+        <button type="button" class="nav-btn active" data-target="overview" onclick="showSection('overview')">Overview</button>
+        <button type="button" class="nav-btn" data-target="unit1" onclick="showSection('unit1')">Unit 1: Chemistry</button>
+        <button type="button" class="nav-btn" data-target="unit2" onclick="showSection('unit2')">Unit 2: Cells</button>
+        <button type="button" class="nav-btn" data-target="unit3" onclick="showSection('unit3')">Unit 3: Energetics</button>
+        <button type="button" class="nav-btn" data-target="unit4" onclick="showSection('unit4')">Unit 4: Communication</button>
+        <button type="button" class="nav-btn" data-target="unit5" onclick="showSection('unit5')">Unit 5: Heredity</button>
+        <button type="button" class="nav-btn" data-target="unit6" onclick="showSection('unit6')">Unit 6: Gene Expression</button>
+        <button type="button" class="nav-btn" data-target="unit7" onclick="showSection('unit7')">Unit 7: Natural Selection</button>
+        <button type="button" class="nav-btn" data-target="unit8" onclick="showSection('unit8')">Units 8-9: Ecology & Biodiversity</button>
+        <button type="button" class="nav-btn" data-target="quant" onclick="showSection('quant')">Quantitative Practice</button>
+        <button type="button" class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quizzes & Progress</button>
+        <button type="button" class="nav-btn" data-target="frq" onclick="showSection('frq')">FRQ Practice</button>
+        <button type="button" class="nav-btn" data-target="final" onclick="showSection('final')">Final Exam Strategy</button>
       </nav>
 
       <section class="dashboard-grid">
@@ -206,43 +206,60 @@
   <footer>AP Biology Ultimate Study Dashboard • CED-aligned review and FRQ practice</footer>
 
   <script>
-    const navButtons = Array.from(document.querySelectorAll('.nav-btn'));
-    const sections = Array.from(document.querySelectorAll('.section'));
-    const searchInput = document.getElementById('search');
+    var navButtons = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+    var searchInput = document.getElementById('search');
 
     function showSection(targetId) {
-      sections.forEach(section => section.classList.toggle('hidden', section.id !== targetId));
-      navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.target === targetId));
+      for (var i = 0; i < sections.length; i++) {
+        sections[i].classList.toggle('hidden', sections[i].id !== targetId);
+      }
+      for (var j = 0; j < navButtons.length; j++) {
+        navButtons[j].classList.toggle('active', navButtons[j].getAttribute('data-target') === targetId);
+      }
       if (searchInput) searchInput.value = '';
+      window.location.hash = targetId;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', () => showSection(btn.dataset.target));
-    });
+    window.showSection = showSection;
 
-    document.getElementById('clearSearchBtn').addEventListener('click', () => showSection('overview'));
-    document.getElementById('printBtn').addEventListener('click', () => window.print());
-
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.trim().toLowerCase();
-      if (!query) { showSection('overview'); return; }
-      navButtons.forEach(btn => btn.classList.remove('active'));
-      sections.forEach(section => {
-        const text = (section.innerText + ' ' + (section.dataset.keywords || '')).toLowerCase();
-        section.classList.toggle('hidden', !text.includes(query));
+    for (var n = 0; n < navButtons.length; n++) {
+      navButtons[n].addEventListener('click', function(event) {
+        event.preventDefault();
+        showSection(this.getAttribute('data-target'));
       });
-    });
+    }
 
-    document.querySelectorAll('.answer-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        const answer = button.nextElementSibling;
+    var clearBtn = document.getElementById('clearSearchBtn');
+    if (clearBtn) clearBtn.addEventListener('click', function() { showSection('overview'); });
+
+    var printBtn = document.getElementById('printBtn');
+    if (printBtn) printBtn.addEventListener('click', function() { window.print(); });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        var query = searchInput.value.trim().toLowerCase();
+        if (!query) { showSection('overview'); return; }
+        for (var b = 0; b < navButtons.length; b++) navButtons[b].classList.remove('active');
+        for (var s = 0; s < sections.length; s++) {
+          var text = (sections[s].innerText + ' ' + (sections[s].getAttribute('data-keywords') || '')).toLowerCase();
+          sections[s].classList.toggle('hidden', text.indexOf(query) === -1);
+        }
+      });
+    }
+
+    var answerButtons = document.querySelectorAll('.answer-btn');
+    for (var a = 0; a < answerButtons.length; a++) {
+      answerButtons[a].addEventListener('click', function() {
+        var answer = this.nextElementSibling;
+        if (!answer) return;
         answer.classList.toggle('show');
-        button.textContent = answer.classList.contains('show') ? 'Hide answer' : 'Reveal answer';
+        this.textContent = answer.classList.contains('show') ? 'Hide answer' : 'Reveal answer';
       });
-    });
+    }
 
-    const quizQuestions = [
+    var quizQuestions = [
       { unit: 'Unit 1', q: 'Which interaction is primarily responsible for water cohesion?', choices: ['Ionic bonds', 'Hydrogen bonds', 'Peptide bonds', 'Phosphodiester bonds'], answer: 1, explain: 'Water cohesion results from hydrogen bonding between water molecules.' },
       { unit: 'Unit 2', q: 'A plant cell placed in a hypertonic solution will most likely...', choices: ['Become turgid', 'Undergo plasmolysis', 'Lyse', 'Stop osmosis completely'], answer: 1, explain: 'Water leaves the cell, causing the membrane to pull away from the wall.' },
       { unit: 'Unit 3', q: 'In cellular respiration, oxygen functions as the...', choices: ['First electron donor', 'Final electron acceptor', 'Main enzyme', 'Source of glucose'], answer: 1, explain: 'Oxygen accepts electrons at the end of the ETC.' },
@@ -253,68 +270,115 @@
       { unit: 'Units 8-9', q: 'In a phylogenetic tree, a node represents...', choices: ['An extinct organism only', 'A common ancestor', 'A mutation rate', 'Carrying capacity'], answer: 1, explain: 'A node represents the most recent common ancestor of the branches from that node.' }
     ];
 
-    const defaultState = { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
-    let currentQuestion = 0;
+    var defaultState = { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
+    var currentQuestion = 0;
+
+    function copyDefaultState() {
+      return { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
+    }
 
     function loadQuizState() {
-      try { return JSON.parse(localStorage.getItem('apBioQuizState')) || structuredClone(defaultState); }
-      catch { return structuredClone(defaultState); }
+      try {
+        var saved = localStorage.getItem('apBioQuizState');
+        return saved ? JSON.parse(saved) : copyDefaultState();
+      } catch (e) {
+        return copyDefaultState();
+      }
     }
-    function saveQuizState(state) { localStorage.setItem('apBioQuizState', JSON.stringify(state)); }
-    function mastery(state) { return state.attempted ? Math.round((state.correct / state.attempted) * 100) : 0; }
+
+    function saveQuizState(state) {
+      try { localStorage.setItem('apBioQuizState', JSON.stringify(state)); } catch (e) {}
+    }
+
+    function mastery(state) {
+      return state.attempted ? Math.round((state.correct / state.attempted) * 100) : 0;
+    }
+
     function weakestUnit(state) {
-      const entries = Object.entries(state.unitStats || {}).filter(([, s]) => s.attempted > 0);
+      var entries = [];
+      for (var unit in state.unitStats) {
+        if (state.unitStats[unit].attempted > 0) entries.push([unit, state.unitStats[unit]]);
+      }
       if (entries.length < 2) return 'Not enough data yet';
-      entries.sort((a, b) => (a[1].correct / a[1].attempted) - (b[1].correct / b[1].attempted));
+      entries.sort(function(a, b) {
+        return (a[1].correct / a[1].attempted) - (b[1].correct / b[1].attempted);
+      });
       return entries[0][0];
     }
+
     function updateBadges(state) {
-      if (state.correct >= 1 && !state.badges.includes('first')) state.badges.push('first');
-      if (state.correct >= 5 && !state.badges.includes('five')) state.badges.push('five');
-      if (mastery(state) >= 80 && state.attempted >= 5 && !state.badges.includes('mastery')) state.badges.push('mastery');
+      if (state.correct >= 1 && state.badges.indexOf('first') === -1) state.badges.push('first');
+      if (state.correct >= 5 && state.badges.indexOf('five') === -1) state.badges.push('five');
+      if (mastery(state) >= 80 && state.attempted >= 5 && state.badges.indexOf('mastery') === -1) state.badges.push('mastery');
     }
+
     function renderProgress() {
-      const state = loadQuizState();
+      var state = loadQuizState();
+      var pointsEl = document.getElementById('points');
+      if (!pointsEl) return;
       document.getElementById('points').textContent = state.points;
       document.getElementById('mastery').textContent = mastery(state) + '%';
       document.getElementById('progressBar').style.width = Math.min(100, mastery(state)) + '%';
       document.getElementById('correctCount').textContent = state.correct;
       document.getElementById('attemptCount').textContent = state.attempted;
       document.getElementById('weakestUnit').textContent = weakestUnit(state);
-      const badgeArea = document.getElementById('badgeArea');
-      const labels = { first: 'First Correct!', five: '5 Correct', mastery: '80%+ Mastery' };
-      badgeArea.innerHTML = state.badges.length ? state.badges.map(id => `<span class="badge">${labels[id]}</span>`).join('') : '<p class="small">No badges yet.</p>';
+      var badgeArea = document.getElementById('badgeArea');
+      var labels = { first: 'First Correct!', five: '5 Correct', mastery: '80%+ Mastery' };
+      if (state.badges.length) {
+        badgeArea.innerHTML = state.badges.map(function(id) { return '<span class="badge">' + labels[id] + '</span>'; }).join('');
+      } else {
+        badgeArea.innerHTML = '<p class="small">No badges yet.</p>';
+      }
     }
+
     function renderQuiz() {
-      const item = quizQuestions[currentQuestion % quizQuestions.length];
-      const box = document.getElementById('quizContainer');
-      box.innerHTML = `<h3>${item.unit} Quiz</h3><p><strong>${item.q}</strong></p>` + item.choices.map((choice, index) => `<button class="choice" data-choice="${index}">${choice}</button>`).join('') + '<div id="quizFeedback" class="answer show small">Choose an answer.</div>';
-      box.querySelectorAll('.choice').forEach(btn => {
-        btn.addEventListener('click', () => gradeQuiz(Number(btn.dataset.choice), item));
-      });
+      var box = document.getElementById('quizContainer');
+      if (!box) return;
+      var item = quizQuestions[currentQuestion % quizQuestions.length];
+      var html = '<h3>' + item.unit + ' Quiz</h3><p><strong>' + item.q + '</strong></p>';
+      for (var i = 0; i < item.choices.length; i++) {
+        html += '<button type="button" class="choice" data-choice="' + i + '">' + item.choices[i] + '</button>';
+      }
+      html += '<div id="quizFeedback" class="answer show small">Choose an answer.</div>';
+      box.innerHTML = html;
+      var choices = box.querySelectorAll('.choice');
+      for (var c = 0; c < choices.length; c++) {
+        choices[c].addEventListener('click', function() {
+          gradeQuiz(Number(this.getAttribute('data-choice')), item);
+        });
+      }
     }
+
     function gradeQuiz(choice, item) {
-      const state = loadQuizState();
+      var state = loadQuizState();
       state.attempted += 1;
       if (!state.unitStats[item.unit]) state.unitStats[item.unit] = { correct: 0, attempted: 0 };
       state.unitStats[item.unit].attempted += 1;
-      const buttons = document.querySelectorAll('#quizContainer .choice');
-      buttons.forEach((btn, idx) => {
-        btn.disabled = true;
-        if (idx === item.answer) btn.classList.add('correct');
-        if (idx === choice && choice !== item.answer) btn.classList.add('incorrect');
-      });
-      const correct = choice === item.answer;
-      if (correct) { state.correct += 1; state.points += 10; state.unitStats[item.unit].correct += 1; }
+      var buttons = document.querySelectorAll('#quizContainer .choice');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+        if (i === item.answer) buttons[i].classList.add('correct');
+        if (i === choice && choice !== item.answer) buttons[i].classList.add('incorrect');
+      }
+      var isCorrect = choice === item.answer;
+      if (isCorrect) {
+        state.correct += 1;
+        state.points += 10;
+        state.unitStats[item.unit].correct += 1;
+      }
       updateBadges(state);
       saveQuizState(state);
-      document.getElementById('quizFeedback').innerHTML = (correct ? '<strong>Correct!</strong> ' : '<strong>Not quite.</strong> ') + item.explain;
+      document.getElementById('quizFeedback').innerHTML = (isCorrect ? '<strong>Correct!</strong> ' : '<strong>Not quite.</strong> ') + item.explain;
       renderProgress();
     }
-    document.getElementById('nextQuizBtn').addEventListener('click', () => { currentQuestion += 1; renderQuiz(); });
-    document.getElementById('adaptiveBtn').addEventListener('click', () => {
-      const weak = weakestUnit(loadQuizState());
-      const promptMap = {
+
+    var nextQuizBtn = document.getElementById('nextQuizBtn');
+    if (nextQuizBtn) nextQuizBtn.addEventListener('click', function() { currentQuestion += 1; renderQuiz(); });
+
+    var adaptiveBtn = document.getElementById('adaptiveBtn');
+    if (adaptiveBtn) adaptiveBtn.addEventListener('click', function() {
+      var weak = weakestUnit(loadQuizState());
+      var promptMap = {
         'Unit 1': 'Explain how hydrogen bonding leads to one water property and one biological consequence.',
         'Unit 2': 'Predict water movement for a cell in a hypertonic solution and justify with osmosis.',
         'Unit 3': 'Explain how a proton gradient is used to make ATP during cellular respiration.',
@@ -326,25 +390,36 @@
       };
       document.getElementById('adaptiveText').textContent = promptMap[weak] || 'Answer more quiz questions to generate targeted adaptive practice.';
     });
-    document.getElementById('resetBtn').addEventListener('click', () => { localStorage.removeItem('apBioQuizState'); renderProgress(); renderQuiz(); });
-    document.getElementById('exportBtn').addEventListener('click', () => {
-      const state = loadQuizState();
-      const rows = [['Date', new Date().toLocaleString()], ['Points', state.points], ['Correct', state.correct], ['Attempted', state.attempted], ['Mastery', mastery(state) + '%'], ['Weakest Unit', weakestUnit(state)], [], ['Unit', 'Correct', 'Attempted']];
-      Object.entries(state.unitStats || {}).forEach(([unit, stats]) => rows.push([unit, stats.correct, stats.attempted]));
-      const csv = rows.map(row => row.map(cell => '"' + String(cell ?? '').replace(/"/g, '""') + '"').join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'ap-biology-progress-report.csv';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+
+    var resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) resetBtn.addEventListener('click', function() { localStorage.removeItem('apBioQuizState'); renderProgress(); renderQuiz(); });
+
+    var exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) exportBtn.addEventListener('click', function() {
+      var state = loadQuizState();
+      var rows = [['Date', new Date().toLocaleString()], ['Points', state.points], ['Correct', state.correct], ['Attempted', state.attempted], ['Mastery', mastery(state) + '%'], ['Weakest Unit', weakestUnit(state)], [], ['Unit', 'Correct', 'Attempted']];
+      for (var unit in state.unitStats) rows.push([unit, state.unitStats[unit].correct, state.unitStats[unit].attempted]);
+      var csv = rows.map(function(row) { return row.map(function(cell) { return '"' + String(cell == null ? '' : cell).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url;
+      link.download = 'ap-biology-progress-report.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
       URL.revokeObjectURL(url);
     });
 
     renderProgress();
     renderQuiz();
+
+    if (window.location.hash) {
+      var initial = window.location.hash.replace('#', '');
+      if (document.getElementById(initial)) showSection(initial);
+    } else {
+      showSection('overview');
+    }
   </script>
 </body>
 </html>
