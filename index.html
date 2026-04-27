@@ -5,595 +5,150 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AP Biology Ultimate Study Dashboard</title>
   <style>
-    :root {
-      --bg: #f6f8fb;
-      --card: #ffffff;
-      --ink: #1f2937;
-      --muted: #6b7280;
-      --green: #256f46;
-      --green-2: #e7f5ec;
-      --blue: #2563eb;
-      --blue-2: #eaf1ff;
-      --gold: #b7791f;
-      --gold-2: #fff7df;
-      --red: #b91c1c;
-      --red-2: #fee2e2;
-      --border: #d8dee9;
-      --shadow: 0 12px 32px rgba(31, 41, 55, 0.08);
-    }
-
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; }
-    header { background: linear-gradient(135deg, #123524, #256f46 50%, #1d4ed8); color: white; padding: 42px 20px 36px; text-align: center; }
-    header h1 { margin: 0 auto 10px; max-width: 1000px; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.04em; line-height: 1.05; }
-    header p { max-width: 900px; margin: 0 auto; font-size: 1.08rem; opacity: 0.95; }
-
-    .toolbar { position: sticky; top: 0; z-index: 10; background: rgba(246, 248, 251, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 16px; }
-    .toolbar-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
-    input[type="search"] { width: 100%; border: 1px solid var(--border); border-radius: 999px; padding: 12px 16px; font-size: 1rem; outline: none; background: white; }
-    input[type="search"]:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-    button { font: inherit; }
-    .print-btn, .clear-btn { border: 0; border-radius: 999px; padding: 12px 16px; background: var(--ink); color: white; cursor: pointer; font-weight: 700; }
-    .clear-btn { background: var(--muted); }
-
-    main { max-width: 1200px; margin: 24px auto 80px; padding: 0 16px; }
-    .layout { display: grid; grid-template-columns: 280px 1fr; gap: 22px; align-items: start; }
-    nav { position: sticky; top: 84px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 14px; }
-    .nav-btn { display: block; width: 100%; text-align: left; padding: 12px 14px; margin: 4px 0; border: 0; border-radius: 14px; background: transparent; color: var(--ink); cursor: pointer; font-weight: 700; }
-    .nav-btn:hover { background: var(--green-2); }
-    .nav-btn.active { background: var(--green); color: white; }
-
-    .dashboard-grid { display: grid; gap: 18px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; }
-    .card-header { padding: 20px 22px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #ffffff, #fbfdff); }
-    .card-header h2, .card-header h3 { margin: 0; letter-spacing: -0.02em; }
-    .card-body { padding: 20px 22px; }
-
-    .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 10px; font-size: 0.85rem; font-weight: 700; background: var(--blue-2); color: #1e40af; }
-    .pill.high { background: var(--gold-2); color: var(--gold); }
-    .pill.critical { background: var(--red-2); color: var(--red); }
-    .pill.ced { background: var(--green-2); color: var(--green); }
-
-    details { border: 1px solid var(--border); border-radius: 16px; padding: 0; margin: 12px 0; background: #fff; }
-    summary { cursor: pointer; padding: 14px 16px; font-weight: 800; color: var(--green); }
-    details > div { padding: 0 16px 14px; }
-    table { width: 100%; border-collapse: collapse; margin: 12px 0; border-radius: 12px; overflow: hidden; }
-    th, td { border: 1px solid var(--border); padding: 10px; text-align: left; vertical-align: top; }
-    th { background: #f1f5f9; }
-    .callout { border-left: 5px solid var(--green); background: var(--green-2); padding: 14px 16px; border-radius: 12px; margin: 14px 0; }
-    .warning { border-left-color: var(--red); background: var(--red-2); }
-    .gold { border-left-color: var(--gold); background: var(--gold-2); }
-    .hidden { display: none !important; }
-    .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #0f172a; color: #e5e7eb; border-radius: 14px; padding: 12px 14px; overflow-x: auto; margin: 10px 0; }
-    .practice, .quiz-box { border: 1px dashed #94a3b8; border-radius: 16px; padding: 16px; margin: 14px 0; background: #fbfdff; }
-    .answer-btn, .quiz-btn { border: 0; border-radius: 999px; background: var(--blue); color: white; font-weight: 800; padding: 9px 13px; cursor: pointer; margin-top: 8px; }
-    .answer { margin-top: 10px; padding: 12px; border-radius: 12px; background: var(--blue-2); display: none; }
-    .answer.show { display: block; }
-    .checklist label { display: block; padding: 8px 0; border-bottom: 1px solid #eef2f7; }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .frq-card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin: 12px 0; }
-    textarea { width: 100%; min-height: 110px; border: 1px solid var(--border); border-radius: 14px; padding: 12px; resize: vertical; font-family: inherit; font-size: 0.95rem; }
-    .small { color: var(--muted); font-size: 0.92rem; }
-    .progress-wrap { background: #e5e7eb; border-radius: 999px; height: 18px; overflow: hidden; }
-    .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.3s ease; }
-    .choice { display: block; width: 100%; text-align: left; border: 1px solid var(--border); border-radius: 12px; background: white; padding: 10px 12px; margin: 8px 0; cursor: pointer; }
-    .choice.correct { border-color: var(--green); background: var(--green-2); }
-    .choice.incorrect { border-color: var(--red); background: var(--red-2); }
-    .badge { display: inline-block; padding: 6px 10px; border-radius: 999px; background: var(--gold-2); color: var(--gold); font-weight: 800; margin: 4px; }
-    .feedback-panel { margin-top: 12px; border-radius: 14px; border: 1px solid var(--border); background: #f8fafc; padding: 12px; display: none; }
-    .feedback-panel.show { display: block; }
-    .feedback-score { font-weight: 900; font-size: 1.05rem; margin-bottom: 8px; }
-    .feedback-hit { color: var(--green); font-weight: 800; }
-    .feedback-miss { color: var(--red); font-weight: 800; }
-    .feedback-list { margin: 8px 0 0 0; padding-left: 20px; }
-    .frq-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    .frq-feedback-btn { border: 0; border-radius: 999px; background: var(--green); color: white; font-weight: 800; padding: 9px 13px; cursor: pointer; }
-    footer { text-align: center; color: var(--muted); padding: 30px 16px 60px; }
-
-    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } nav { position: static; } .toolbar-inner { grid-template-columns: 1fr; } .two-col { grid-template-columns: 1fr; } }
-    @media print { .toolbar, nav, .answer-btn, .quiz-btn, textarea { display: none !important; } body { background: white; } main { margin: 0; max-width: none; } .layout { display: block; } .card { break-inside: avoid; box-shadow: none; } details > div { display: block; } details { page-break-inside: avoid; } .hidden { display: block !important; } }
+    :root{--bg:#f6f8fb;--card:#fff;--ink:#111827;--muted:#6b7280;--green:#257343;--green2:#e7f5ec;--blue:#2563eb;--blue2:#eaf1ff;--gold:#b7791f;--gold2:#fff7df;--red:#b91c1c;--red2:#fee2e2;--border:#d8dee9;--shadow:0 12px 32px rgba(31,41,55,.08)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+    header{background:linear-gradient(135deg,#123524,#256f46 50%,#1d4ed8);color:white;padding:42px 20px 36px;text-align:center}
+    header h1{margin:0 auto 10px;max-width:1050px;font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.04em;line-height:1.05}
+    header p{max-width:900px;margin:0 auto;font-size:1.08rem;opacity:.95}
+    .toolbar{position:sticky;top:0;z-index:10;background:rgba(246,248,251,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 16px}
+    .toolbar-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+    input[type=search],input[type=text]{width:100%;border:1px solid var(--border);border-radius:14px;padding:11px 13px;font-size:1rem;background:white}
+    input[type=search]{border-radius:999px}
+    .print-btn,.clear-btn,.btn{border:0;border-radius:999px;padding:10px 14px;color:#fff;background:var(--ink);font-weight:800;cursor:pointer}
+    .clear-btn{background:var(--muted)}.btn.green{background:var(--green)}.btn.blue{background:var(--blue)}.btn.red{background:var(--red)}
+    main{max-width:1200px;margin:24px auto 80px;padding:0 16px}.layout{display:grid;grid-template-columns:280px 1fr;gap:22px;align-items:start}
+    nav{position:sticky;top:84px;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);padding:14px}
+    .nav-btn{display:block;width:100%;text-align:left;padding:12px 14px;margin:4px 0;border:0;border-radius:14px;background:transparent;color:var(--ink);cursor:pointer;font-weight:800}
+    .nav-btn:hover{background:var(--green2)}.nav-btn.active{background:var(--green);color:white}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+    .card-header{padding:20px 22px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#fff,#fbfdff)}
+    .card-header h2,.card-header h3{margin:0;letter-spacing:-.02em}.card-body{padding:20px 22px}
+    .section{display:block}.hidden{display:none!important}
+    .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.pill{display:inline-flex;border-radius:999px;padding:6px 10px;font-size:.85rem;font-weight:800;background:var(--blue2);color:#1e40af}.pill.high{background:var(--gold2);color:var(--gold)}.pill.critical{background:var(--red2);color:var(--red)}.pill.ced{background:var(--green2);color:var(--green)}
+    details{border:1px solid var(--border);border-radius:16px;margin:12px 0;background:#fff}summary{cursor:pointer;padding:14px 16px;font-weight:900;color:var(--green)}details>div{padding:0 16px 14px}
+    table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid var(--border);padding:10px;text-align:left;vertical-align:top}th{background:#f1f5f9}
+    .callout{border-left:5px solid var(--green);background:var(--green2);padding:14px 16px;border-radius:12px;margin:14px 0}.warning{border-left-color:var(--red);background:var(--red2)}.gold{border-left-color:var(--gold);background:var(--gold2)}
+    .formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0f172a;color:#e5e7eb;border-radius:14px;padding:12px 14px;overflow-x:auto;margin:10px 0}
+    .practice,.quiz-box,.frq-card{border:1px dashed #94a3b8;border-radius:16px;padding:16px;margin:14px 0;background:#fbfdff}.answer{margin-top:10px;padding:12px;border-radius:12px;background:var(--blue2);display:none}.answer.show{display:block}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}.progress-wrap{background:#e5e7eb;border-radius:999px;height:18px;overflow:hidden}.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .3s ease}
+    .choice{display:block;width:100%;text-align:left;border:1px solid var(--border);border-radius:12px;background:white;padding:10px 12px;margin:8px 0;cursor:pointer}.choice.correct{border-color:var(--green);background:var(--green2)}.choice.incorrect{border-color:var(--red);background:var(--red2)}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--gold2);color:var(--gold);font-weight:900;margin:4px}.frq-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.feedback-panel{display:none;margin-top:12px;border-radius:14px;border:1px solid var(--border);background:#f8fafc;padding:12px}.feedback-panel.show{display:block}.feedback-hit{color:var(--green);font-weight:900}.feedback-miss{color:var(--red);font-weight:900}
+    .small{color:var(--muted);font-size:.92rem}textarea{width:100%;min-height:110px;border:1px solid var(--border);border-radius:14px;padding:12px;font-family:inherit;font-size:.95rem;resize:vertical}footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}nav{position:static}.toolbar-inner,.two-col{grid-template-columns:1fr}}
+    @media print{.toolbar,nav,.btn,textarea{display:none!important}body{background:white}main{margin:0;max-width:none}.layout{display:block}.card{break-inside:avoid;box-shadow:none}.hidden{display:block!important}}
   </style>
 </head>
 <body>
-  <header>
-    <h1>AP Biology Ultimate Study Dashboard</h1>
-    <p>CED-aligned unit review, quantitative practice, auto-graded quizzes, progress tracking, adaptive practice, and FRQ practice.</p>
-  </header>
-
-  <section class="toolbar">
-    <div class="toolbar-inner">
-      <input id="search" type="search" placeholder="Search topics: chi-square, osmosis, lac operon, Hardy-Weinberg, photosynthesis..." />
-      <div>
-        <button class="clear-btn" id="clearSearchBtn">Clear</button>
-        <button class="print-btn" id="printBtn">Print / Save PDF</button>
-      </div>
-    </div>
-  </section>
-
-  <main>
-    <div class="layout">
-      <nav aria-label="Dashboard sections">
-        <button type="button" class="nav-btn active" data-target="overview" onclick="showSection('overview')">Overview</button>
-        <button type="button" class="nav-btn" data-target="unit1" onclick="showSection('unit1')">Unit 1: Chemistry</button>
-        <button type="button" class="nav-btn" data-target="unit2" onclick="showSection('unit2')">Unit 2: Cells</button>
-        <button type="button" class="nav-btn" data-target="unit3" onclick="showSection('unit3')">Unit 3: Energetics</button>
-        <button type="button" class="nav-btn" data-target="unit4" onclick="showSection('unit4')">Unit 4: Communication</button>
-        <button type="button" class="nav-btn" data-target="unit5" onclick="showSection('unit5')">Unit 5: Heredity</button>
-        <button type="button" class="nav-btn" data-target="unit6" onclick="showSection('unit6')">Unit 6: Gene Expression</button>
-        <button type="button" class="nav-btn" data-target="unit7" onclick="showSection('unit7')">Unit 7: Natural Selection</button>
-        <button type="button" class="nav-btn" data-target="unit8" onclick="showSection('unit8')">Units 8-9: Ecology & Biodiversity</button>
-        <button type="button" class="nav-btn" data-target="quant" onclick="showSection('quant')">Quantitative Practice</button>
-        <button type="button" class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quizzes & Progress</button>
-        <button type="button" class="nav-btn" data-target="frq" onclick="showSection('frq')">FRQ Practice</button>
-        <button type="button" class="nav-btn" data-target="final" onclick="showSection('final')">Final Exam Strategy</button>
-      </nav>
-
-      <section class="dashboard-grid">
-        <article id="overview" class="card section searchable" data-keywords="overview big ideas CED science practices exam">
-          <div class="card-header"><h2>Exam Overview & CED Priorities</h2><div class="pill-row"><span class="pill ced">CED-aligned</span><span class="pill high">High-yield review</span><span class="pill critical">FRQ-ready</span></div></div>
-          <div class="card-body">
-            <div class="callout"><strong>Core AP Biology mindset:</strong> The exam tests mechanisms and reasoning more than memorized definitions. Students should explain how structures produce functions, how energy and matter move through systems, how information is stored and expressed, and how evolution explains unity and diversity.</div>
-            <h3>Big Ideas Across the Course</h3>
-            <table><tr><th>Big Idea</th><th>What students must be able to do</th></tr><tr><td>Evolution</td><td>Explain how heritable variation, selection, drift, gene flow, and mutation change populations over time.</td></tr><tr><td>Energetics</td><td>Trace energy transformations in enzymes, respiration, photosynthesis, ecosystems, and cellular work.</td></tr><tr><td>Information Storage & Transmission</td><td>Connect DNA, gene expression, regulation, mutation, inheritance, and phenotype.</td></tr><tr><td>Systems Interactions</td><td>Explain how components interact through feedback, signaling, transport, ecology, and homeostasis.</td></tr></table>
-            <h3>Science Practices Students Must Master</h3>
-            <div class="checklist"><label><input type="checkbox"> Use precise biological vocabulary.</label><label><input type="checkbox"> Explain cause-and-effect mechanisms.</label><label><input type="checkbox"> Analyze graphs, tables, diagrams, gels, cladograms, and experimental data.</label><label><input type="checkbox"> Perform calculations: rates, percentages, Hardy-Weinberg, chi-square, probability.</label><label><input type="checkbox"> Justify claims using evidence and biological reasoning.</label><label><input type="checkbox"> Design controlled experiments.</label></div>
-          </div>
-        </article>
-
-        <article id="unit1" class="card section searchable hidden" data-keywords="unit 1 chemistry water macromolecules carbohydrates lipids proteins nucleic acids enzymes hydrogen bonds dehydration hydrolysis">
-          <div class="card-header"><h2>Unit 1: Chemistry of Life</h2><div class="pill-row"><span class="pill">8-11%</span><span class="pill ced">Structure/function</span></div></div>
-          <div class="card-body"><details open><summary>Water Properties</summary><div><ul><li>Hydrogen bonding gives water cohesion, adhesion, high specific heat, high heat of vaporization, and lower density as ice.</li><li>AP answer pattern: hydrogen bonds → water property → biological consequence.</li></ul></div></details><details><summary>Macromolecules</summary><div><table><tr><th>Macromolecule</th><th>Building blocks</th><th>Functions</th><th>Exam notes</th></tr><tr><td>Carbohydrates</td><td>Monosaccharides</td><td>Quick energy, structure</td><td>Glycosidic bonds; starch vs glycogen vs cellulose</td></tr><tr><td>Lipids</td><td>Not true polymers</td><td>Membranes, long-term energy, hormones</td><td>Phospholipids are amphipathic</td></tr><tr><td>Proteins</td><td>Amino acids</td><td>Enzymes, transport, signaling, structure</td><td>R-group chemistry drives folding and function</td></tr><tr><td>Nucleic acids</td><td>Nucleotides</td><td>Store and transmit information</td><td>DNA/RNA structure supports information flow</td></tr></table></div></details><details><summary>Protein Structure & Enzymes</summary><div><ul><li>Primary: amino acid sequence.</li><li>Secondary: alpha helices and beta sheets.</li><li>Tertiary: overall 3D shape.</li><li>Quaternary: multiple subunits.</li><li>Enzymes lower activation energy but do not change ΔG, equilibrium, or whether a reaction is spontaneous.</li></ul><div class="warning callout"><strong>Common trap:</strong> High temperature can disrupt bonds, changing tertiary structure and altering the active site.</div></div></details></div>
-        </article>
-
-        <article id="unit2" class="card section searchable hidden" data-keywords="unit 2 cell structure membrane organelles transport osmosis diffusion tonicity surface area volume prokaryote eukaryote">
-          <div class="card-header"><h2>Unit 2: Cell Structure & Function</h2><div class="pill-row"><span class="pill">10-13%</span><span class="pill ced">Membranes & transport</span></div></div>
-          <div class="card-body"><details open><summary>Cell Structure</summary><div><table><tr><th>Structure</th><th>Function</th></tr><tr><td>Nucleus</td><td>Stores DNA; site of transcription in eukaryotes.</td></tr><tr><td>Ribosome</td><td>Protein synthesis.</td></tr><tr><td>Rough ER</td><td>Protein folding/processing for secretion or membranes.</td></tr><tr><td>Smooth ER</td><td>Lipid synthesis, detoxification, calcium storage.</td></tr><tr><td>Golgi</td><td>Modifies, sorts, ships cellular products.</td></tr><tr><td>Mitochondria</td><td>ATP production by cellular respiration.</td></tr><tr><td>Chloroplast</td><td>Photosynthesis in plants/algae.</td></tr></table></div></details><details><summary>Membrane Transport</summary><div><ul><li>Small nonpolar molecules pass most easily through the bilayer.</li><li>Ions and polar molecules need transport proteins.</li><li>Passive transport moves down gradients; active transport moves against gradients using energy.</li><li>Osmosis is water diffusion across a selectively permeable membrane.</li></ul><table><tr><th>Solution</th><th>Water movement</th><th>Cell effect</th></tr><tr><td>Hypertonic</td><td>Water leaves cell</td><td>Animal shrivels; plant plasmolyzes</td></tr><tr><td>Hypotonic</td><td>Water enters cell</td><td>Animal may lyse; plant becomes turgid</td></tr><tr><td>Isotonic</td><td>No net movement</td><td>Stable animal cell; plant may be flaccid</td></tr></table></div></details><details><summary>Surface Area-to-Volume Ratio</summary><div><p>As cell size increases, volume grows faster than surface area. This limits exchange. Folds, villi, and flattened shapes increase exchange efficiency.</p></div></details></div>
-        </article>
-
-        <article id="unit3" class="card section searchable hidden" data-keywords="unit 3 energetics ATP enzymes respiration photosynthesis glycolysis krebs calvin chemiosmosis electron transport chain fermentation">
-          <div class="card-header"><h2>Unit 3: Cellular Energetics</h2><div class="pill-row"><span class="pill">12-16%</span><span class="pill critical">Very high yield</span></div></div>
-          <div class="card-body"><details open><summary>ATP & Energy Coupling</summary><div><p>ATP hydrolysis releases usable energy that can be coupled to active transport, movement, and biosynthesis.</p></div></details><details><summary>Cellular Respiration</summary><div><ol><li><strong>Glycolysis:</strong> cytoplasm; glucose split; ATP and NADH produced; no oxygen required.</li><li><strong>Pyruvate oxidation:</strong> CO₂ released; acetyl-CoA formed.</li><li><strong>Krebs cycle:</strong> matrix; CO₂, NADH, FADH₂, small ATP/GTP produced.</li><li><strong>ETC:</strong> inner mitochondrial membrane; protons pumped; ATP synthase makes ATP; oxygen is final electron acceptor.</li></ol></div></details><details><summary>Photosynthesis</summary><div><ol><li><strong>Light reactions:</strong> thylakoid membrane; water split; O₂ released; ATP and NADPH produced.</li><li><strong>Calvin cycle:</strong> stroma; CO₂ fixed into sugars.</li></ol><div class="warning callout"><strong>Common trap:</strong> Plants perform both photosynthesis and cellular respiration.</div></div></details></div>
-        </article>
-
-        <article id="unit4" class="card section searchable hidden" data-keywords="unit 4 communication signal transduction feedback cell cycle mitosis checkpoints cancer cyclins cdks apoptosis homeostasis">
-          <div class="card-header"><h2>Unit 4: Cell Communication & Cell Cycle</h2><div class="pill-row"><span class="pill">10-15%</span><span class="pill ced">Systems interactions</span></div></div>
-          <div class="card-body"><details open><summary>Signal Transduction</summary><div><ol><li>Reception: ligand binds receptor.</li><li>Transduction: intracellular pathway relays and amplifies signal.</li><li>Response: gene expression, enzyme activation, transport change, secretion, movement, or division.</li></ol></div></details><details><summary>Feedback</summary><div><ul><li><strong>Negative feedback:</strong> response reduces original stimulus.</li><li><strong>Positive feedback:</strong> response amplifies stimulus.</li></ul></div></details><details><summary>Cell Cycle & Cancer</summary><div><p>Cell cycle: G1 → S → G2 → M. Checkpoints regulate progression. Cancer results from loss of regulation, often involving proto-oncogenes, oncogenes, tumor suppressor genes, and apoptosis pathways.</p></div></details></div>
-        </article>
-
-        <article id="unit5" class="card section searchable hidden" data-keywords="unit 5 heredity meiosis crossing over independent assortment mendelian genetics probability sex-linked linked genes inheritance">
-          <div class="card-header"><h2>Unit 5: Heredity</h2><div class="pill-row"><span class="pill">8-11%</span><span class="pill high">Probability heavy</span></div></div>
-          <div class="card-body"><details open><summary>Meiosis</summary><div><ul><li>Meiosis reduces chromosome number from diploid to haploid.</li><li>Crossing over occurs in prophase I.</li><li>Independent assortment occurs as homologous pairs align randomly.</li><li>Random fertilization further increases variation.</li></ul></div></details><details><summary>Inheritance Patterns</summary><div><ul><li>Complete dominance, incomplete dominance, codominance, multiple alleles, polygenic traits.</li><li>Sex-linked traits often appear more frequently in males when recessive and X-linked.</li><li>Linked genes are inherited together more often unless crossing over separates them.</li></ul></div></details></div>
-        </article>
-
-        <article id="unit6" class="card section searchable hidden" data-keywords="unit 6 gene expression DNA RNA protein transcription translation replication mutation operon lac trp biotechnology PCR gel CRISPR regulation">
-          <div class="card-header"><h2>Unit 6: Gene Expression & Regulation</h2><div class="pill-row"><span class="pill">12-16%</span><span class="pill critical">Very high yield</span></div></div>
-          <div class="card-body"><details open><summary>DNA, Replication, and Central Dogma</summary><div><ul><li>DNA strands are antiparallel and complementary.</li><li>Replication is semi-conservative.</li><li>Central dogma: DNA → RNA → protein.</li><li>Transcription makes RNA from DNA; translation uses mRNA codons to build polypeptides.</li></ul></div></details><details><summary>Gene Regulation</summary><div><ul><li><strong>lac operon:</strong> inducible; activated when lactose is present and glucose is low.</li><li><strong>trp operon:</strong> repressible; turned off when tryptophan is abundant.</li><li>Eukaryotic regulation includes transcription factors, chromatin modification, RNA processing, and post-translational modification.</li></ul></div></details><details><summary>Mutations & Biotechnology</summary><div><ul><li>Silent, missense, nonsense, insertion, deletion, frameshift.</li><li>PCR amplifies DNA, gel electrophoresis separates DNA by size, CRISPR edits DNA.</li></ul></div></details></div>
-        </article>
-
-        <article id="unit7" class="card section searchable hidden" data-keywords="unit 7 natural selection evolution hardy-weinberg allele frequency genetic drift gene flow mutation selection speciation phylogeny">
-          <div class="card-header"><h2>Unit 7: Natural Selection</h2><div class="pill-row"><span class="pill">13-20%</span><span class="pill critical">Highest yield</span></div></div>
-          <div class="card-body"><details open><summary>Evolution & Natural Selection</summary><div><ul><li>Evolution is change in allele frequencies in a population over generations.</li><li>Natural selection requires heritable variation, differential survival/reproduction, and environmental selection pressure.</li><li>Fitness means reproductive success, not strength.</li></ul></div></details><details><summary>Mechanisms of Evolution</summary><div><table><tr><th>Mechanism</th><th>Effect</th></tr><tr><td>Mutation</td><td>Introduces new alleles.</td></tr><tr><td>Natural selection</td><td>Nonrandom increase in traits that improve fitness.</td></tr><tr><td>Genetic drift</td><td>Random allele frequency changes, strongest in small populations.</td></tr><tr><td>Gene flow</td><td>Alleles move between populations.</td></tr></table></div></details><details><summary>Hardy-Weinberg</summary><div><p>Hardy-Weinberg is a null model. If allele or genotype frequencies deviate from expectations, evolution may be occurring.</p><div class="formula">p + q = 1<br>p² + 2pq + q² = 1</div></div></details></div>
-        </article>
-
-        <article id="unit8" class="card section searchable hidden" data-keywords="unit 8 9 ecology biodiversity population growth logistic exponential carrying capacity trophic energy nitrogen carbon water cycle cladogram phylogeny speciation isolation">
-          <div class="card-header"><h2>Units 8-9: Ecology, Biodiversity & Evolutionary Relationships</h2><div class="pill-row"><span class="pill">Combined final section</span><span class="pill ced">Systems + evolution</span></div></div>
-          <div class="card-body"><details open><summary>Population Ecology</summary><div><ul><li>Exponential growth occurs under ideal conditions with unlimited resources.</li><li>Logistic growth slows as population approaches carrying capacity.</li><li>Density-dependent factors include competition, predation, disease, and resource limitation.</li><li>Density-independent factors include weather, disasters, and seasonal changes.</li></ul></div></details><details><summary>Community & Ecosystem Ecology</summary><div><ul><li>Energy flows through trophic levels; matter cycles.</li><li>Only a fraction of energy transfers between trophic levels.</li><li>Interactions include competition, predation, mutualism, commensalism, and parasitism.</li></ul></div></details><details><summary>Biodiversity & Phylogeny</summary><div><ul><li>Nodes represent common ancestors.</li><li>Shared derived traits define clades.</li><li>Speciation can be allopatric or sympatric.</li><li>Prezygotic barriers prevent fertilization; postzygotic barriers reduce hybrid viability or fertility.</li></ul></div></details></div>
-        </article>
-
-        <article id="quant" class="card section searchable hidden" data-keywords="quantitative practice hardy-weinberg chi-square graph slope rate data analysis math calculation probability expected observed">
-          <div class="card-header"><h2>Quantitative Practice</h2><div class="pill-row"><span class="pill critical">Must practice</span><span class="pill high">Common FRQ skill</span></div></div>
-          <div class="card-body"><details open><summary>Hardy-Weinberg</summary><div><div class="formula">p + q = 1<br>p² + 2pq + q² = 1</div><div class="practice"><strong>Practice:</strong> 9% show a recessive trait. Find q, p, and percent heterozygous.<br><button class="answer-btn">Reveal answer</button><div class="answer">q² = 0.09, q = 0.30, p = 0.70, 2pq = 0.42 = 42% heterozygous.</div></div></div></details><details><summary>Chi-Square</summary><div><div class="formula">χ² = Σ [(O - E)² / E]<br>df = categories - 1</div><div class="practice"><strong>Practice:</strong> Expected 3:1 in 100 offspring. Observed: 80 dominant, 20 recessive. Calculate χ².<br><button class="answer-btn">Reveal answer</button><div class="answer">Expected 75 and 25. χ² = 25/75 + 25/25 = 1.33. df = 1. If critical value is 3.84, fail to reject the null.</div></div></div></details><details><summary>Graph Analysis & Rates</summary><div><div class="formula">rate = Δy / Δx</div><div class="practice"><strong>Practice:</strong> O₂ production: 0 min = 0 mL, 2 min = 10 mL, 4 min = 25 mL. Calculate rates.<br><button class="answer-btn">Reveal answer</button><div class="answer">0-2 min: 5 mL/min. 2-4 min: 7.5 mL/min.</div></div></div></details></div>
-        </article>
-
-        <article id="quiz" class="card section searchable hidden" data-keywords="quiz quizzes progress gamified points badges tracking adaptive practice student progress tracker name period export teacher">
-          <div class="card-header"><h2>Quizzes & Student Progress Tracker</h2><div class="pill-row"><span class="pill critical">Auto-graded</span><span class="pill high">Adaptive practice</span><span class="pill ced">Local student tracking</span></div></div>
-          <div class="card-body">
-            <div class="callout warning"><strong>Privacy note:</strong> Progress is saved only on this device/browser using local storage. For teacher collection, students should use the CSV export button and submit the file in Schoology.</div>
-            <div class="two-col">
-              <div class="callout">
-                <h3>Student Info</h3>
-                <label><strong>Name</strong><br><input id="studentName" type="text" placeholder="Student name" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;"></label>
-                <label><strong>Class / Period</strong><br><input id="studentPeriod" type="text" placeholder="Example: Period 3" style="border-radius:12px;border:1px solid var(--border);padding:10px;width:100%;margin:6px 0 10px;"></label>
-                <button class="quiz-btn" id="saveStudentBtn">Save Student Info</button>
-              </div>
-              <div class="callout"><h3>Progress</h3><p><strong>Points:</strong> <span id="points">0</span></p><p><strong>Mastery:</strong> <span id="mastery">0%</span></p><div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div><p><strong>Correct:</strong> <span id="correctCount">0</span> / <span id="attemptCount">0</span></p><p><strong>Weakest area:</strong> <span id="weakestUnit">Not enough data yet</span></p><div id="badgeArea"></div><button class="quiz-btn" id="exportBtn">Export Progress CSV</button> <button class="quiz-btn" id="resetBtn" style="background: var(--red);">Reset</button></div>
-            </div>
-
-            <details open><summary>Unit-by-Unit Progress</summary><div>
-              <table id="unitProgressTable"><tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr></table>
-            </div></details>
-
-            <div class="callout gold"><h3>Adaptive Practice</h3><p id="adaptiveText">Answer quiz questions to unlock targeted practice based on your weakest unit.</p><button class="quiz-btn" id="adaptiveBtn">Give Me Adaptive Practice</button></div>
-            <div id="quizContainer" class="quiz-box"></div>
-            <button class="quiz-btn" id="nextQuizBtn">Next Question</button>
-          </div>
-        </article>
-
-        <article id="frq" class="card section searchable hidden" data-keywords="FRQ free response practice claim evidence reasoning scoring rubric experiment design answers prompts enzymes energetics gene expression evolution cell transport ecology heredity chi square hardy weinberg">
-          <div class="card-header"><h2>FRQ Practice Center</h2><div class="pill-row"><span class="pill critical">Write to score points</span><span class="pill high">CED-style prompts</span></div></div>
-          <div class="card-body">
-            <div class="callout gold"><strong>FRQ formula:</strong> Answer the exact verb. Describe = what happens. Explain = why/how it happens. Justify = connect evidence to claim. Predict = state expected outcome. Calculate = show setup, answer, and units when needed.</div>
-            <div class="callout"><strong>Auto-feedback:</strong> Type a response, then click <em>Check my FRQ</em>. The dashboard looks for AP-style evidence: vocabulary, mechanism, prediction/claim, and justification. This is not a replacement for teacher scoring, but it helps students revise before submitting.</div>
-
-            <details open><summary>How to Score More FRQ Points</summary><div>
-              <ul>
-                <li>Label responses clearly as a, b, c, d.</li>
-                <li>Use biological vocabulary: allele frequency, active site, concentration gradient, signal transduction, carrying capacity.</li>
-                <li>Do not just name a process; explain the mechanism.</li>
-                <li>When data are provided, cite the data directly.</li>
-                <li>For experimental design, include independent variable, dependent variable, control, constants, and expected result.</li>
-              </ul>
-            </div></details>
-
-            <div class="frq-card"><h3>FRQ 1: Enzymes & Energetics</h3><p>A graph shows enzyme activity increasing from 10°C to 37°C and decreasing sharply above 45°C.</p><ol type="a"><li>Describe the trend shown in the graph.</li><li>Explain why activity decreases at high temperature.</li><li>Predict the effect of changing pH far from the optimum.</li><li>Justify your prediction using protein structure.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Award points for identifying the optimum temperature, explaining denaturation/changed active site, predicting reduced activity at nonoptimal pH, and connecting disrupted bonds/tertiary structure to reduced substrate binding.</div></div>
-
-            <div class="frq-card"><h3>FRQ 2: Cellular Respiration Data</h3><p>A researcher measures oxygen consumption in germinating seeds at 10°C, 22°C, and 35°C.</p><ol type="a"><li>Identify the dependent variable.</li><li>Explain why oxygen consumption can be used as a measure of cellular respiration.</li><li>Predict which temperature will likely show the highest respiration rate.</li><li>Justify your prediction using enzyme activity and metabolism.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> DV = oxygen consumption/rate. Oxygen is final electron acceptor in the ETC. Prediction should be supported by temperature effects on enzymes; extreme temperatures may reduce activity by disrupting protein structure.</div></div>
-
-            <div class="frq-card"><h3>FRQ 3: Photosynthesis Experiment</h3><p>Students use floating leaf disks to test photosynthesis rate under different light intensities.</p><ol type="a"><li>Identify the independent variable.</li><li>Identify one appropriate control.</li><li>Explain why disks float as photosynthesis occurs.</li><li>Predict how increasing light intensity affects the rate until another factor becomes limiting.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> IV = light intensity. Control could be dark/no light or constant CO₂/temperature. Disks float because O₂ accumulates in leaf tissue. Rate increases until another limiting factor such as CO₂ or enzyme capacity limits photosynthesis.</div></div>
-
-            <div class="frq-card"><h3>FRQ 4: Cell Transport & Osmosis</h3><p>A plant cell is placed in a hypertonic solution.</p><ol type="a"><li>Describe the direction of net water movement.</li><li>Explain the effect on the plant cell.</li><li>Predict the long-term outcome if the cell remains in the solution.</li><li>Justify using membrane properties and water potential/osmosis.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Water leaves the cell toward the higher solute concentration. The cell loses turgor pressure and plasmolyzes. Explanation should include selectively permeable membrane and osmosis down water potential gradient.</div></div>
-
-            <div class="frq-card"><h3>FRQ 5: Cell Communication</h3><p>A mutation changes the shape of a membrane receptor involved in a hormone signaling pathway.</p><ol type="a"><li>Describe the normal sequence of a signal transduction pathway.</li><li>Explain how the receptor mutation could affect the pathway.</li><li>Predict one possible cellular response if the ligand cannot bind.</li><li>Justify your prediction using structure-function reasoning.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Normal pathway: reception, transduction, response. Altered receptor shape can prevent ligand binding or activation. Cellular response may be reduced/absent because signal is not transmitted or amplified.</div></div>
-
-            <div class="frq-card"><h3>FRQ 6: Cell Cycle & Cancer</h3><p>A mutation in a tumor suppressor gene prevents a checkpoint protein from functioning.</p><ol type="a"><li>Describe the role of checkpoints in the cell cycle.</li><li>Explain how loss of checkpoint function can lead to cancer.</li><li>Predict how apoptosis could affect damaged cells.</li><li>Justify why mutations in regulatory genes can have large effects.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Checkpoints prevent division of damaged cells. Loss allows uncontrolled division and mutation accumulation. Apoptosis eliminates damaged cells. Regulatory genes affect many downstream cell cycle events.</div></div>
-
-            <div class="frq-card"><h3>FRQ 7: Meiosis & Heredity</h3><p>Two genes are located on the same chromosome. Offspring phenotypes do not match the expected independent assortment ratio.</p><ol type="a"><li>Explain why linked genes may not assort independently.</li><li>Describe how crossing over can produce recombinant offspring.</li><li>Predict how distance between genes affects recombination frequency.</li><li>Justify your prediction.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Linked genes are inherited together because they are on the same chromosome. Crossing over can separate alleles. Farther apart genes have higher recombination frequency because crossovers are more likely between them.</div></div>
-
-            <div class="frq-card"><h3>FRQ 8: Gene Expression & Mutation</h3><p>A point mutation changes a codon in a gene that codes for an enzyme.</p><ol type="a"><li>Describe transcription and translation.</li><li>Explain how the mutation could affect protein function.</li><li>Predict one possible phenotypic effect.</li><li>Justify using structure-function reasoning.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Transcription makes mRNA from DNA; translation uses codons to assemble amino acids. Mutation may change amino acid sequence, folding, active site, and enzyme function; phenotype depends on protein role.</div></div>
-
-            <div class="frq-card"><h3>FRQ 9: Gene Regulation</h3><p>Bacteria are grown in a medium containing lactose but no glucose.</p><ol type="a"><li>Predict whether the lac operon will be active.</li><li>Explain the role of lactose/allolactose in regulation.</li><li>Explain why absence of glucose increases lac operon transcription.</li><li>Justify how this regulation benefits the cell.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> lac operon active. Allolactose binds repressor, preventing it from blocking transcription. Low glucose increases cAMP-CAP activation. This allows efficient lactose metabolism only when useful.</div></div>
-
-            <div class="frq-card"><h3>FRQ 10: Hardy-Weinberg</h3><p>In a population of 500 individuals, 45 individuals show a recessive phenotype.</p><ol type="a"><li>Calculate q².</li><li>Calculate q and p.</li><li>Calculate the expected frequency of heterozygotes.</li><li>Identify one condition required for Hardy-Weinberg equilibrium.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> q² = 45/500 = 0.09. q = 0.30. p = 0.70. 2pq = 2(0.70)(0.30) = 0.42. Conditions include no selection, no mutation, no migration, large population, or random mating.</div></div>
-
-            <div class="frq-card"><h3>FRQ 11: Natural Selection</h3><p>A bacterial population becomes increasingly resistant to an antibiotic after repeated exposure.</p><ol type="a"><li>Explain how natural selection leads to resistance.</li><li>Describe the role of genetic variation.</li><li>Predict the change in allele frequency over time.</li><li>Justify using evolutionary principles.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Resistant variants survive/reproduce more under antibiotic pressure. Variation may arise by mutation. Resistance allele frequency increases because resistant individuals have higher fitness in that environment.</div></div>
-
-            <div class="frq-card"><h3>FRQ 12: Ecology + Evolution</h3><p>A drought reduces available food and water in an ecosystem. A small mammal population declines sharply.</p><ol type="a"><li>Explain how carrying capacity changes.</li><li>Describe how population growth is affected.</li><li>Predict how natural selection may act on the population.</li><li>Justify using ecology and evolution together.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Carrying capacity decreases due to reduced resources. Population growth slows or becomes negative. Traits improving survival/reproduction during drought may increase. Ecology creates selection pressure that drives evolutionary change.</div></div>
-
-            <div class="frq-card"><h3>FRQ 13: Chi-Square Genetics</h3><p>A monohybrid cross is expected to produce a 3:1 phenotype ratio. The observed offspring are 80 dominant and 20 recessive.</p><ol type="a"><li>Calculate the expected numbers for 100 offspring.</li><li>Calculate χ².</li><li>Identify degrees of freedom.</li><li>Explain whether the results support the expected ratio if the critical value is 3.84.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> Expected 75 and 25. χ² = (80-75)²/75 + (20-25)²/25 = 1.33. df = 1. Since 1.33 < 3.84, fail to reject the null; results are consistent with expected ratio.</div></div>
-
-            <div class="frq-card"><h3>FRQ 14: Cladograms & Biodiversity</h3><p>A cladogram shows species A and B sharing a more recent common ancestor with each other than with species C.</p><ol type="a"><li>Identify which two species are most closely related.</li><li>Explain what a node represents.</li><li>Describe how shared derived traits are used in cladograms.</li><li>Justify why DNA sequence comparisons can support evolutionary relationships.</li></ol><textarea placeholder="Student response..."></textarea><div class="frq-tools"><button type="button" class="frq-feedback-btn">Check my FRQ</button><button type="button" class="answer-btn">Reveal scoring guide</button></div><div class="feedback-panel"></div><div class="answer"><strong>Scoring guide:</strong> A and B are most closely related. A node represents a common ancestor. Shared derived traits define clades. More similar DNA sequences suggest more recent common ancestry.</div></div>
-          </div>
-        </article>
-
-        <article id="final" class="card section searchable hidden" data-keywords="final exam strategy common mistakes vocabulary claim evidence reasoning cram review">
-          <div class="card-header"><h2>Final Exam Strategy</h2></div>
-          <div class="card-body two-col"><div><h3>Common Mistakes</h3><ul><li>Saying individuals evolve instead of populations.</li><li>Forgetting fitness means reproductive success.</li><li>Saying enzymes change equilibrium or ΔG.</li><li>Forgetting plants perform respiration.</li><li>Not using units in calculations.</li></ul></div><div><h3>High-Scoring Stems</h3><ul><li>“The data support the claim because...”</li><li>“As ___ increases, ___ changes because...”</li><li>“This change would increase fitness by...”</li><li>“Water moves from ___ to ___ because...”</li></ul></div></div>
-        </article>
-      </section>
-    </div>
-  </main>
-
-  <footer>AP Biology Ultimate Study Dashboard • CED-aligned review and FRQ practice</footer>
-
-  <script>
-    var navButtons = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
-    var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
-    var searchInput = document.getElementById('search');
-
-    function showSection(targetId) {
-      for (var i = 0; i < sections.length; i++) {
-        sections[i].classList.toggle('hidden', sections[i].id !== targetId);
-      }
-      for (var j = 0; j < navButtons.length; j++) {
-        navButtons[j].classList.toggle('active', navButtons[j].getAttribute('data-target') === targetId);
-      }
-      if (searchInput) searchInput.value = '';
-    }
-
-    window.showSection = showSection;
-
-    for (var n = 0; n < navButtons.length; n++) {
-      navButtons[n].addEventListener('click', function(event) {
-        event.preventDefault();
-        showSection(this.getAttribute('data-target'));
-      });
-    }
-
-    var clearBtn = document.getElementById('clearSearchBtn');
-    if (clearBtn) clearBtn.addEventListener('click', function() { showSection('overview'); });
-
-    var printBtn = document.getElementById('printBtn');
-    if (printBtn) printBtn.addEventListener('click', function() { window.print(); });
-
-    if (searchInput) {
-      searchInput.addEventListener('input', function() {
-        var query = searchInput.value.trim().toLowerCase();
-        if (!query) { showSection('overview'); return; }
-        for (var b = 0; b < navButtons.length; b++) navButtons[b].classList.remove('active');
-        for (var s = 0; s < sections.length; s++) {
-          var text = (sections[s].innerText + ' ' + (sections[s].getAttribute('data-keywords') || '')).toLowerCase();
-          sections[s].classList.toggle('hidden', text.indexOf(query) === -1);
-        }
-      });
-    }
-
-    var answerButtons = document.querySelectorAll('.answer-btn');
-    for (var a = 0; a < answerButtons.length; a++) {
-      answerButtons[a].addEventListener('click', function() {
-        var answer = this.nextElementSibling;
-        if (!answer) return;
-        answer.classList.toggle('show');
-        this.textContent = answer.classList.contains('show') ? 'Hide answer' : 'Reveal answer';
-      });
-    }
-
-    var frqRubrics = [
-      { terms: ['trend','increase','decrease','temperature','denature','active site','protein','structure','ph','enzyme'], evidence: ['graph','37','45','10'] },
-      { terms: ['oxygen','respiration','electron transport','final electron acceptor','enzyme','temperature','metabolism'], evidence: ['10','22','35','rate','oxygen consumption'] },
-      { terms: ['light','photosynthesis','oxygen','co2','control','independent variable','dependent variable','rate'], evidence: ['light intensity','float','disk','oxygen'] },
-      { terms: ['hypertonic','osmosis','water','solute','plasmolysis','membrane','water potential'], evidence: ['higher solute','lower water potential','net movement'] },
-      { terms: ['signal','receptor','ligand','transduction','response','pathway','binding'], evidence: ['mutation','shape','bind'] },
-      { terms: ['checkpoint','cell cycle','mutation','tumor suppressor','cancer','apoptosis','division'], evidence: ['damaged','uncontrolled','regulatory'] },
-      { terms: ['linked genes','chromosome','crossing over','recombination','independent assortment','distance'], evidence: ['same chromosome','farther','closer','frequency'] },
-      { terms: ['transcription','translation','mutation','codon','amino acid','protein','phenotype','enzyme'], evidence: ['point mutation','sequence','active site'] },
-      { terms: ['lac operon','lactose','glucose','repressor','allolactose','cap','camp','transcription'], evidence: ['no glucose','lactose present'] },
-      { terms: ['q2','q²','q','p','2pq','hardy','weinberg','0.09','0.30','0.70','0.42'], evidence: ['45','500','recessive'] },
-      { terms: ['natural selection','variation','resistant','allele frequency','fitness','survive','reproduce'], evidence: ['antibiotic','exposure','population'] },
-      { terms: ['drought','carrying capacity','resources','population','natural selection','fitness','evolution'], evidence: ['food','water','declines'] },
-      { terms: ['expected','observed','chi-square','3:1','75','25','1.33','df','critical value','reject'], evidence: ['80','20','3.84'] },
-      { terms: ['cladogram','node','common ancestor','derived traits','dna','evolutionary relationship','clade'], evidence: ['a and b','species','sequence'] }
-    ];
-
-    function hasAny(text, list) {
-      for (var i = 0; i < list.length; i++) {
-        if (text.indexOf(list[i].toLowerCase()) !== -1) return true;
-      }
-      return false;
-    }
-
-    function hitCount(text, list) {
-      var count = 0;
-      for (var i = 0; i < list.length; i++) {
-        if (text.indexOf(list[i].toLowerCase()) !== -1) count++;
-      }
-      return count;
-    }
-
-    function scoreFrqResponse(text, rubric) {
-      var lower = text.toLowerCase();
-      var wordCount = lower.split(' ').filter(Boolean).length;
-      var vocabHits = hitCount(lower, rubric.terms);
-      var mechanismWords = ['because','therefore','causes','results','leads','changes','prevents','disrupts','increases','decreases'];
-      var justifyWords = ['justify','evidence','data','supports','structure','function','fitness','gradient','frequency','control'];
-      var score = 0;
-      if (wordCount >= 25) score++;
-      if (vocabHits >= 3) score++;
-      if (hasAny(lower, mechanismWords)) score++;
-      if (hasAny(lower, rubric.evidence)) score++;
-      if (hasAny(lower, justifyWords)) score++;
-      return { score: score, wordCount: wordCount, vocabHits: vocabHits, hasMechanism: hasAny(lower, mechanismWords), hasEvidence: hasAny(lower, rubric.evidence), hasJustification: hasAny(lower, justifyWords) };
-    }
-
-    function frqFeedbackHtml(result) {
-      var level = result.score >= 4 ? 'Strong AP-style response' : result.score >= 3 ? 'Developing response' : 'Needs revision';
-      var html = '<div class="feedback-score">Auto-feedback: ' + result.score + '/5 — ' + level + '</div>';
-      html += '<ul class="feedback-list">';
-      html += '<li>' + (result.wordCount >= 25 ? '<span class="feedback-hit">✓</span>' : '<span class="feedback-miss">✗</span>') + ' Developed response length</li>';
-      html += '<li>' + (result.vocabHits >= 3 ? '<span class="feedback-hit">✓</span>' : '<span class="feedback-miss">✗</span>') + ' Uses key biological vocabulary</li>';
-      html += '<li>' + (result.hasMechanism ? '<span class="feedback-hit">✓</span>' : '<span class="feedback-miss">✗</span>') + ' Explains a cause-and-effect mechanism</li>';
-      html += '<li>' + (result.hasEvidence ? '<span class="feedback-hit">✓</span>' : '<span class="feedback-miss">✗</span>') + ' References evidence, data, or scenario details</li>';
-      html += '<li>' + (result.hasJustification ? '<span class="feedback-hit">✓</span>' : '<span class="feedback-miss">✗</span>') + ' Provides justification using biological reasoning</li>';
-      html += '</ul><p class="small"><strong>Revision tip:</strong> Name the process, explain how it works, and connect scenario evidence to the biological outcome.</p>';
-      return html;
-    }
-
-    var feedbackButtons = document.querySelectorAll('.frq-feedback-btn');
-    for (var fb = 0; fb < feedbackButtons.length; fb++) {
-      feedbackButtons[fb].addEventListener('click', function() {
-        var card = this.closest('.frq-card');
-        var cards = Array.prototype.slice.call(document.querySelectorAll('.frq-card'));
-        var index = cards.indexOf(card);
-        var textarea = card.querySelector('textarea');
-        var panel = card.querySelector('.feedback-panel');
-        var rubric = frqRubrics[index] || frqRubrics[0];
-        var result = scoreFrqResponse(textarea.value || '', rubric);
-        panel.innerHTML = frqFeedbackHtml(result);
-        panel.classList.add('show');
-      });
-    }
-
-    var quizQuestions = [
-      { unit: 'Unit 1', q: 'Which interaction is primarily responsible for water cohesion?', choices: ['Ionic bonds', 'Hydrogen bonds', 'Peptide bonds', 'Phosphodiester bonds'], answer: 1, explain: 'Water cohesion results from hydrogen bonding between water molecules.' },
-      { unit: 'Unit 2', q: 'A plant cell placed in a hypertonic solution will most likely...', choices: ['Become turgid', 'Undergo plasmolysis', 'Lyse', 'Stop osmosis completely'], answer: 1, explain: 'Water leaves the cell, causing the membrane to pull away from the wall.' },
-      { unit: 'Unit 3', q: 'In cellular respiration, oxygen functions as the...', choices: ['First electron donor', 'Final electron acceptor', 'Main enzyme', 'Source of glucose'], answer: 1, explain: 'Oxygen accepts electrons at the end of the ETC.' },
-      { unit: 'Unit 4', q: 'Which sequence best represents cell signaling?', choices: ['Response → receptor → signal', 'Signal → receptor → transduction → response', 'DNA → RNA → protein', 'Meiosis → fertilization → mitosis'], answer: 1, explain: 'Signal transduction begins with reception and ends with cellular response.' },
-      { unit: 'Unit 5', q: 'Crossing over occurs during...', choices: ['Prophase I', 'Metaphase II', 'Cytokinesis', 'G1'], answer: 0, explain: 'Crossing over occurs in prophase I of meiosis.' },
-      { unit: 'Unit 6', q: 'The lac operon is best described as...', choices: ['Repressible', 'Inducible', 'Always off', 'Only eukaryotic'], answer: 1, explain: 'The lac operon is inducible and turns on when lactose is available.' },
-      { unit: 'Unit 7', q: 'In Hardy-Weinberg, q² represents...', choices: ['Dominant allele frequency', 'Heterozygous genotype frequency', 'Homozygous recessive genotype frequency', 'Total population size'], answer: 2, explain: 'q² is the frequency of homozygous recessive individuals.' },
-      { unit: 'Units 8-9', q: 'In a phylogenetic tree, a node represents...', choices: ['An extinct organism only', 'A common ancestor', 'A mutation rate', 'Carrying capacity'], answer: 1, explain: 'A node represents the most recent common ancestor of the branches from that node.' }
-    ];
-
-    var defaultState = { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
-    var currentQuestion = 0;
-
-    function copyDefaultState() {
-      return { points: 0, correct: 0, attempted: 0, badges: [], unitStats: {} };
-    }
-
-    function loadQuizState() {
-      try {
-        var saved = localStorage.getItem('apBioQuizState');
-        return saved ? JSON.parse(saved) : copyDefaultState();
-      } catch (e) {
-        return copyDefaultState();
-      }
-    }
-
-    function saveQuizState(state) {
-      try { localStorage.setItem('apBioQuizState', JSON.stringify(state)); } catch (e) {}
-    }
-
-    function mastery(state) {
-      return state.attempted ? Math.round((state.correct / state.attempted) * 100) : 0;
-    }
-
-    function weakestUnit(state) {
-      var entries = [];
-      for (var unit in state.unitStats) {
-        if (state.unitStats[unit].attempted > 0) entries.push([unit, state.unitStats[unit]]);
-      }
-      if (entries.length < 2) return 'Not enough data yet';
-      entries.sort(function(a, b) {
-        return (a[1].correct / a[1].attempted) - (b[1].correct / b[1].attempted);
-      });
-      return entries[0][0];
-    }
-
-    function updateBadges(state) {
-      if (state.correct >= 1 && state.badges.indexOf('first') === -1) state.badges.push('first');
-      if (state.correct >= 5 && state.badges.indexOf('five') === -1) state.badges.push('five');
-      if (mastery(state) >= 80 && state.attempted >= 5 && state.badges.indexOf('mastery') === -1) state.badges.push('mastery');
-    }
-
-    function renderProgress() {
-      var state = loadQuizState();
-      var pointsEl = document.getElementById('points');
-      if (!pointsEl) return;
-      document.getElementById('points').textContent = state.points;
-      document.getElementById('mastery').textContent = mastery(state) + '%';
-      document.getElementById('progressBar').style.width = Math.min(100, mastery(state)) + '%';
-      document.getElementById('correctCount').textContent = state.correct;
-      document.getElementById('attemptCount').textContent = state.attempted;
-      document.getElementById('weakestUnit').textContent = weakestUnit(state);
-
-      var savedName = localStorage.getItem('apBioStudentName') || '';
-      var savedPeriod = localStorage.getItem('apBioStudentPeriod') || '';
-      if (document.getElementById('studentName')) document.getElementById('studentName').value = savedName;
-      if (document.getElementById('studentPeriod')) document.getElementById('studentPeriod').value = savedPeriod;
-
-      var badgeArea = document.getElementById('badgeArea');
-      var labels = { first: 'First Correct!', five: '5 Correct', mastery: '80%+ Mastery' };
-      if (state.badges.length) {
-        badgeArea.innerHTML = state.badges.map(function(id) { return '<span class="badge">' + labels[id] + '</span>'; }).join('');
-      } else {
-        badgeArea.innerHTML = '<p class="small">No badges yet.</p>';
-      }
-
-      renderUnitProgressTable(state);
-    }
-
-    function renderUnitProgressTable(state) {
-      var table = document.getElementById('unitProgressTable');
-      if (!table) return;
-      var units = ['Unit 1', 'Unit 2', 'Unit 3', 'Unit 4', 'Unit 5', 'Unit 6', 'Unit 7', 'Units 8-9'];
-      var html = '<tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr>';
-      for (var i = 0; i < units.length; i++) {
-        var unit = units[i];
-        var stats = state.unitStats[unit] || { correct: 0, attempted: 0 };
-        var pct = stats.attempted ? Math.round((stats.correct / stats.attempted) * 100) : 0;
-        var action = 'Start practice';
-        if (stats.attempted >= 3 && pct < 70) action = 'Review notes + retry quiz';
-        if (stats.attempted >= 3 && pct >= 70) action = 'Move to FRQ practice';
-        if (stats.attempted >= 5 && pct >= 85) action = 'Mastery: maintain with mixed review';
-        html += '<tr><td>' + unit + '</td><td>' + stats.correct + '</td><td>' + stats.attempted + '</td><td>' + pct + '%</td><td>' + action + '</td></tr>';
-      }
-      table.innerHTML = html;
-    }
-
-    function renderQuiz() {
-      var box = document.getElementById('quizContainer');
-      if (!box) return;
-      var item = quizQuestions[currentQuestion % quizQuestions.length];
-      var html = '<h3>' + item.unit + ' Quiz</h3><p><strong>' + item.q + '</strong></p>';
-      for (var i = 0; i < item.choices.length; i++) {
-        html += '<button type="button" class="choice" data-choice="' + i + '">' + item.choices[i] + '</button>';
-      }
-      html += '<div id="quizFeedback" class="answer show small">Choose an answer.</div>';
-      box.innerHTML = html;
-      var choices = box.querySelectorAll('.choice');
-      for (var c = 0; c < choices.length; c++) {
-        choices[c].addEventListener('click', function() {
-          gradeQuiz(Number(this.getAttribute('data-choice')), item);
-        });
-      }
-    }
-
-    function gradeQuiz(choice, item) {
-      var state = loadQuizState();
-      state.attempted += 1;
-      if (!state.unitStats[item.unit]) state.unitStats[item.unit] = { correct: 0, attempted: 0 };
-      state.unitStats[item.unit].attempted += 1;
-      var buttons = document.querySelectorAll('#quizContainer .choice');
-      for (var i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = true;
-        if (i === item.answer) buttons[i].classList.add('correct');
-        if (i === choice && choice !== item.answer) buttons[i].classList.add('incorrect');
-      }
-      var isCorrect = choice === item.answer;
-      if (isCorrect) {
-        state.correct += 1;
-        state.points += 10;
-        state.unitStats[item.unit].correct += 1;
-      }
-      updateBadges(state);
-      saveQuizState(state);
-      document.getElementById('quizFeedback').innerHTML = (isCorrect ? '<strong>Correct!</strong> ' : '<strong>Not quite.</strong> ') + item.explain;
-      renderProgress();
-    }
-
-    var saveStudentBtn = document.getElementById('saveStudentBtn');
-    if (saveStudentBtn) saveStudentBtn.addEventListener('click', function() {
-      var name = document.getElementById('studentName') ? document.getElementById('studentName').value.trim() : '';
-      var period = document.getElementById('studentPeriod') ? document.getElementById('studentPeriod').value.trim() : '';
-      localStorage.setItem('apBioStudentName', name);
-      localStorage.setItem('apBioStudentPeriod', period);
-      saveStudentBtn.textContent = 'Saved!';
-      setTimeout(function() { saveStudentBtn.textContent = 'Save Student Info'; }, 1200);
-    });
-
-    var nextQuizBtn = document.getElementById('nextQuizBtn');
-    if (nextQuizBtn) nextQuizBtn.addEventListener('click', function() { currentQuestion += 1; renderQuiz(); });
-
-    var adaptiveBtn = document.getElementById('adaptiveBtn');
-    if (adaptiveBtn) adaptiveBtn.addEventListener('click', function() {
-      var weak = weakestUnit(loadQuizState());
-      var promptMap = {
-        'Unit 1': 'Explain how hydrogen bonding leads to one water property and one biological consequence.',
-        'Unit 2': 'Predict water movement for a cell in a hypertonic solution and justify with osmosis.',
-        'Unit 3': 'Explain how a proton gradient is used to make ATP during cellular respiration.',
-        'Unit 4': 'Trace a signal transduction pathway from ligand binding to cellular response.',
-        'Unit 5': 'Explain how crossing over and independent assortment increase genetic variation.',
-        'Unit 6': 'Explain how a mutation can alter protein structure and phenotype.',
-        'Unit 7': 'Use p + q = 1 and p² + 2pq + q² = 1 to calculate carrier frequency from q².',
-        'Units 8-9': 'Explain how reduced resources affect carrying capacity and natural selection.'
-      };
-      document.getElementById('adaptiveText').textContent = promptMap[weak] || 'Answer more quiz questions to generate targeted adaptive practice.';
-    });
-
-    var resetBtn = document.getElementById('resetBtn');
-    if (resetBtn) resetBtn.addEventListener('click', function() { localStorage.removeItem('apBioQuizState'); renderProgress(); renderQuiz(); });
-
-    var exportBtn = document.getElementById('exportBtn');
-    if (exportBtn) exportBtn.addEventListener('click', function() {
-      var state = loadQuizState();
-      var studentName = localStorage.getItem('apBioStudentName') || '';
-      var studentPeriod = localStorage.getItem('apBioStudentPeriod') || '';
-      var rows = [['Student Name', studentName], ['Class / Period', studentPeriod], ['Date', new Date().toLocaleString()], ['Points', state.points], ['Correct', state.correct], ['Attempted', state.attempted], ['Mastery', mastery(state) + '%'], ['Weakest Unit', weakestUnit(state)], [], ['Unit', 'Correct', 'Attempted', 'Mastery']];
-      var exportUnits = ['Unit 1', 'Unit 2', 'Unit 3', 'Unit 4', 'Unit 5', 'Unit 6', 'Unit 7', 'Units 8-9'];
-      for (var u = 0; u < exportUnits.length; u++) {
-        var unit = exportUnits[u];
-        var stats = state.unitStats[unit] || { correct: 0, attempted: 0 };
-        var pct = stats.attempted ? Math.round((stats.correct / stats.attempted) * 100) + '%' : '0%';
-        rows.push([unit, stats.correct, stats.attempted, pct]);
-      }
-      var csv = rows.map(function(row) { return row.map(function(cell) { return '"' + String(cell == null ? '' : cell).replace(/"/g, '""') + '"'; }).join(','); }).join('
-');
-      var blob = new Blob([csv], { type: 'text/csv' });
-      var url = URL.createObjectURL(blob);
-      var link = document.createElement('a');
-      link.href = url;
-      link.download = 'ap-biology-progress-report.csv';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    });
-
-    renderProgress();
-    renderQuiz();
-
-    showSection('overview');
-  </script>
+<header><h1>AP Biology Ultimate Study Dashboard</h1><p>CED-aligned review, quantitative practice, quizzes, student progress tracking, FRQ practice, and auto-feedback.</p></header>
+<section class="toolbar"><div class="toolbar-inner"><input id="search" type="search" placeholder="Search: chi-square, osmosis, lac operon, Hardy-Weinberg, photosynthesis..."/><div><button class="clear-btn" id="clearSearchBtn" type="button">Clear</button> <button class="print-btn" id="printBtn" type="button">Print / Save PDF</button></div></div></section>
+<main><div class="layout"><nav aria-label="Dashboard sections">
+<button type="button" class="nav-btn active" data-target="overview">Overview</button>
+<button type="button" class="nav-btn" data-target="unit1">Unit 1: Chemistry</button>
+<button type="button" class="nav-btn" data-target="unit2">Unit 2: Cells</button>
+<button type="button" class="nav-btn" data-target="unit3">Unit 3: Energetics</button>
+<button type="button" class="nav-btn" data-target="unit4">Unit 4: Communication</button>
+<button type="button" class="nav-btn" data-target="unit5">Unit 5: Heredity</button>
+<button type="button" class="nav-btn" data-target="unit6">Unit 6: Gene Expression</button>
+<button type="button" class="nav-btn" data-target="unit7">Unit 7: Natural Selection</button>
+<button type="button" class="nav-btn" data-target="unit8">Units 8-9: Ecology & Biodiversity</button>
+<button type="button" class="nav-btn" data-target="quant">Quantitative Practice</button>
+<button type="button" class="nav-btn" data-target="quiz">Quizzes & Progress</button>
+<button type="button" class="nav-btn" data-target="frq">FRQ Practice</button>
+<button type="button" class="nav-btn" data-target="final">Final Exam Strategy</button>
+</nav><section class="dashboard-grid">
+
+<article id="overview" class="card section" data-keywords="overview big ideas science practices CED"><div class="card-header"><h2>Exam Overview & CED Priorities</h2><div class="pill-row"><span class="pill ced">CED-aligned</span><span class="pill high">High-yield</span><span class="pill critical">FRQ-ready</span></div></div><div class="card-body"><div class="callout"><strong>AP Biology mindset:</strong> The exam rewards mechanism, evidence, and reasoning more than memorized definitions.</div><table><tr><th>Big Idea</th><th>Students must be able to...</th></tr><tr><td>Evolution</td><td>Explain how variation, selection, drift, gene flow, and mutation change populations.</td></tr><tr><td>Energetics</td><td>Trace energy transformations in enzymes, respiration, photosynthesis, ecosystems, and cellular work.</td></tr><tr><td>Information</td><td>Connect DNA, gene expression, regulation, mutation, inheritance, and phenotype.</td></tr><tr><td>Systems</td><td>Explain interactions through feedback, signaling, transport, ecology, and homeostasis.</td></tr></table></div></article>
+
+<article id="unit1" class="card section hidden" data-keywords="unit 1 chemistry water macromolecules enzymes hydrogen bonds"><div class="card-header"><h2>Unit 1: Chemistry of Life</h2><div class="pill-row"><span class="pill">8-11%</span></div></div><div class="card-body"><details open><summary>Water</summary><div><ul><li>Hydrogen bonding causes cohesion, adhesion, high specific heat, evaporative cooling, and ice being less dense.</li><li>Connect property to biological significance.</li></ul></div></details><details><summary>Macromolecules</summary><div><table><tr><th>Type</th><th>Building blocks</th><th>Key functions</th></tr><tr><td>Carbohydrates</td><td>Monosaccharides</td><td>Energy; structure</td></tr><tr><td>Lipids</td><td>Not true polymers</td><td>Membranes; hormones; long-term energy</td></tr><tr><td>Proteins</td><td>Amino acids</td><td>Enzymes; transport; signaling</td></tr><tr><td>Nucleic acids</td><td>Nucleotides</td><td>Information storage/transmission</td></tr></table></div></details><details><summary>Enzymes</summary><div><ul><li>Lower activation energy, not delta G or equilibrium.</li><li>Temperature/pH can disrupt protein structure and active sites.</li></ul></div></details></div></article>
+
+<article id="unit2" class="card section hidden" data-keywords="unit 2 cells membrane osmosis diffusion transport organelles tonicity"><div class="card-header"><h2>Unit 2: Cell Structure & Function</h2><div class="pill-row"><span class="pill">10-13%</span></div></div><div class="card-body"><details open><summary>Organelles</summary><div><table><tr><th>Structure</th><th>Function</th></tr><tr><td>Nucleus</td><td>DNA storage; transcription</td></tr><tr><td>Ribosome</td><td>Protein synthesis</td></tr><tr><td>ER/Golgi</td><td>Protein/lipid processing and shipping</td></tr><tr><td>Mitochondria</td><td>Cellular respiration</td></tr><tr><td>Chloroplast</td><td>Photosynthesis</td></tr></table></div></details><details><summary>Transport</summary><div><ul><li>Passive transport moves down gradients.</li><li>Active transport requires energy and moves against gradients.</li><li>Osmosis is water movement across a selectively permeable membrane.</li></ul><table><tr><th>Solution</th><th>Water movement</th><th>Effect</th></tr><tr><td>Hypertonic</td><td>Water leaves cell</td><td>Animal shrivels; plant plasmolyzes</td></tr><tr><td>Hypotonic</td><td>Water enters cell</td><td>Animal may lyse; plant turgid</td></tr></table></div></details></div></article>
+
+<article id="unit3" class="card section hidden" data-keywords="unit 3 energetics respiration photosynthesis ATP chemiosmosis enzyme"><div class="card-header"><h2>Unit 3: Cellular Energetics</h2><div class="pill-row"><span class="pill critical">12-16%</span></div></div><div class="card-body"><details open><summary>Respiration</summary><div><ol><li>Glycolysis: cytoplasm; ATP/NADH.</li><li>Pyruvate oxidation and Krebs: mitochondria; CO2, NADH, FADH2.</li><li>ETC: oxygen final electron acceptor; proton gradient powers ATP synthase.</li></ol></div></details><details><summary>Photosynthesis</summary><div><ol><li>Light reactions: thylakoids; ATP, NADPH, O2.</li><li>Calvin cycle: stroma; CO2 fixation into sugars.</li></ol><div class="warning callout">Plants photosynthesize and perform cellular respiration.</div></div></details></div></article>
+
+<article id="unit4" class="card section hidden" data-keywords="unit 4 signaling communication feedback cell cycle cancer"><div class="card-header"><h2>Unit 4: Cell Communication & Cell Cycle</h2><div class="pill-row"><span class="pill">10-15%</span></div></div><div class="card-body"><details open><summary>Cell Signaling</summary><div><p>Reception to transduction to response. Signal amplification can create large cellular responses from small signals.</p></div></details><details><summary>Cell Cycle</summary><div><p>G1 to S to G2 to M. Checkpoints, cyclins, and CDKs regulate division. Cancer results from loss of regulation.</p></div></details></div></article>
+
+<article id="unit5" class="card section hidden" data-keywords="unit 5 heredity meiosis genetics probability linked sex-linked"><div class="card-header"><h2>Unit 5: Heredity</h2><div class="pill-row"><span class="pill">8-11%</span></div></div><div class="card-body"><details open><summary>Meiosis & Variation</summary><div><ul><li>Crossing over, independent assortment, and random fertilization generate variation.</li><li>Linked genes do not assort independently unless crossing over separates them.</li></ul></div></details><details><summary>Inheritance</summary><div><p>Know dominance, incomplete dominance, codominance, sex-linkage, pedigree reasoning, and probability rules.</p></div></details></div></article>
+
+<article id="unit6" class="card section hidden" data-keywords="unit 6 gene expression DNA RNA transcription translation mutation operon PCR gel CRISPR"><div class="card-header"><h2>Unit 6: Gene Expression & Regulation</h2><div class="pill-row"><span class="pill critical">12-16%</span></div></div><div class="card-body"><details open><summary>Central Dogma</summary><div><p>DNA to RNA to protein. Transcription makes RNA; translation uses codons to build polypeptides.</p></div></details><details><summary>Regulation & Biotechnology</summary><div><ul><li>lac operon inducible; trp operon repressible.</li><li>PCR amplifies DNA, gel electrophoresis separates DNA, CRISPR edits DNA.</li></ul></div></details></div></article>
+
+<article id="unit7" class="card section hidden" data-keywords="unit 7 evolution natural selection hardy weinberg allele frequency drift gene flow"><div class="card-header"><h2>Unit 7: Natural Selection</h2><div class="pill-row"><span class="pill critical">13-20%</span></div></div><div class="card-body"><details open><summary>Evolution</summary><div><p>Evolution is change in allele frequencies in a population over generations. Individuals do not evolve.</p></div></details><details><summary>Hardy-Weinberg</summary><div><div class="formula">p + q = 1<br>p^2 + 2pq + q^2 = 1</div><p>Use as a null model. Conditions include no selection, mutation, migration, drift, and random mating.</p></div></details></div></article>
+
+<article id="unit8" class="card section hidden" data-keywords="unit 8 9 ecology biodiversity population carrying capacity trophic cladogram speciation"><div class="card-header"><h2>Units 8-9: Ecology, Biodiversity & Evolutionary Relationships</h2></div><div class="card-body"><details open><summary>Ecology</summary><div><ul><li>Exponential vs logistic growth; carrying capacity limits populations.</li><li>Energy flows; matter cycles.</li><li>Interactions: competition, predation, mutualism, commensalism, parasitism.</li></ul></div></details><details><summary>Biodiversity</summary><div><ul><li>Nodes on cladograms represent common ancestors.</li><li>Shared derived traits define clades.</li><li>Speciation depends on reproductive isolation.</li></ul></div></details></div></article>
+
+<article id="quant" class="card section hidden" data-keywords="quant hardy-weinberg chi-square graph slope rate"><div class="card-header"><h2>Quantitative Practice</h2></div><div class="card-body"><details open><summary>Hardy-Weinberg</summary><div><div class="formula">p + q = 1<br>p^2 + 2pq + q^2 = 1</div><div class="practice"><strong>Practice:</strong> 9% show a recessive trait. Find q, p, and heterozygotes.<br><button type="button" class="btn blue answer-btn">Reveal answer</button><div class="answer">q^2 = 0.09, q = 0.30, p = 0.70, 2pq = 0.42 = 42%.</div></div></div></details><details><summary>Chi-Square</summary><div><div class="formula">chi-square = sum[(O-E)^2/E]</div><div class="practice"><strong>Practice:</strong> Expected 3:1 in 100 offspring. Observed 80 and 20. Calculate chi-square.<br><button type="button" class="btn blue answer-btn">Reveal answer</button><div class="answer">Expected 75 and 25. chi-square = 25/75 + 25/25 = 1.33.</div></div></div></details><details><summary>Graph Rates</summary><div><div class="formula">rate = change in y / change in x</div><p>Use slope to calculate rates from graphs and always interpret biologically.</p></div></details></div></article>
+
+<article id="quiz" class="card section hidden" data-keywords="quiz progress tracker student mastery badges adaptive"><div class="card-header"><h2>Quizzes & Student Progress Tracker</h2><div class="pill-row"><span class="pill critical">Auto-graded</span><span class="pill high">Progress tracking</span></div></div><div class="card-body"><div class="callout warning"><strong>Privacy note:</strong> Progress is saved only in this browser using local storage. Students can export CSV and submit it in Schoology.</div><div class="two-col"><div class="callout"><h3>Student Info</h3><label>Name<br><input id="studentName" type="text" placeholder="Student name"></label><br><br><label>Class / Period<br><input id="studentPeriod" type="text" placeholder="Period 3"></label><br><br><button type="button" class="btn green" id="saveStudentBtn">Save Student Info</button></div><div class="callout"><h3>Progress</h3><p><strong>Points:</strong> <span id="points">0</span></p><p><strong>Mastery:</strong> <span id="mastery">0%</span></p><div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div><p><strong>Correct:</strong> <span id="correctCount">0</span> / <span id="attemptCount">0</span></p><p><strong>Weakest area:</strong> <span id="weakestUnit">Not enough data yet</span></p><div id="badgeArea"></div><button type="button" class="btn blue" id="exportBtn">Export Progress CSV</button> <button type="button" class="btn red" id="resetBtn">Reset</button></div></div><details open><summary>Unit-by-Unit Progress</summary><div><table id="unitProgressTable"></table></div></details><div class="callout gold"><h3>Adaptive Practice</h3><p id="adaptiveText">Answer quiz questions to unlock targeted practice based on your weakest unit.</p><button type="button" class="btn green" id="adaptiveBtn">Give Me Adaptive Practice</button></div><div id="quizContainer" class="quiz-box"></div><button type="button" class="btn blue" id="nextQuizBtn">Next Question</button></div></article>
+
+<article id="frq" class="card section hidden" data-keywords="frq free response scoring guide auto feedback"><div class="card-header"><h2>FRQ Practice Center</h2><div class="pill-row"><span class="pill critical">Auto-feedback</span><span class="pill high">Scoring guides</span></div></div><div class="card-body"><div class="callout gold"><strong>FRQ formula:</strong> Describe = what. Explain = why/how. Justify = evidence + reasoning. Predict = expected outcome.</div><div class="callout"><strong>Auto-feedback:</strong> Type a response, then click <em>Check my FRQ</em>. This checks for vocabulary, mechanism, evidence, and justification.</div><div id="frqList"></div></div></article>
+
+<article id="final" class="card section hidden" data-keywords="final exam strategy mistakes vocabulary"><div class="card-header"><h2>Final Exam Strategy</h2></div><div class="card-body two-col"><div><h3>Common Mistakes</h3><ul><li>Individuals do not evolve; populations evolve.</li><li>Fitness means reproductive success.</li><li>Enzymes do not change equilibrium or delta G.</li><li>Plants perform cellular respiration.</li><li>Use units and cite data.</li></ul></div><div><h3>High-Scoring Stems</h3><ul><li>The data support the claim because...</li><li>As ___ increases, ___ changes because...</li><li>This change would increase fitness by...</li><li>Water moves from ___ to ___ because...</li></ul></div></div></article>
+
+</section></div></main><footer>AP Biology Ultimate Study Dashboard</footer>
+<script>
+(function(){
+  'use strict';
+  var sections=[].slice.call(document.querySelectorAll('.section'));
+  var navButtons=[].slice.call(document.querySelectorAll('.nav-btn'));
+  var searchInput=document.getElementById('search');
+  function showSection(id){sections.forEach(function(s){s.classList.toggle('hidden',s.id!==id);});navButtons.forEach(function(b){b.classList.toggle('active',b.getAttribute('data-target')===id);});if(searchInput)searchInput.value='';}
+  window.showSection=showSection;
+  navButtons.forEach(function(btn){btn.addEventListener('click',function(e){e.preventDefault();showSection(btn.getAttribute('data-target'));});});
+  document.getElementById('clearSearchBtn').addEventListener('click',function(){showSection('overview');});
+  document.getElementById('printBtn').addEventListener('click',function(){window.print();});
+  searchInput.addEventListener('input',function(){var q=searchInput.value.trim().toLowerCase();if(!q){showSection('overview');return;}navButtons.forEach(function(b){b.classList.remove('active');});sections.forEach(function(s){var text=(s.innerText+' '+(s.getAttribute('data-keywords')||'')).toLowerCase();s.classList.toggle('hidden',text.indexOf(q)===-1);});});
+  document.addEventListener('click',function(e){if(e.target.classList.contains('answer-btn')){var ans=e.target.nextElementSibling;if(ans&&ans.classList.contains('answer')){ans.classList.toggle('show');e.target.textContent=ans.classList.contains('show')?'Hide answer':'Reveal answer';}}});
+  var quizQuestions=[
+    {unit:'Unit 1',q:'Which interaction is primarily responsible for water cohesion?',choices:['Ionic bonds','Hydrogen bonds','Peptide bonds','Phosphodiester bonds'],answer:1,explain:'Water cohesion results from hydrogen bonding.'},
+    {unit:'Unit 2',q:'A plant cell placed in a hypertonic solution will most likely...',choices:['Become turgid','Undergo plasmolysis','Lyse','Stop osmosis completely'],answer:1,explain:'Water leaves the cell, causing plasmolysis.'},
+    {unit:'Unit 3',q:'In cellular respiration, oxygen functions as the...',choices:['First electron donor','Final electron acceptor','Main enzyme','Source of glucose'],answer:1,explain:'Oxygen accepts electrons at the end of the ETC.'},
+    {unit:'Unit 4',q:'Which sequence best represents cell signaling?',choices:['Response, receptor, signal','Signal, receptor, transduction, response','DNA, RNA, protein','Meiosis, fertilization, mitosis'],answer:1,explain:'Cell signaling follows reception, transduction, response.'},
+    {unit:'Unit 5',q:'Crossing over occurs during...',choices:['Prophase I','Metaphase II','Cytokinesis','G1'],answer:0,explain:'Crossing over occurs in prophase I.'},
+    {unit:'Unit 6',q:'The lac operon is best described as...',choices:['Repressible','Inducible','Always off','Only eukaryotic'],answer:1,explain:'The lac operon is inducible.'},
+    {unit:'Unit 7',q:'In Hardy-Weinberg, q^2 represents...',choices:['Dominant allele frequency','Heterozygous frequency','Homozygous recessive frequency','Population size'],answer:2,explain:'q^2 is homozygous recessive genotype frequency.'},
+    {unit:'Units 8-9',q:'In a phylogenetic tree, a node represents...',choices:['An extinct organism only','A common ancestor','A mutation rate','Carrying capacity'],answer:1,explain:'A node represents a common ancestor.'}
+  ];
+  var currentQuestion=0;
+  function blankState(){return{points:0,correct:0,attempted:0,badges:[],unitStats:{}};}
+  function loadState(){try{return JSON.parse(localStorage.getItem('apBioQuizState'))||blankState();}catch(e){return blankState();}}
+  function saveState(s){localStorage.setItem('apBioQuizState',JSON.stringify(s));}
+  function mastery(s){return s.attempted?Math.round(s.correct/s.attempted*100):0;}
+  function weakestUnit(s){var arr=[];Object.keys(s.unitStats).forEach(function(u){if(s.unitStats[u].attempted>0)arr.push([u,s.unitStats[u]]);});if(arr.length<2)return'Not enough data yet';arr.sort(function(a,b){return a[1].correct/a[1].attempted-b[1].correct/b[1].attempted;});return arr[0][0];}
+  function updateBadges(s){if(s.correct>=1&&s.badges.indexOf('first')<0)s.badges.push('first');if(s.correct>=5&&s.badges.indexOf('five')<0)s.badges.push('five');if(mastery(s)>=80&&s.attempted>=5&&s.badges.indexOf('mastery')<0)s.badges.push('mastery');}
+  function renderUnitTable(s){var table=document.getElementById('unitProgressTable');if(!table)return;var units=['Unit 1','Unit 2','Unit 3','Unit 4','Unit 5','Unit 6','Unit 7','Units 8-9'];var html='<tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr>';units.forEach(function(u){var st=s.unitStats[u]||{correct:0,attempted:0};var pct=st.attempted?Math.round(st.correct/st.attempted*100):0;var action='Start practice';if(st.attempted>=3&&pct<70)action='Review notes + retry quiz';if(st.attempted>=3&&pct>=70)action='Move to FRQ practice';if(st.attempted>=5&&pct>=85)action='Mastery: maintain with mixed review';html+='<tr><td>'+u+'</td><td>'+st.correct+'</td><td>'+st.attempted+'</td><td>'+pct+'%</td><td>'+action+'</td></tr>';});table.innerHTML=html;}
+  function renderProgress(){var s=loadState();if(!document.getElementById('points'))return;document.getElementById('studentName').value=localStorage.getItem('apBioStudentName')||'';document.getElementById('studentPeriod').value=localStorage.getItem('apBioStudentPeriod')||'';document.getElementById('points').textContent=s.points;document.getElementById('mastery').textContent=mastery(s)+'%';document.getElementById('progressBar').style.width=mastery(s)+'%';document.getElementById('correctCount').textContent=s.correct;document.getElementById('attemptCount').textContent=s.attempted;document.getElementById('weakestUnit').textContent=weakestUnit(s);var labels={first:'First Correct!',five:'5 Correct',mastery:'80%+ Mastery'};document.getElementById('badgeArea').innerHTML=s.badges.length?s.badges.map(function(id){return'<span class=\"badge\">'+labels[id]+'</span>';}).join(''):'<p class=\"small\">No badges yet.</p>';renderUnitTable(s);}
+  function renderQuiz(){var box=document.getElementById('quizContainer');if(!box)return;var item=quizQuestions[currentQuestion%quizQuestions.length];var html='<h3>'+item.unit+' Quiz</h3><p><strong>'+item.q+'</strong></p>';item.choices.forEach(function(c,i){html+='<button type=\"button\" class=\"choice\" data-choice=\"'+i+'\">'+c+'</button>';});html+='<div id=\"quizFeedback\" class=\"answer show small\">Choose an answer.</div>';box.innerHTML=html;box.querySelectorAll('.choice').forEach(function(btn){btn.addEventListener('click',function(){gradeQuiz(Number(btn.getAttribute('data-choice')),item);});});}
+  function gradeQuiz(choice,item){var s=loadState();s.attempted++;if(!s.unitStats[item.unit])s.unitStats[item.unit]={correct:0,attempted:0};s.unitStats[item.unit].attempted++;var correct=choice===item.answer;document.querySelectorAll('#quizContainer .choice').forEach(function(b,i){b.disabled=true;if(i===item.answer)b.classList.add('correct');if(i===choice&&!correct)b.classList.add('incorrect');});if(correct){s.correct++;s.points+=10;s.unitStats[item.unit].correct++;}updateBadges(s);saveState(s);document.getElementById('quizFeedback').innerHTML=(correct?'<strong>Correct!</strong> ':'<strong>Not quite.</strong> ')+item.explain;renderProgress();}
+  document.getElementById('saveStudentBtn').addEventListener('click',function(){localStorage.setItem('apBioStudentName',document.getElementById('studentName').value.trim());localStorage.setItem('apBioStudentPeriod',document.getElementById('studentPeriod').value.trim());this.textContent='Saved!';var self=this;setTimeout(function(){self.textContent='Save Student Info';},1200);});
+  document.getElementById('nextQuizBtn').addEventListener('click',function(){currentQuestion++;renderQuiz();});
+  document.getElementById('adaptiveBtn').addEventListener('click',function(){var weak=weakestUnit(loadState());var map={'Unit 1':'Explain how hydrogen bonding leads to one water property and one biological consequence.','Unit 2':'Predict water movement for a cell in a hypertonic solution and justify using osmosis.','Unit 3':'Explain how a proton gradient is used to make ATP during respiration.','Unit 4':'Trace signal transduction from ligand binding to response.','Unit 5':'Explain how crossing over and independent assortment increase variation.','Unit 6':'Explain how a mutation can alter protein structure and phenotype.','Unit 7':'Calculate carrier frequency from q^2 using Hardy-Weinberg.','Units 8-9':'Explain how reduced resources affect carrying capacity and selection.'};document.getElementById('adaptiveText').textContent=map[weak]||'Answer more quiz questions to generate targeted adaptive practice.';});
+  document.getElementById('resetBtn').addEventListener('click',function(){localStorage.removeItem('apBioQuizState');renderProgress();renderQuiz();});
+  document.getElementById('exportBtn').addEventListener('click',function(){var s=loadState();var rows=[['Student Name',localStorage.getItem('apBioStudentName')||''],['Class / Period',localStorage.getItem('apBioStudentPeriod')||''],['Date',new Date().toLocaleString()],['Points',s.points],['Correct',s.correct],['Attempted',s.attempted],['Mastery',mastery(s)+'%'],['Weakest Unit',weakestUnit(s)],[],['Unit','Correct','Attempted','Mastery']];['Unit 1','Unit 2','Unit 3','Unit 4','Unit 5','Unit 6','Unit 7','Units 8-9'].forEach(function(u){var st=s.unitStats[u]||{correct:0,attempted:0};rows.push([u,st.correct,st.attempted,st.attempted?Math.round(st.correct/st.attempted*100)+'%':'0%']);});var csv=rows.map(function(r){return r.map(function(c){return '\"'+String(c==null?'':c).replace(/\"/g,'\"\"')+'\"';}).join(',');}).join('\\n');var blob=new Blob([csv],{type:'text/csv'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='ap-biology-progress-report.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);});
+
+  var frqs=[
+    ['FRQ 1: Enzymes & Energetics','A graph shows enzyme activity increasing from 10 C to 37 C and decreasing sharply above 45 C.',['Describe the trend.','Explain why activity decreases at high temperature.','Predict the effect of changing pH far from optimum.','Justify using protein structure.'],'Award points for optimum temperature, denaturation/active site explanation, pH prediction, and structure-function reasoning.'],
+    ['FRQ 2: Cellular Respiration Data','A researcher measures oxygen consumption in germinating seeds at 10 C, 22 C, and 35 C.',['Identify the dependent variable.','Explain why oxygen consumption measures respiration.','Predict which temperature likely has the highest rate.','Justify using enzyme activity and metabolism.'],'Oxygen is the final electron acceptor; respiration rate is inferred from oxygen consumption. Temperature affects enzyme-driven metabolism.'],
+    ['FRQ 3: Photosynthesis Experiment','Students use floating leaf disks to test photosynthesis rate under different light intensities.',['Identify the independent variable.','Identify one appropriate control.','Explain why disks float.','Predict how increasing light affects rate until another factor limits it.'],'Light intensity is IV; controls include dark/constant CO2/temp. O2 causes disks to float.'],
+    ['FRQ 4: Cell Transport & Osmosis','A plant cell is placed in a hypertonic solution.',['Describe water movement.','Explain the effect on the cell.','Predict the long-term outcome.','Justify using membrane properties and osmosis.'],'Water leaves; turgor pressure decreases; plasmolysis occurs; explain selectively permeable membrane and water potential.'],
+    ['FRQ 5: Cell Communication','A mutation changes the shape of a membrane receptor involved in a hormone signaling pathway.',['Describe normal signal transduction.','Explain how mutation affects the pathway.','Predict a cellular response if ligand cannot bind.','Justify with structure-function reasoning.'],'Reception-transduction-response; altered receptor may block ligand binding and downstream response.'],
+    ['FRQ 6: Cell Cycle & Cancer','A mutation in a tumor suppressor gene prevents a checkpoint protein from functioning.',['Describe checkpoints.','Explain how loss can lead to cancer.','Predict how apoptosis affects damaged cells.','Justify why regulatory gene mutations can have large effects.'],'Checkpoints prevent damaged cells from dividing; loss allows uncontrolled division; apoptosis removes damaged cells.'],
+    ['FRQ 7: Meiosis & Heredity','Two genes are located on the same chromosome and offspring do not match independent assortment.',['Explain why linked genes may not assort independently.','Describe how crossing over produces recombinants.','Predict how gene distance affects recombination frequency.','Justify your prediction.'],'Linked genes are inherited together; farther apart genes recombine more often.'],
+    ['FRQ 8: Gene Expression & Mutation','A point mutation changes a codon in a gene coding for an enzyme.',['Describe transcription and translation.','Explain how mutation could affect protein.','Predict one phenotype.','Justify using structure-function.'],'Mutation can alter amino acid sequence, folding, active site, function, and phenotype.'],
+    ['FRQ 9: Gene Regulation','Bacteria are grown in lactose but no glucose.',['Predict whether lac operon is active.','Explain lactose/allolactose role.','Explain why no glucose increases transcription.','Justify benefit to cell.'],'lac active; allolactose blocks repressor; low glucose increases cAMP-CAP activation.'],
+    ['FRQ 10: Hardy-Weinberg','In a population of 500, 45 show a recessive phenotype.',['Calculate q^2.','Calculate q and p.','Calculate expected heterozygote frequency.','Identify one HW condition.'],'q^2=45/500=.09; q=.30; p=.70; 2pq=.42; conditions include no selection/mutation/migration, large population, random mating.'],
+    ['FRQ 11: Natural Selection','A bacterial population becomes increasingly antibiotic resistant.',['Explain how natural selection leads to resistance.','Describe role of variation.','Predict allele frequency change.','Justify using evolutionary principles.'],'Resistant variants survive/reproduce more; resistance allele frequency increases under antibiotic selection.'],
+    ['FRQ 12: Ecology + Evolution','A drought reduces food and water and a mammal population declines.',['Explain carrying capacity change.','Describe population growth effect.','Predict natural selection effect.','Justify using ecology and evolution.'],'Carrying capacity decreases; growth becomes negative; drought acts as selection pressure.'],
+    ['FRQ 13: Chi-Square Genetics','A monohybrid cross expects 3:1. Observed offspring are 80 dominant and 20 recessive.',['Calculate expected values.','Calculate chi-square.','Identify df.','Interpret using critical value 3.84.'],'Expected 75/25; chi-square=1.33; df=1; fail to reject because 1.33<3.84.'],
+    ['FRQ 14: Cladograms & Biodiversity','A cladogram shows A and B sharing a more recent common ancestor than C.',['Identify most closely related species.','Explain what a node represents.','Describe shared derived traits.','Justify DNA comparisons.'],'A and B; node = common ancestor; shared derived traits define clades; similar DNA supports recent common ancestry.']
+  ];
+  var frqTerms=[['enzyme','temperature','denature','active site','protein'],['oxygen','respiration','electron','enzyme','temperature'],['light','photosynthesis','oxygen','control','rate'],['hypertonic','osmosis','water','plasmolysis','membrane'],['signal','receptor','ligand','transduction','response'],['checkpoint','cancer','mutation','apoptosis','cell cycle'],['linked','crossing over','recombination','chromosome','distance'],['transcription','translation','mutation','protein','phenotype'],['lac','lactose','glucose','repressor','transcription'],['q','p','2pq','hardy','weinberg'],['selection','variation','resistant','allele','fitness'],['drought','carrying capacity','resources','selection','population'],['expected','observed','chi-square','df','critical'],['cladogram','node','ancestor','derived','dna']];
+  function renderFrqs(){var host=document.getElementById('frqList');if(!host)return;host.innerHTML='';frqs.forEach(function(f,i){var card=document.createElement('div');card.className='frq-card';var list=f[2].map(function(x){return'<li>'+x+'</li>';}).join('');card.innerHTML='<h3>'+f[0]+'</h3><p>'+f[1]+'</p><ol type=\"a\">'+list+'</ol><textarea placeholder=\"Student response...\"></textarea><div class=\"frq-tools\"><button type=\"button\" class=\"btn green frq-check\" data-index=\"'+i+'\">Check my FRQ</button><button type=\"button\" class=\"btn blue frq-guide\">Reveal scoring guide</button></div><div class=\"feedback-panel\"></div><div class=\"answer\">'+f[3]+'</div>';host.appendChild(card);});}
+  function countHits(text,terms){var n=0;terms.forEach(function(t){if(text.indexOf(t)>-1)n++;});return n;}
+  function scoreFrq(text,index){var lower=text.toLowerCase();var words=lower.split(/\\s+/).filter(Boolean).length;var terms=frqTerms[index]||[];var hits=countHits(lower,terms);var mech=['because','therefore','causes','leads','results','changes','increases','decreases','prevents'].some(function(w){return lower.indexOf(w)>-1;});var evidence=['data','graph','observed','expected','supports','45','500','80','20','37','3.84'].some(function(w){return lower.indexOf(w)>-1;});var justify=['justify','structure','function','fitness','gradient','frequency','control','evidence'].some(function(w){return lower.indexOf(w)>-1;});var score=0;if(words>=25)score++;if(hits>=3)score++;if(mech)score++;if(evidence)score++;if(justify)score++;return{score:score,words:words,hits:hits,mech:mech,evidence:evidence,justify:justify};}
+  function feedbackHtml(r){function mark(ok){return ok?'<span class=\"feedback-hit\">✓</span>':'<span class=\"feedback-miss\">✗</span>';}var level=r.score>=4?'Strong AP-style response':r.score>=3?'Developing response':'Needs revision';return'<h4>Auto-feedback: '+r.score+'/5 - '+level+'</h4><ul><li>'+mark(r.words>=25)+' Developed response length</li><li>'+mark(r.hits>=3)+' Key vocabulary</li><li>'+mark(r.mech)+' Cause-and-effect mechanism</li><li>'+mark(r.evidence)+' Evidence/data/scenario detail</li><li>'+mark(r.justify)+' Justification with biological reasoning</li></ul><p class=\"small\"><strong>Revision tip:</strong> Name the process, explain how it works, and connect the evidence to the outcome.</p>';}
+  document.addEventListener('click',function(e){if(e.target.classList.contains('frq-guide')){var ans=e.target.parentElement.nextElementSibling.nextElementSibling;ans.classList.toggle('show');e.target.textContent=ans.classList.contains('show')?'Hide scoring guide':'Reveal scoring guide';}if(e.target.classList.contains('frq-check')){var card=e.target.closest('.frq-card');var index=Number(e.target.getAttribute('data-index'));var result=scoreFrq(card.querySelector('textarea').value||'',index);var panel=card.querySelector('.feedback-panel');panel.innerHTML=feedbackHtml(result);panel.classList.add('show');}});
+  renderFrqs();renderProgress();renderQuiz();showSection('overview');
+})();
+</script>
 </body>
 </html>
