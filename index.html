@@ -524,6 +524,7 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <div class="callout"><h3>Progress</h3><p><strong>Points:</strong> <span id="points">0</span></p><p><strong>Mastery:</strong> <span id="mastery">0%</span></p><div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div><p><strong>Correct:</strong> <span id="correctCount">0</span> / <span id="attemptCount">0</span></p><p><strong>Weakest unit:</strong> <span id="weakestUnit">Not enough data yet</span></p><button class="btn" id="exportBtn">Export CSV</button><button class="btn red" id="resetBtn">Reset</button></div>
 </div>
 <details open><summary>Question Count by Unit</summary><div><table id="countTable"></table></div></details>
+<details open><summary>Progress by Unit</summary><div><table id="unitProgressTable"><tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr></table></div></details>
 <div class="callout gold"><h3>Quiz Controls</h3>
 <label><strong>Mode</strong><select id="quizMode"><option value="adaptive">Adaptive: target weakest areas</option><option value="mixed">Mixed AP review</option><option value="unit">Specific unit</option></select></label><br>
 <label><strong>Specific Unit</strong><select id="quizUnitSelect"><option value="Unit 1">Unit 1: Chemistry of Life</option><option value="Unit 2">Unit 2: Cell Structure and Function</option><option value="Unit 3">Unit 3: Cellular Energetics</option><option value="Unit 4">Unit 4: Cell Communication and Cell Cycle</option><option value="Unit 5">Unit 5: Heredity</option><option value="Unit 6">Unit 6: Gene Expression and Regulation</option><option value="Unit 7">Unit 7: Natural Selection</option><option value="Unit 8">Unit 8: Ecology</option></select></label>
@@ -713,6 +714,23 @@ function renderProgress() {
   $('weakestUnit').textContent = weakestUnit(s) || 'Not enough data yet';
   $('studentName').value = localStorage.getItem('apBioName') || '';
   $('studentPeriod').value = localStorage.getItem('apBioPeriod') || '';
+  renderUnitProgressTable(s);
+}
+
+function renderUnitProgressTable(s) {
+  const table = $('unitProgressTable');
+  if (!table) return;
+  let html = '<tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr>';
+  Object.keys(questionCounts).forEach(unit => {
+    const st = s.unitStats[unit] || {correct:0, attempted:0};
+    const pct = st.attempted ? Math.round(100 * st.correct / st.attempted) : 0;
+    let action = 'Start practice';
+    if (st.attempted >= 3 && pct < 70) action = 'Review unit content + retry quiz';
+    if (st.attempted >= 3 && pct >= 70) action = 'Move to FRQ and graph practice';
+    if (st.attempted >= 5 && pct >= 85) action = 'Mastery: maintain with mixed review';
+    html += `<tr><td>${unit}</td><td>${st.correct}</td><td>${st.attempted}</td><td>${pct}%</td><td>${action}</td></tr>`;
+  });
+  table.innerHTML = html;
 }
 
 function renderCountTable() {
