@@ -60,7 +60,7 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <body>
 <header>
 <h1>AP Biology Ultimate Study Dashboard</h1>
-<p>Clean rebuild • Strict AP-style quiz bank • 256 questions • adaptive review • FRQ feedback • local progress tracking</p>
+<p>CED-expanded rebuild • Strict AP-style quiz bank • 256 questions • restored data/graph practice • adaptive review</p>
 </header>
 
 <section class="toolbar">
@@ -76,6 +76,7 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <button class="nav-btn active" data-target="overview">Overview</button>
 <button class="nav-btn" data-target="unit1">Unit 1: Chemistry of Life</button><button class="nav-btn" data-target="unit2">Unit 2: Cell Structure and Function</button><button class="nav-btn" data-target="unit3">Unit 3: Cellular Energetics</button><button class="nav-btn" data-target="unit4">Unit 4: Cell Communication and Cell Cycle</button><button class="nav-btn" data-target="unit5">Unit 5: Heredity</button><button class="nav-btn" data-target="unit6">Unit 6: Gene Expression and Regulation</button><button class="nav-btn" data-target="unit7">Unit 7: Natural Selection</button><button class="nav-btn" data-target="unit8">Unit 8: Ecology</button>
 <button class="nav-btn" data-target="quiz">Quizzes & Progress</button>
+<button class="nav-btn" data-target="graphs">Data & Graph Practice</button>
 <button class="nav-btn" data-target="frq">FRQ Practice</button>
 <button class="nav-btn" data-target="exam">AP Exam Simulation</button>
 <button class="nav-btn" data-target="mistakes">Mistake Tracker</button>
@@ -95,77 +96,423 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 </div></article>
 
 
-<article id="unit1" class="card section searchable hidden" data-keywords="water chemistry macromolecules protein structure enzymes functional groups">
-<div class="card-header"><h2>Unit 1: Chemistry of Life</h2><div class="pill-row"><span class="pill">8–11%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit1" class="card section searchable hidden" data-keywords="unit 1 chemistry water hydrogen bonding elements macromolecules carbohydrates lipids proteins nucleic acids enzymes functional groups dehydration hydrolysis structure function">
+<div class="card-header"><h2>Unit 1: Chemistry of Life</h2><div class="pill-row"><span class="pill">8–11%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> hydrogen bonding creates cohesion, adhesion, high specific heat, and solvent properties.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>water polarity</td><td>hydrogen bonding creates cohesion, adhesion, high specific heat, and solvent properties</td></tr><tr><td>macromolecule structure</td><td>monomers and bonds determine polymer function</td></tr><tr><td>protein folding</td><td>R-group interactions determine tertiary structure and function</td></tr><tr><td>enzyme activity</td><td>enzymes lower activation energy but do not change ΔG or equilibrium</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 1 is not just vocabulary. Students must explain how molecular structure causes biological function: water properties, polymer structure, protein folding, enzyme specificity, and nucleic acid information storage.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>1.1 Structure of Water and Hydrogen Bonding</td><td>Water is polar because oxygen is partially negative and hydrogen atoms are partially positive; hydrogen bonding causes cohesion, adhesion, high specific heat, evaporative cooling, solvent properties, and ice being less dense than liquid water.</td><td>Saying water properties come from covalent bonds between water molecules instead of hydrogen bonds between molecules.</td></tr>
+<tr><td>1.2 Elements of Life</td><td>Carbon, hydrogen, oxygen, nitrogen, phosphorus, and sulfur are key elements in biological molecules; carbon forms diverse molecules because it can make four covalent bonds.</td><td>Forgetting phosphorus in nucleic acids/ATP and sulfur in some amino acids.</td></tr>
+<tr><td>1.3 Introduction to Biological Macromolecules</td><td>Monomers are joined by dehydration synthesis and broken by hydrolysis; structure and bonding determine function.</td><td>Reversing dehydration and hydrolysis.</td></tr>
+<tr><td>1.4 Properties of Biological Macromolecules</td><td>Carbohydrates, lipids, proteins, and nucleic acids differ in monomers, bonds, polarity, and function.</td><td>Calling lipids true polymers like proteins or nucleic acids.</td></tr>
+<tr><td>1.5 Structure and Function of Biological Macromolecules</td><td>Protein primary structure determines folding; R-groups create interactions that affect tertiary/quaternary structure; nucleic acid base pairing supports replication and expression.</td><td>Assuming all amino acid substitutions have equal effects.</td></tr>
+<tr><td>1.6 Nucleic Acids</td><td>DNA/RNA are made of nucleotides with sugar-phosphate backbones and nitrogenous bases; complementary base pairing stores and transmits information.</td><td>Confusing nucleotide, nucleic acid, codon, and amino acid.</td></tr>
+</table>
+</div></details>
+<details><summary>Water Properties: Cause → Effect → Biology</summary><div>
+<ul>
+<li><strong>Cohesion:</strong> water molecules stick to each other because of hydrogen bonding; supports surface tension and water column movement in xylem.</li>
+<li><strong>Adhesion:</strong> water sticks to other polar surfaces; helps water move along plant cell walls and xylem.</li>
+<li><strong>High specific heat:</strong> water resists temperature change; stabilizes body temperature and aquatic habitats.</li>
+<li><strong>Evaporative cooling:</strong> high-energy water molecules leave during evaporation; sweating and transpiration cool organisms.</li>
+<li><strong>Solvent ability:</strong> polar water surrounds ions and polar molecules; supports transport and reactions.</li>
+<li><strong>Ice floats:</strong> hydrogen bonds create a less dense lattice in ice; aquatic life can survive under ice.</li>
+</ul>
+</div></details>
+<details><summary>Macromolecules: Monomer, Bond, Structure, Function</summary><div>
+<table>
+<tr><th>Macromolecule</th><th>Building blocks / bonds</th><th>High-yield functions</th><th>AP wording to use</th></tr>
+<tr><td>Carbohydrates</td><td>Monosaccharides linked by glycosidic bonds</td><td>Quick energy; starch/glycogen storage; cellulose structural support</td><td>“Different glycosidic linkages produce different structure and digestibility.”</td></tr>
+<tr><td>Lipids</td><td>Not true polymers; hydrophobic hydrocarbons; phospholipids are amphipathic</td><td>Membranes, hormones, insulation, long-term energy</td><td>“Hydrophobic interactions drive bilayer formation.”</td></tr>
+<tr><td>Proteins</td><td>Amino acids linked by peptide bonds</td><td>Enzymes, transport, signaling, structure, movement</td><td>“R-group chemistry affects folding and active-site shape.”</td></tr>
+<tr><td>Nucleic acids</td><td>Nucleotides linked by phosphodiester bonds; bases pair by hydrogen bonding</td><td>Information storage and transmission</td><td>“Complementary base pairing supports accurate replication and transcription.”</td></tr>
+</table>
+</div></details>
+<details><summary>Protein Structure and Enzyme Function</summary><div>
+<ul>
+<li><strong>Primary:</strong> amino acid sequence.</li>
+<li><strong>Secondary:</strong> alpha helices and beta sheets from backbone hydrogen bonding.</li>
+<li><strong>Tertiary:</strong> 3D shape from R-group interactions such as ionic bonds, hydrogen bonds, disulfide bridges, hydrophobic interactions, and van der Waals forces.</li>
+<li><strong>Quaternary:</strong> multiple polypeptide subunits working together.</li>
+<li><strong>Enzymes:</strong> lower activation energy; do not change ΔG, equilibrium, or whether a reaction is spontaneous.</li>
+<li><strong>Variables affecting enzymes:</strong> temperature, pH, substrate concentration, enzyme concentration, competitive inhibition, noncompetitive inhibition.</li>
+</ul>
+<div class="callout warning"><strong>FRQ trap:</strong> “The enzyme denatures” is usually not enough. Add: “because bonds/interactions maintaining tertiary structure are disrupted, changing the active site and reducing substrate binding.”</div>
+</div></details>
+<details><summary>Functional Groups and AP-Style Connections</summary><div>
+<table>
+<tr><th>Group</th><th>Property</th><th>Why it matters</th></tr>
+<tr><td>Hydroxyl</td><td>Polar; forms hydrogen bonds</td><td>Increases solubility of sugars and alcohols.</td></tr>
+<tr><td>Carboxyl</td><td>Acidic; can release H+</td><td>Found in amino acids and fatty acids.</td></tr>
+<tr><td>Amino</td><td>Basic; can accept H+</td><td>Found in amino acids; contributes to protein chemistry.</td></tr>
+<tr><td>Phosphate</td><td>Negative charge; energy transfer</td><td>Found in ATP, nucleotides, phospholipids.</td></tr>
+<tr><td>Sulfhydryl</td><td>Can form disulfide bridges</td><td>Stabilizes protein tertiary/quaternary structure.</td></tr>
+</table>
+</div></details>
+
 </div></article>
-<article id="unit2" class="card section searchable hidden" data-keywords="membranes osmosis organelles surface area to volume endomembrane system">
-<div class="card-header"><h2>Unit 2: Cell Structure and Function</h2><div class="pill-row"><span class="pill">10–13%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit2" class="card section searchable hidden" data-keywords="unit 2 cells organelles compartmentalization membranes osmosis diffusion active transport endomembrane surface area volume water potential tonicity cell size">
+<div class="card-header"><h2>Unit 2: Cell Structure and Function</h2><div class="pill-row"><span class="pill">10–13%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> small nonpolar molecules cross membranes more easily than ions or polar molecules.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>selective permeability</td><td>small nonpolar molecules cross membranes more easily than ions or polar molecules</td></tr><tr><td>osmosis</td><td>water moves toward lower water potential / higher solute concentration</td></tr><tr><td>compartmentalization</td><td>organelles create specialized environments for reactions</td></tr><tr><td>SA:V</td><td>smaller cells exchange materials more efficiently because of higher surface area-to-volume ratio</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 2 emphasizes structure-function relationships at the cellular level: organelles, compartmentalization, membranes, transport, cell size, osmosis, and water potential.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>2.1 Cell Structure: Subcellular Components</td><td>How ribosomes, ER, Golgi, lysosomes/vacuoles, mitochondria, chloroplasts, nucleus, and plasma membrane support cell function.</td><td>Listing organelles without connecting structure to function.</td></tr>
+<tr><td>2.2 Cell Structure and Function</td><td>Internal membranes create specialized environments and increase efficiency.</td><td>Ignoring how membranes increase surface area or isolate reactions.</td></tr>
+<tr><td>2.3 Cell Size</td><td>SA:V decreases as cells get larger, limiting exchange and helping explain small cell size and adaptations like folds/microvilli.</td><td>Saying volume increases slower than surface area; it is the opposite.</td></tr>
+<tr><td>2.4 Plasma Membranes</td><td>Fluid mosaic model; phospholipids, cholesterol, proteins, glycoproteins, and glycolipids contribute to permeability, recognition, and signaling.</td><td>Assuming all molecules cross membranes equally.</td></tr>
+<tr><td>2.5 Membrane Permeability</td><td>Small nonpolar molecules cross most easily; ions and polar molecules need transport proteins.</td><td>Forgetting the hydrophobic core blocks charged particles.</td></tr>
+<tr><td>2.6 Membrane Transport</td><td>Passive transport moves down gradients; active transport uses energy to move against gradients; bulk transport uses vesicles.</td><td>Calling all membrane movement active transport.</td></tr>
+<tr><td>2.7 Facilitated Diffusion</td><td>Channel/carrier proteins allow specific polar/charged substances to move down gradients.</td><td>Saying facilitated diffusion requires ATP.</td></tr>
+<tr><td>2.8 Tonicity and Osmoregulation</td><td>Water moves by osmosis toward lower water potential/higher solute concentration; tonicity predicts cell response.</td><td>Reversing water movement.</td></tr>
+<tr><td>2.9 Mechanisms of Transport</td><td>Endocytosis, exocytosis, pumps, cotransport, and gradients maintain homeostasis.</td><td>Missing the role of energy or gradients.</td></tr>
+<tr><td>2.10 Cell Compartmentalization</td><td>Eukaryotic cells use membranes to separate incompatible processes and increase efficiency.</td><td>Treating organelles as isolated facts instead of interacting systems.</td></tr>
+</table>
+</div></details>
+<details><summary>Endomembrane System: Protein Pathway</summary><div>
+<div class="formula">DNA instructions → ribosome/RER → vesicle → Golgi → vesicle → membrane/secretion/lysosome</div>
+<ul>
+<li>Proteins destined for secretion or membranes are translated by ribosomes associated with rough ER.</li>
+<li>The Golgi modifies, sorts, and packages proteins/lipids.</li>
+<li>Vesicles move products between organelles and to the membrane.</li>
+<li>Lysosomes digest and recycle macromolecules.</li>
+</ul>
+</div></details>
+<details><summary>Membrane Structure and Permeability</summary><div>
+<table>
+<tr><th>Component</th><th>Role</th><th>AP connection</th></tr>
+<tr><td>Phospholipids</td><td>Amphipathic bilayer</td><td>Hydrophobic core creates selective permeability.</td></tr>
+<tr><td>Cholesterol</td><td>Adjusts fluidity</td><td>Prevents membrane from becoming too rigid or too fluid.</td></tr>
+<tr><td>Channel proteins</td><td>Permit specific ions/water to move down gradients</td><td>Specificity depends on shape and charge.</td></tr>
+<tr><td>Carrier proteins/pumps</td><td>Move substances; pumps require energy</td><td>Active transport maintains gradients.</td></tr>
+<tr><td>Glycoproteins/glycolipids</td><td>Recognition and signaling</td><td>Cells identify self/nonself and receive signals.</td></tr>
+</table>
+</div></details>
+<details><summary>Osmosis, Tonicity, and Water Potential</summary><div>
+<ul>
+<li><strong>Hypertonic solution:</strong> water leaves the cell; animal cells shrink; plant cells plasmolyze.</li>
+<li><strong>Hypotonic solution:</strong> water enters the cell; animal cells may lyse; plant cells become turgid.</li>
+<li><strong>Isotonic solution:</strong> no net water movement.</li>
+<li><strong>Water potential:</strong> water moves from higher Ψ to lower Ψ; solutes lower Ψ.</li>
+<li><strong>Plant cells:</strong> pressure potential from the cell wall can oppose water entry.</li>
+</ul>
+<div class="callout warning"><strong>Point-earning phrase:</strong> “Water moves out of the cell by osmosis because the surrounding solution has a higher solute concentration and therefore lower water potential.”</div>
+</div></details>
+<details><summary>Experimental Design Connections</summary><div>
+<ul>
+<li>Dialysis tubing models selective permeability.</li>
+<li>Percent mass change can be used to infer water movement.</li>
+<li>The isotonic concentration is where percent mass change is approximately zero.</li>
+<li>Controls include same bag size, same time, same temperature, same starting volume/mass.</li>
+</ul>
+</div></details>
+
 </div></article>
-<article id="unit3" class="card section searchable hidden" data-keywords="enzymes cellular respiration photosynthesis ATP chemiosmosis">
-<div class="card-header"><h2>Unit 3: Cellular Energetics</h2><div class="pill-row"><span class="pill">12–16%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit3" class="card section searchable hidden" data-keywords="unit 3 energetics enzymes cellular respiration photosynthesis ATP NADH FADH2 chemiosmosis proton gradient ETC Calvin cycle glycolysis fermentation">
+<div class="card-header"><h2>Unit 3: Cellular Energetics</h2><div class="pill-row"><span class="pill">12–16%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> electrons from NADH/FADH2 power proton pumping and ATP synthesis.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>respiration</td><td>electrons from NADH/FADH2 power proton pumping and ATP synthesis</td></tr><tr><td>photosynthesis</td><td>light reactions produce ATP/NADPH and the Calvin cycle fixes CO2</td></tr><tr><td>enzymes</td><td>temperature, pH, inhibitors, and substrate concentration affect reaction rate</td></tr><tr><td>energy coupling</td><td>ATP hydrolysis can drive endergonic cellular work</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 3 is one of the highest-yield units. Students must connect enzymes, energy transfer, redox reactions, electron transport, proton gradients, photosynthesis, respiration, and data-based rate analysis.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>3.1 Enzyme Structure</td><td>Enzyme specificity depends on active-site shape and chemical interactions with substrates.</td><td>Saying enzymes are used up or add energy.</td></tr>
+<tr><td>3.2 Enzyme Catalysis</td><td>Enzymes lower activation energy; rate changes with pH, temperature, substrate concentration, enzyme concentration, and inhibitors.</td><td>Confusing activation energy with ΔG.</td></tr>
+<tr><td>3.3 Environmental Impacts on Enzyme Function</td><td>Denaturation or altered active-site shape changes reaction rate.</td><td>Not linking altered shape to reduced substrate binding.</td></tr>
+<tr><td>3.4 Cellular Energy</td><td>ATP hydrolysis releases energy that can be coupled to cellular work.</td><td>Saying ATP stores unlimited energy or is not recycled.</td></tr>
+<tr><td>3.5 Photosynthesis</td><td>Light reactions convert light energy to ATP/NADPH; Calvin cycle fixes CO₂ into carbohydrates.</td><td>Saying the Calvin cycle requires light directly or releases O₂.</td></tr>
+<tr><td>3.6 Cellular Respiration</td><td>Glycolysis, pyruvate oxidation, Krebs cycle, ETC, and chemiosmosis transfer energy from glucose to ATP.</td><td>Forgetting oxygen is the final electron acceptor.</td></tr>
+<tr><td>3.7 Fitness</td><td>Metabolic variation can affect survival and reproduction in specific environments.</td><td>Using “fitness” as strength instead of reproductive success.</td></tr>
+</table>
+</div></details>
+<details><summary>Enzyme Rate and Inhibition</summary><div>
+<ul>
+<li><strong>Competitive inhibitor:</strong> binds active site; increasing substrate concentration can reduce its effect.</li>
+<li><strong>Noncompetitive inhibitor:</strong> binds elsewhere; changes enzyme shape/function; cannot usually be overcome by more substrate.</li>
+<li><strong>Substrate saturation:</strong> rate levels off when active sites are mostly occupied.</li>
+<li><strong>Temperature/pH:</strong> each enzyme has an optimum; extremes disrupt interactions maintaining shape.</li>
+</ul>
+</div></details>
+<details><summary>Cellular Respiration: Track Electrons and Protons</summary><div>
+<table>
+<tr><th>Stage</th><th>Location</th><th>Major outputs / meaning</th></tr>
+<tr><td>Glycolysis</td><td>Cytoplasm</td><td>ATP, NADH, pyruvate; does not require oxygen directly.</td></tr>
+<tr><td>Pyruvate oxidation</td><td>Mitochondrial matrix</td><td>Acetyl-CoA, CO₂, NADH.</td></tr>
+<tr><td>Krebs cycle</td><td>Mitochondrial matrix</td><td>CO₂, NADH, FADH₂, small ATP/GTP.</td></tr>
+<tr><td>ETC and chemiosmosis</td><td>Inner mitochondrial membrane</td><td>Electrons power proton pumping; oxygen accepts electrons; ATP synthase uses proton gradient.</td></tr>
+<tr><td>Fermentation</td><td>Cytoplasm</td><td>Regenerates NAD⁺ when oxygen is unavailable so glycolysis can continue.</td></tr>
+</table>
+</div></details>
+<details><summary>Photosynthesis: Light Reactions and Calvin Cycle</summary><div>
+<ul>
+<li><strong>Light reactions:</strong> thylakoid membranes; water is split; O₂ is released; ATP and NADPH are produced.</li>
+<li><strong>Calvin cycle:</strong> stroma; CO₂ is fixed; ATP and NADPH are used to build carbohydrate.</li>
+<li><strong>Limiting factors:</strong> light, CO₂, temperature, water, and enzyme capacity can limit rate.</li>
+<li><strong>Plants perform respiration:</strong> plants do photosynthesis and cellular respiration.</li>
+</ul>
+<div class="callout warning"><strong>FRQ trap:</strong> Do not write “photosynthesis makes energy.” Better: “Photosynthesis converts light energy into chemical energy stored in carbohydrates.”</div>
+</div></details>
+<details><summary>Quantitative Skills in Unit 3</summary><div>
+<ul>
+<li>Calculate rate as slope: Δy/Δx.</li>
+<li>Use oxygen production as evidence of photosynthesis.</li>
+<li>Use oxygen consumption or CO₂ production as evidence of respiration.</li>
+<li>Interpret plateaus as limiting factors or enzyme saturation.</li>
+</ul>
+</div></details>
+
 </div></article>
-<article id="unit4" class="card section searchable hidden" data-keywords="signal transduction feedback cell cycle cancer apoptosis">
-<div class="card-header"><h2>Unit 4: Cell Communication and Cell Cycle</h2><div class="pill-row"><span class="pill">10–15%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit4" class="card section searchable hidden" data-keywords="unit 4 cell communication signal transduction feedback homeostasis cell cycle mitosis checkpoints cyclin CDK cancer apoptosis ligand receptor phosphorylation second messenger">
+<div class="card-header"><h2>Unit 4: Cell Communication and Cell Cycle</h2><div class="pill-row"><span class="pill">10–15%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> reception, transduction, and response connect signals to cellular changes.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>cell signaling</td><td>reception, transduction, and response connect signals to cellular changes</td></tr><tr><td>feedback</td><td>negative feedback stabilizes systems while positive feedback amplifies responses</td></tr><tr><td>cell cycle</td><td>checkpoints regulate division and prevent damaged cells from dividing</td></tr><tr><td>cancer</td><td>mutations in regulatory genes can cause uncontrolled cell division</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 4 asks students to explain how cells receive information, relay signals, produce responses, maintain homeostasis through feedback, and regulate the cell cycle.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>4.1 Cell Communication</td><td>Cells communicate by direct contact, local signaling, and long-distance signaling.</td><td>Forgetting that signal type depends on distance and target cells.</td></tr>
+<tr><td>4.2 Introduction to Signal Transduction</td><td>Reception → transduction → response; receptors are specific to ligands.</td><td>Writing “the signal happens” without steps.</td></tr>
+<tr><td>4.3 Signal Transduction</td><td>Pathways use phosphorylation cascades, second messengers, and amplification.</td><td>Ignoring amplification or intracellular relay.</td></tr>
+<tr><td>4.4 Changes in Signal Transduction Pathways</td><td>Mutations, drugs, toxins, or receptor changes can alter pathway output.</td><td>Assuming pathway works normally if receptor cannot bind ligand.</td></tr>
+<tr><td>4.5 Feedback</td><td>Negative feedback stabilizes; positive feedback amplifies until endpoint.</td><td>Equating negative with bad and positive with good.</td></tr>
+<tr><td>4.6 Cell Cycle</td><td>G1, S, G2, M; DNA replication in S; division in M.</td><td>Confusing mitosis with the entire cell cycle.</td></tr>
+<tr><td>4.7 Regulation of Cell Cycle</td><td>Cyclins, CDKs, checkpoints, tumor suppressors, proto-oncogenes, and apoptosis regulate division.</td><td>Not linking mutation to uncontrolled division.</td></tr>
+</table>
+</div></details>
+<details><summary>Signal Pathway Template</summary><div>
+<div class="formula">Ligand → receptor → transduction/amplification → cellular response</div>
+<ul>
+<li><strong>Reception:</strong> ligand binds receptor; receptor shape determines specificity.</li>
+<li><strong>Transduction:</strong> intracellular relay often involves phosphorylation cascades or second messengers like cAMP/Ca²⁺.</li>
+<li><strong>Response:</strong> gene expression, enzyme activation, secretion, movement, or cell division.</li>
+</ul>
+</div></details>
+<details><summary>Feedback and Homeostasis</summary><div>
+<table>
+<tr><th>Type</th><th>Effect</th><th>Example-style explanation</th></tr>
+<tr><td>Negative feedback</td><td>Reduces stimulus and returns system toward set point</td><td>Blood glucose regulation, thermoregulation, many hormones.</td></tr>
+<tr><td>Positive feedback</td><td>Amplifies response until endpoint</td><td>Blood clotting, labor contractions, fruit ripening.</td></tr>
+</table>
+</div></details>
+<details><summary>Cell Cycle and Cancer</summary><div>
+<ul>
+<li><strong>Checkpoints:</strong> verify DNA integrity and correct chromosome attachment.</li>
+<li><strong>Cyclins/CDKs:</strong> regulate progression through checkpoints.</li>
+<li><strong>Proto-oncogenes:</strong> normally stimulate division; gain-of-function can become oncogenes.</li>
+<li><strong>Tumor suppressor genes:</strong> normally slow division or promote repair/apoptosis; loss-of-function can promote cancer.</li>
+<li><strong>Apoptosis:</strong> programmed cell death removes damaged or unnecessary cells.</li>
+</ul>
+</div></details>
+
 </div></article>
-<article id="unit5" class="card section searchable hidden" data-keywords="meiosis inheritance probability linked genes pedigrees">
-<div class="card-header"><h2>Unit 5: Heredity</h2><div class="pill-row"><span class="pill">8–11%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit5" class="card section searchable hidden" data-keywords="unit 5 heredity meiosis crossing over independent assortment inheritance probability pedigree sex linked linked genes recombination nondisjunction chromosomal inheritance">
+<div class="card-header"><h2>Unit 5: Heredity</h2><div class="pill-row"><span class="pill">8–11%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> crossing over and independent assortment increase genetic variation.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>meiosis</td><td>crossing over and independent assortment increase genetic variation</td></tr><tr><td>linked genes</td><td>genes on the same chromosome are inherited together unless crossing over separates them</td></tr><tr><td>inheritance patterns</td><td>dominance, codominance, incomplete dominance, and sex linkage affect phenotype ratios</td></tr><tr><td>probability</td><td>product and sum rules predict inheritance outcomes</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 5 emphasizes how meiosis creates genetic variation and how inheritance patterns are predicted using probability, pedigrees, and chromosome behavior.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>5.1 Meiosis</td><td>Meiosis I separates homologous chromosomes; meiosis II separates sister chromatids; gametes are haploid.</td><td>Confusing homologous chromosomes with sister chromatids.</td></tr>
+<tr><td>5.2 Meiosis and Genetic Diversity</td><td>Crossing over, independent assortment, and random fertilization increase variation.</td><td>Saying meiosis creates identical cells.</td></tr>
+<tr><td>5.3 Mendelian Genetics</td><td>Dominant/recessive inheritance, genotype/phenotype, Punnett squares, product and sum rules.</td><td>Assuming dominant means common or beneficial.</td></tr>
+<tr><td>5.4 Non-Mendelian Genetics</td><td>Incomplete dominance, codominance, multiple alleles, polygenic traits, linked genes, sex-linked traits.</td><td>Trying to force every cross into a simple 3:1 ratio.</td></tr>
+<tr><td>5.5 Environmental Effects on Phenotype</td><td>Environment can influence phenotype without changing genotype.</td><td>Ignoring environmental contributions to traits.</td></tr>
+<tr><td>5.6 Chromosomal Inheritance</td><td>Nondisjunction and chromosomal abnormalities can affect phenotype.</td><td>Confusing nondisjunction with mutation in a single gene.</td></tr>
+</table>
+</div></details>
+<details><summary>Meiosis: What Separates When?</summary><div>
+<ul>
+<li><strong>Prophase I:</strong> homologous chromosomes pair; crossing over creates recombinant chromatids.</li>
+<li><strong>Metaphase I:</strong> homologous pairs line up independently.</li>
+<li><strong>Anaphase I:</strong> homologous chromosomes separate.</li>
+<li><strong>Meiosis II:</strong> sister chromatids separate.</li>
+<li><strong>Outcome:</strong> four genetically different haploid cells.</li>
+</ul>
+</div></details>
+<details><summary>Inheritance Patterns</summary><div>
+<table>
+<tr><th>Pattern</th><th>Key evidence</th><th>Example AP wording</th></tr>
+<tr><td>Complete dominance</td><td>One allele masks another in heterozygote</td><td>Phenotype does not reveal whether genotype is AA or Aa.</td></tr>
+<tr><td>Incomplete dominance</td><td>Heterozygote intermediate</td><td>Red × white gives pink.</td></tr>
+<tr><td>Codominance</td><td>Both alleles expressed</td><td>IAIB gives AB blood.</td></tr>
+<tr><td>Sex-linked</td><td>Often more common in males for X-linked recessive traits</td><td>Males express one recessive X allele because they have one X chromosome.</td></tr>
+<tr><td>Linked genes</td><td>More parental than recombinant offspring</td><td>Genes on the same chromosome are inherited together unless crossing over separates them.</td></tr>
+<tr><td>Polygenic</td><td>Continuous variation</td><td>Many genes contribute to phenotype.</td></tr>
+</table>
+</div></details>
+<details><summary>Probability and Mapping</summary><div>
+<ul>
+<li><strong>Product rule:</strong> probability of A and B.</li>
+<li><strong>Sum rule:</strong> probability of A or B.</li>
+<li><strong>Recombination frequency:</strong> approximates map distance in centimorgans/map units.</li>
+<li><strong>Chi-square:</strong> tests whether observed ratios differ significantly from expected ratios.</li>
+</ul>
+</div></details>
+
 </div></article>
-<article id="unit6" class="card section searchable hidden" data-keywords="DNA RNA mutation operons biotechnology">
-<div class="card-header"><h2>Unit 6: Gene Expression and Regulation</h2><div class="pill-row"><span class="pill">12–16%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit6" class="card section searchable hidden" data-keywords="unit 6 gene expression regulation DNA RNA replication transcription translation mutation operon lac trp epigenetics biotechnology PCR gel electrophoresis CRISPR plasmid restriction enzyme">
+<div class="card-header"><h2>Unit 6: Gene Expression and Regulation</h2><div class="pill-row"><span class="pill">12–16%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> DNA is transcribed into RNA and RNA is translated into protein.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>central dogma</td><td>DNA is transcribed into RNA and RNA is translated into protein</td></tr><tr><td>mutation</td><td>DNA changes can alter codons, amino acids, protein structure, and phenotype</td></tr><tr><td>gene regulation</td><td>operons and transcription factors control when genes are expressed</td></tr><tr><td>biotechnology</td><td>PCR, gels, restriction enzymes, plasmids, and CRISPR analyze or modify DNA</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 6 connects molecular information to phenotype. Students must explain DNA/RNA structure, replication, transcription, translation, regulation, mutation effects, and biotechnology methods.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>6.1 DNA and RNA Structure</td><td>Antiparallel nucleic acid strands; sugar-phosphate backbone; complementary base pairing.</td><td>Confusing RNA uracil with DNA thymine.</td></tr>
+<tr><td>6.2 Replication</td><td>Semiconservative replication; DNA polymerase builds new strands and proofreads; leading/lagging strands.</td><td>Forgetting DNA polymerase adds to the 3′ end.</td></tr>
+<tr><td>6.3 Transcription and RNA Processing</td><td>RNA polymerase makes RNA; eukaryotic mRNA processing includes cap, poly-A tail, and splicing.</td><td>Confusing transcription with translation.</td></tr>
+<tr><td>6.4 Translation</td><td>Ribosomes read mRNA codons; tRNA anticodons bring amino acids; amino acid sequence affects protein structure.</td><td>Saying codons are on tRNA instead of mRNA.</td></tr>
+<tr><td>6.5 Regulation of Gene Expression</td><td>Prokaryotic operons and eukaryotic transcription factors/chromatin regulate when genes are expressed.</td><td>Assuming all genes are expressed all the time.</td></tr>
+<tr><td>6.6 Gene Expression and Cell Specialization</td><td>Different cell types express different genes despite having the same genome.</td><td>Saying different body cells usually have different DNA.</td></tr>
+<tr><td>6.7 Mutations</td><td>Mutations can be silent, missense, nonsense, frameshift; effects depend on protein structure/function.</td><td>Saying all mutations are harmful or all change phenotype.</td></tr>
+<tr><td>6.8 Biotechnology</td><td>PCR amplifies DNA; gels separate by size; restriction enzymes cut DNA; plasmids transform cells; CRISPR edits DNA.</td><td>Mixing up the purpose of each tool.</td></tr>
+</table>
+</div></details>
+<details><summary>DNA → RNA → Protein → Phenotype Chain</summary><div>
+<div class="formula">DNA sequence → mRNA codon → amino acid sequence → protein folding/function → phenotype</div>
+<ul>
+<li>A mutation may have no effect, small effect, or large effect depending on whether it changes amino acid sequence or protein function.</li>
+<li>Frameshift and nonsense mutations are often severe, especially early in the coding region.</li>
+<li>Silent mutations may have no amino acid effect because the genetic code is redundant.</li>
+</ul>
+</div></details>
+<details><summary>Gene Regulation</summary><div>
+<ul>
+<li><strong>lac operon:</strong> inducible; expressed when lactose is present and glucose is low. Allolactose inactivates the repressor; cAMP-CAP promotes transcription when glucose is low.</li>
+<li><strong>trp operon:</strong> repressible; tryptophan activates the repressor when tryptophan is abundant.</li>
+<li><strong>Eukaryotic regulation:</strong> transcription factors, enhancers, silencers, histone modification, DNA methylation, RNA processing, mRNA stability, translation control, and protein modification.</li>
+<li><strong>Cell specialization:</strong> cells with the same DNA can express different genes, producing different proteins and functions.</li>
+</ul>
+</div></details>
+<details><summary>Biotechnology Tools</summary><div>
+<table>
+<tr><th>Tool</th><th>Function</th><th>AP connection</th></tr>
+<tr><td>PCR</td><td>Amplifies target DNA</td><td>Requires primers, nucleotides, heat-stable polymerase, cycles.</td></tr>
+<tr><td>Gel electrophoresis</td><td>Separates DNA fragments by size</td><td>Smaller fragments travel farther from the well.</td></tr>
+<tr><td>Restriction enzyme</td><td>Cuts DNA at specific recognition sites</td><td>Creates fragments or sticky ends for cloning.</td></tr>
+<tr><td>Plasmid transformation</td><td>Introduces DNA into cells</td><td>Antibiotic resistance can select transformed cells.</td></tr>
+<tr><td>CRISPR-Cas</td><td>Targets and edits DNA</td><td>Guide RNA directs Cas enzyme to matching sequence.</td></tr>
+</table>
+</div></details>
+
 </div></article>
-<article id="unit7" class="card section searchable hidden" data-keywords="evolution Hardy-Weinberg selection drift phylogeny">
-<div class="card-header"><h2>Unit 7: Natural Selection</h2><div class="pill-row"><span class="pill">13–20%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit7" class="card section searchable hidden" data-keywords="unit 7 evolution natural selection hardy weinberg allele frequency genetic drift gene flow mutation selection phylogeny speciation common ancestry origin of life artificial selection">
+<div class="card-header"><h2>Unit 7: Natural Selection</h2><div class="pill-row"><span class="pill">13–20%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> allele frequencies change in populations over generations.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>evolution</td><td>allele frequencies change in populations over generations</td></tr><tr><td>selection</td><td>heritable traits that increase reproductive success become more common</td></tr><tr><td>Hardy-Weinberg</td><td>p + q = 1 and p² + 2pq + q² = 1 model no evolution</td></tr><tr><td>phylogeny</td><td>shared derived traits and DNA similarity support common ancestry</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 7 is the most heavily weighted unit. Students must explain evolution as allele-frequency change in populations and use evidence, models, Hardy-Weinberg calculations, phylogenies, and speciation concepts.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>7.1 Introduction to Natural Selection</td><td>Natural selection requires variation, heritability, and differential survival/reproduction.</td><td>Saying individuals evolve because they need traits.</td></tr>
+<tr><td>7.2 Natural Selection</td><td>Environment determines which phenotypes have higher fitness.</td><td>Using fitness as strength instead of reproductive success.</td></tr>
+<tr><td>7.3 Artificial Selection</td><td>Humans select traits, changing allele frequencies over generations.</td><td>Forgetting artificial selection still requires heritable variation.</td></tr>
+<tr><td>7.4 Population Genetics</td><td>Hardy-Weinberg is a null model; p, q, p², 2pq, q² represent allele/genotype frequencies.</td><td>Confusing q with q².</td></tr>
+<tr><td>7.5 Hardy-Weinberg Equilibrium</td><td>Conditions: large population, random mating, no mutation, no migration/gene flow, no natural selection.</td><td>Using H-W as proof of evolution rather than a baseline.</td></tr>
+<tr><td>7.6 Evidence of Evolution</td><td>Fossils, morphology, DNA/protein similarity, embryology, biogeography support common ancestry.</td><td>Assuming similar structures always mean close relatedness; convergent evolution can produce analogies.</td></tr>
+<tr><td>7.7 Common Ancestry</td><td>Shared derived traits and molecular evidence indicate relationships.</td><td>Reading phylogenies as ladders of progress.</td></tr>
+<tr><td>7.8 Continuing Evolution</td><td>Evolution continues through mutation, selection, drift, gene flow, and changing environments.</td><td>Thinking evolution has a final goal.</td></tr>
+<tr><td>7.9 Phylogeny</td><td>Nodes represent common ancestors; clades include ancestors and descendants.</td><td>Confusing branch order with “more evolved.”</td></tr>
+<tr><td>7.10 Speciation</td><td>Reproductive isolation can produce new species; allopatric and sympatric mechanisms.</td><td>Missing prezygotic vs postzygotic barriers.</td></tr>
+<tr><td>7.11 Extinction</td><td>Environmental change, competition, and catastrophic events can reduce biodiversity.</td><td>Forgetting extinction changes ecosystems and future evolution.</td></tr>
+<tr><td>7.12 Variations in Populations</td><td>Mutation, sexual reproduction, and gene flow create/alter variation.</td><td>Claiming natural selection creates needed variation.</td></tr>
+<tr><td>7.13 Origin of Life</td><td>Abiotic formation of organic molecules and early cellular features are modeled by scientific hypotheses.</td><td>Treating origin-of-life hypotheses as evolutionary change in existing populations.</td></tr>
+</table>
+</div></details>
+<details><summary>Mechanisms of Evolution</summary><div>
+<table>
+<tr><th>Mechanism</th><th>How it changes populations</th><th>AP wording</th></tr>
+<tr><td>Mutation</td><td>Creates new alleles</td><td>Random with respect to fitness, not because organisms need traits.</td></tr>
+<tr><td>Natural selection</td><td>Nonrandom increase of alleles linked to higher reproductive success</td><td>Acts on phenotype; changes allele frequencies.</td></tr>
+<tr><td>Genetic drift</td><td>Random change, strongest in small populations</td><td>Bottleneck and founder effects are drift.</td></tr>
+<tr><td>Gene flow</td><td>Movement of alleles between populations</td><td>Can increase or decrease differences among populations.</td></tr>
+<tr><td>Nonrandom mating</td><td>Changes genotype frequencies</td><td>May not directly change allele frequencies by itself.</td></tr>
+</table>
+</div></details>
+<details><summary>Hardy-Weinberg and Selection</summary><div>
+<div class="formula">p + q = 1<br>p² + 2pq + q² = 1</div>
+<ul>
+<li>q² = homozygous recessive frequency.</li>
+<li>q = square root of q².</li>
+<li>p = 1 − q.</li>
+<li>2pq = heterozygote carrier frequency.</li>
+<li>If observed genotype frequencies differ from expected values, one or more H-W conditions may be violated.</li>
+</ul>
+</div></details>
+<details><summary>Phylogeny and Speciation</summary><div>
+<ul>
+<li>Nodes represent common ancestors.</li>
+<li>Shared derived traits define clades.</li>
+<li>DNA/protein sequence similarity often provides strong evidence of relatedness.</li>
+<li>Prezygotic barriers prevent fertilization; postzygotic barriers reduce hybrid viability/fertility.</li>
+<li>Allopatric speciation involves geographic isolation; sympatric speciation occurs without geographic separation.</li>
+</ul>
+</div></details>
+
 </div></article>
-<article id="unit8" class="card section searchable hidden" data-keywords="population growth energy flow matter cycles community ecology biodiversity">
-<div class="card-header"><h2>Unit 8: Ecology</h2><div class="pill-row"><span class="pill">10–15%</span><span class="pill gold">32 quiz questions</span></div></div>
+<article id="unit8" class="card section searchable hidden" data-keywords="unit 8 ecology responses environment energy flow population ecology community ecology biodiversity disruptions ecosystems carbon nitrogen water cycle behavior carrying capacity succession invasive species">
+<div class="card-header"><h2>Unit 8: Ecology</h2><div class="pill-row"><span class="pill">10–15%</span><span class="pill gold">CED gap-filled</span><span class="pill green">FRQ-ready detail</span></div></div>
 <div class="card-body">
-<div class="callout gold"><strong>High-yield AP focus:</strong> carrying capacity limits population size based on resources.</div>
-<details open><summary>Core Concepts</summary><div><table><tr><th>Concept</th><th>What to explain</th></tr>
-<tr><td>population ecology</td><td>carrying capacity limits population size based on resources</td></tr><tr><td>energy flow</td><td>energy flows through trophic levels and is lost as heat</td></tr><tr><td>matter cycles</td><td>carbon, nitrogen, and water cycle through ecosystems</td></tr><tr><td>community ecology</td><td>interactions and biodiversity affect ecosystem stability</td></tr>
-</table></div></details>
-<details><summary>FRQ Habit</summary><div><p>Use the pattern: <strong>claim → evidence → mechanism → outcome</strong>. Avoid one-word answers and vague phrases like “it helps” or “it changes.”</p></div></details>
+
+<div class="callout"><strong>CED focus:</strong> Unit 8 connects organism responses, energy flow, population dynamics, community interactions, biodiversity, and ecosystem disruption. It is highly data/graph oriented.</div>
+<details open><summary>CED Topic Coverage Checklist</summary><div>
+<table>
+<tr><th>CED Topic</th><th>What students should be able to explain</th><th>Common AP trap</th></tr>
+<tr><td>8.1 Responses to the Environment</td><td>Organisms use behavioral, physiological, and developmental responses to environmental stimuli.</td><td>Not connecting response to survival/reproduction.</td></tr>
+<tr><td>8.2 Energy Flow Through Ecosystems</td><td>Energy enters through producers and flows through trophic levels; energy is lost as heat.</td><td>Saying energy cycles like matter.</td></tr>
+<tr><td>8.3 Population Ecology</td><td>Population size changes through birth, death, immigration, emigration, and resource limits.</td><td>Ignoring density-dependent factors.</td></tr>
+<tr><td>8.4 Effect of Density of Populations</td><td>Density-dependent factors increase with density; density-independent factors act regardless of density.</td><td>Misclassifying weather events as density-dependent.</td></tr>
+<tr><td>8.5 Community Ecology</td><td>Competition, predation, herbivory, parasitism, mutualism, commensalism, and niche partitioning shape communities.</td><td>Confusing mutualism, commensalism, and parasitism.</td></tr>
+<tr><td>8.6 Biodiversity</td><td>Biodiversity can increase ecosystem stability and resilience.</td><td>Saying biodiversity always prevents disruption.</td></tr>
+<tr><td>8.7 Disruptions to Ecosystems</td><td>Human activity, invasive species, climate change, habitat loss, and nutrient disruptions alter ecosystems.</td><td>Not linking disruption to population/community effects.</td></tr>
+</table>
+</div></details>
+<details><summary>Population Growth and Carrying Capacity</summary><div>
+<ul>
+<li><strong>Exponential growth:</strong> J-shaped curve under ideal conditions.</li>
+<li><strong>Logistic growth:</strong> S-shaped curve; growth slows as population approaches carrying capacity (K).</li>
+<li><strong>Carrying capacity:</strong> maximum population size supported by available resources.</li>
+<li><strong>Density-dependent factors:</strong> competition, predation, parasitism, disease, resource limitation.</li>
+<li><strong>Density-independent factors:</strong> drought, fire, flood, freeze, storms, natural disasters.</li>
+</ul>
+</div></details>
+<details><summary>Community Interactions</summary><div>
+<table>
+<tr><th>Interaction</th><th>Effect</th><th>AP example language</th></tr>
+<tr><td>Competition</td><td>Both harmed by use of same limited resource</td><td>Niche partitioning can reduce competition.</td></tr>
+<tr><td>Predation/herbivory</td><td>One benefits, one harmed</td><td>Can regulate prey/plant populations and cause trophic cascades.</td></tr>
+<tr><td>Parasitism</td><td>Parasite benefits, host harmed</td><td>Often does not immediately kill host.</td></tr>
+<tr><td>Mutualism</td><td>Both benefit</td><td>Can increase survival/reproduction of both species.</td></tr>
+<tr><td>Commensalism</td><td>One benefits, other unaffected</td><td>Often hard to prove truly no effect.</td></tr>
+</table>
+</div></details>
+<details><summary>Energy Flow and Matter Cycling</summary><div>
+<ul>
+<li>Energy flows from producers to consumers to decomposers and is lost as heat at each transfer.</li>
+<li>Matter cycles through food webs and biogeochemical cycles.</li>
+<li><strong>Carbon cycle:</strong> photosynthesis, respiration, decomposition, combustion, fossil fuels.</li>
+<li><strong>Nitrogen cycle:</strong> fixation, nitrification, assimilation, ammonification, denitrification.</li>
+<li><strong>Water cycle:</strong> evaporation, transpiration, condensation, precipitation, runoff, infiltration.</li>
+<li><strong>NPP:</strong> net primary productivity = gross primary productivity − respiration.</li>
+</ul>
+</div></details>
+<details><summary>Biodiversity and Disruptions</summary><div>
+<ul>
+<li>Higher genetic, species, and ecosystem diversity can increase resilience.</li>
+<li>Keystone species can have large effects relative to abundance.</li>
+<li>Invasive species may spread because of reduced predators, competitors, or pathogens.</li>
+<li>Eutrophication: nutrient runoff → algal bloom → decomposition increases → oxygen decreases → aquatic organisms die.</li>
+<li>Habitat fragmentation and climate change can alter ranges, timing, interactions, and selection pressures.</li>
+</ul>
+<div class="callout warning"><strong>FRQ trap:</strong> “The ecosystem is harmed” is too vague. Name the disruption, identify the population/community effect, and explain the mechanism.</div>
+</div></details>
+
 </div></article>
 
 <article id="quiz" class="card section searchable hidden" data-keywords="quiz progress adaptive questions">
@@ -184,6 +531,79 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <div id="quizContainer" class="quiz-box"></div>
 <button class="btn" id="nextQuizBtn">Next Question</button>
 </div></article>
+
+
+<article id="graphs" class="card section searchable hidden" data-keywords="data graph interpretation rate slope chi-square error bars experimental design claim evidence table gel electrophoresis population enzyme photosynthesis respiration osmosis">
+<div class="card-header"><h2>Data & Graph Interpretation Practice</h2><div class="pill-row"><span class="pill red">High AP value</span><span class="pill gold">Science practices</span><span class="pill green">Restored section</span></div></div>
+<div class="card-body">
+<div class="callout gold"><strong>AP data-analysis formula:</strong> Describe the trend with numbers → identify what the data support → explain the biological mechanism → connect back to the question.</div>
+
+<details open><summary>How to Answer Data Questions</summary><div>
+<table>
+<tr><th>Task</th><th>What to write</th><th>Sentence frame</th></tr>
+<tr><td>Describe a trend</td><td>Use direction + numbers</td><td>“As ___ increased from ___ to ___, ___ changed from ___ to ___.”</td></tr>
+<tr><td>Calculate rate</td><td>Use slope / change over time</td><td>“Rate = Δy/Δx = ___ / ___ = ___ units/time.”</td></tr>
+<tr><td>Support a claim</td><td>Use specific data as evidence</td><td>“The data support the claim because...”</td></tr>
+<tr><td>Explain mechanism</td><td>Connect biology to the observed pattern</td><td>“This occurs because...”</td></tr>
+<tr><td>Evaluate experiment</td><td>Identify variables, controls, constants, replication, sample size</td><td>“A limitation is ___ because it could affect ___.”</td></tr>
+</table>
+</div></details>
+
+<div class="practice"><h3>Data Set 1: Enzyme Rate and Temperature</h3>
+<table class="data-table"><tr><th>Temperature (°C)</th><th>Rate (units/min)</th></tr><tr><td>10</td><td>4</td></tr><tr><td>25</td><td>12</td></tr><tr><td>37</td><td>22</td></tr><tr><td>55</td><td>3</td></tr></table>
+<p><strong>Question:</strong> Describe the trend and explain the rate at 55°C.</p>
+<button class="btn graph-answer-btn">Reveal answer</button>
+<div class="answer">Rate increases from 4 units/min at 10°C to 22 units/min at 37°C, then decreases to 3 units/min at 55°C. The high temperature likely denatures the enzyme by disrupting interactions that maintain tertiary structure, altering the active site and reducing substrate binding.</div></div>
+
+<div class="practice"><h3>Data Set 2: Photosynthesis and Light Intensity</h3>
+<table class="data-table"><tr><th>Light Intensity</th><th>O₂ bubbles/min</th></tr><tr><td>Low</td><td>6</td></tr><tr><td>Medium</td><td>18</td></tr><tr><td>High</td><td>21</td></tr></table>
+<p><strong>Question:</strong> Explain why the rate levels off from medium to high light.</p>
+<button class="btn graph-answer-btn">Reveal answer</button>
+<div class="answer">Photosynthesis increases with light at first, but from medium to high light the increase is small (18 to 21 bubbles/min). This suggests light is no longer the main limiting factor; CO₂ concentration, temperature, or enzyme capacity may limit the rate.</div></div>
+
+<div class="practice"><h3>Data Set 3: Cellular Respiration</h3>
+<table class="data-table"><tr><th>Temperature (°C)</th><th>O₂ consumption (mL/min)</th></tr><tr><td>10</td><td>0.8</td></tr><tr><td>22</td><td>1.6</td></tr><tr><td>35</td><td>2.5</td></tr><tr><td>50</td><td>0.7</td></tr></table>
+<p><strong>Question:</strong> Identify the dependent variable and explain the decrease at 50°C.</p>
+<button class="btn graph-answer-btn">Reveal answer</button>
+<div class="answer">The dependent variable is oxygen consumption rate. Oxygen consumption decreases at 50°C likely because high temperature disrupts enzymes involved in respiration, reducing electron transport and ATP production.</div></div>
+
+<div class="practice"><h3>Data Set 4: Osmosis and Percent Mass Change</h3>
+<table class="data-table"><tr><th>Sucrose concentration outside bag (M)</th><th>Percent mass change</th></tr><tr><td>0.0</td><td>+18</td></tr><tr><td>0.2</td><td>+7</td></tr><tr><td>0.4</td><td>0</td></tr><tr><td>0.6</td><td>−9</td></tr><tr><td>0.8</td><td>−16</td></tr></table>
+<p><strong>Question:</strong> Estimate the isotonic concentration and justify.</p>
+<button class="btn graph-answer-btn">Reveal answer</button>
+<div class="answer">The isotonic concentration is approximately 0.4 M because percent mass change is 0, meaning there is no net movement of water into or out of the bag.</div></div>
+
+<div class="practice"><h3>Data Set 5: Population Growth</h3>
+<table class="data-table"><tr><th>Day</th><th>Population</th></tr><tr><td>0</td><td>20</td></tr><tr><td>5</td><td>60</td></tr><tr><td>10</td><td>140</td></tr><tr><td>15</td><td>190</td></tr><tr><td>20</td><td>200</td></tr></table>
+<p><strong>Question:</strong> Identify the growth pattern and estimate carrying capacity.</p>
+<button class="btn graph-answer-btn">Reveal answer</button>
+<div class="answer">The data show logistic growth because the population increases rapidly and then levels off. Carrying capacity is approximately 200 individuals.</div></div>
+
+<div class="practice"><h3>Data Set 6: Chi-Square Genetics</h3>
+<p>Expected: 75 dominant and 25 recessive. Observed: 80 dominant and 20 recessive.</p>
+<p><strong>Question:</strong> Calculate χ² and interpret if the critical value is 3.84.</p>
+<button class="btn graph-answer-btn">Reveal answer</button>
+<div class="answer">χ² = (80−75)²/75 + (20−25)²/25 = 25/75 + 25/25 = 1.33. Since 1.33 is less than 3.84, fail to reject the null hypothesis. The observed data are consistent with the expected 3:1 ratio.</div></div>
+
+<div class="practice"><h3>Data Set 7: Gel Electrophoresis</h3>
+<p>Lane A has bands near 100 bp and 800 bp. Lane B has bands near 100 bp, 400 bp, and 800 bp.</p>
+<p><strong>Question:</strong> Which lane has more fragments, and which fragments traveled farthest?</p>
+<button class="btn graph-answer-btn">Reveal answer</button>
+<div class="answer">Lane B has more DNA fragments because it has three bands. The 100 bp fragments traveled farthest because smaller DNA fragments move more easily through the gel matrix.</div></div>
+
+<details><summary>Error Bars, Controls, and Experimental Design</summary><div>
+<ul>
+<li><strong>Error bars:</strong> overlapping error bars may suggest the difference between groups is not clearly supported.</li>
+<li><strong>Independent variable:</strong> the factor changed by the experimenter.</li>
+<li><strong>Dependent variable:</strong> the measured response.</li>
+<li><strong>Control group:</strong> comparison group used to evaluate the effect of the independent variable.</li>
+<li><strong>Constants:</strong> factors kept the same across groups.</li>
+<li><strong>Replication:</strong> repeated trials increase reliability.</li>
+<li><strong>Sample size:</strong> larger sample sizes generally make conclusions more reliable.</li>
+</ul>
+</div></details>
+</div></article>
+
 
 <article id="frq" class="card section searchable hidden" data-keywords="frq free response feedback scoring">
 <div class="card-header"><h2>FRQ Practice Center</h2><div class="pill-row"><span class="pill red">Detailed feedback</span><span class="pill gold">AP verbs</span></div></div>
@@ -504,6 +924,14 @@ function submitExam() {
 }
 $('startExamBtn').addEventListener('click', startExam);
 $('submitExamBtn').addEventListener('click', submitExam);
+
+
+qsa('.graph-answer-btn').forEach(btn => btn.addEventListener('click', () => {
+  const ans = btn.nextElementSibling;
+  if (!ans) return;
+  ans.classList.toggle('show');
+  btn.textContent = ans.classList.contains('show') ? 'Hide answer' : 'Reveal answer';
+}));
 
 renderCountTable();
 renderProgress();
