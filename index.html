@@ -523,7 +523,6 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <div class="callout"><h3>Student Info</h3><label><strong>Name</strong><br><input id="studentName" type="text" placeholder="Student name"></label><br><label><strong>Class / Period</strong><br><input id="studentPeriod" type="text" placeholder="Example: Period 3"></label><br><button class="btn green" id="saveStudentBtn">Save Student Info</button></div>
 <div class="callout"><h3>Progress</h3><p><strong>Points:</strong> <span id="points">0</span></p><p><strong>Mastery:</strong> <span id="mastery">0%</span></p><div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div><p><strong>Correct:</strong> <span id="correctCount">0</span> / <span id="attemptCount">0</span></p><p><strong>Weakest unit:</strong> <span id="weakestUnit">Not enough data yet</span></p><button class="btn" id="exportBtn">Export CSV</button><button class="btn red" id="resetBtn">Reset</button></div>
 </div>
-<details open><summary>Question Count by Unit</summary><div><table id="countTable"></table></div></details>
 <details open><summary>Progress by Unit</summary><div><table id="unitProgressTable"><tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr></table></div></details>
 <div class="callout gold"><h3>Quiz Controls</h3>
 <label><strong>Mode</strong><select id="quizMode"><option value="adaptive">Adaptive: target weakest areas</option><option value="mixed">Mixed AP review</option><option value="unit">Specific unit</option></select></label><br>
