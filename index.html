@@ -2596,5 +2596,100 @@ df = categories − 1</div>
     });
   })();
 </script>
+  <script>
+(function () {
+  var frqRubrics = [
+    {
+      terms: ['trend','increase','decrease','temperature','denature','active site','protein','structure','ph','enzyme'],
+      evidence: ['graph','37','45','10'],
+      tips: [
+        'Describe the full pattern: activity rises to an optimum, then drops.',
+        'Explain denaturation as a change in protein shape.',
+        'Connect altered active site shape to reduced substrate binding.',
+        'Mention pH disrupting bonds or tertiary structure.'
+      ]
+    },
+    {
+      terms: ['oxygen','respiration','electron transport','final electron acceptor','enzyme','temperature','metabolism'],
+      evidence: ['10','22','35','rate','oxygen consumption'],
+      tips: [
+        'Identify oxygen consumption as the dependent variable.',
+        'Explain oxygen as the final electron acceptor in the ETC.',
+        'Connect respiration rate to ATP production.',
+        'Justify temperature effects using enzyme activity.'
+      ]
+    }
+  ];
+
+  function hitCount(text, list) {
+    var count = 0;
+    for (var i = 0; i < list.length; i++) {
+      if (text.indexOf(list[i].toLowerCase()) !== -1) count++;
+    }
+    return count;
+  }
+
+  function hasAny(text, list) {
+    return hitCount(text, list) > 0;
+  }
+
+  function scoreFrq(text, rubric) {
+    var lower = text.toLowerCase();
+    var words = lower.split(/\s+/).filter(Boolean).length;
+    var vocabHits = hitCount(lower, rubric.terms);
+    var evidenceHits = hitCount(lower, rubric.evidence);
+    var mechanism = hasAny(lower, ['because','causes','leads to','results in','disrupts','changes','prevents','therefore']);
+    var justification = hasAny(lower, ['data','evidence','structure','function','active site','gradient','fitness','frequency']);
+
+    var score = 0;
+    if (words >= 25) score++;
+    if (vocabHits >= 3) score++;
+    if (mechanism) score++;
+    if (evidenceHits >= 1) score++;
+    if (justification) score++;
+
+    return { score: score, words: words, vocabHits: vocabHits, evidenceHits: evidenceHits, mechanism: mechanism, justification: justification };
+  }
+
+  function feedbackHtml(result, rubric) {
+    var level = result.score >= 4 ? 'Strong AP-style response' : result.score >= 3 ? 'Developing response' : 'Needs revision';
+
+    return `
+      <div class="feedback-score">Auto-feedback: ${result.score}/5 — ${level}</div>
+      <ul class="feedback-list">
+        <li>${result.words >= 25 ? '✓' : '✗'} Developed response length (${result.words} words)</li>
+        <li>${result.vocabHits >= 3 ? '✓' : '✗'} Uses key biology vocabulary (${result.vocabHits} key terms found)</li>
+        <li>${result.mechanism ? '✓' : '✗'} Explains a biological mechanism</li>
+        <li>${result.evidenceHits >= 1 ? '✓' : '✗'} References prompt evidence or data</li>
+        <li>${result.justification ? '✓' : '✗'} Justifies the answer with reasoning</li>
+      </ul>
+      <div class="correct-feedback">
+        <strong>Revision suggestions:</strong>
+        <ul>
+          ${rubric.tips.map(function(t) { return '<li>' + t + '</li>'; }).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  document.addEventListener('click', function(event) {
+    if (!event.target.classList.contains('frq-feedback-btn')) return;
+
+    event.preventDefault();
+
+    var card = event.target.closest('.frq-card');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('#frq .frq-card'));
+    var index = cards.indexOf(card);
+    var rubric = frqRubrics[index] || frqRubrics[0];
+
+    var textarea = card.querySelector('textarea');
+    var panel = card.querySelector('.feedback-panel');
+
+    var result = scoreFrq(textarea.value || '', rubric);
+    panel.innerHTML = feedbackHtml(result, rubric);
+    panel.classList.add('show');
+  }, true);
+})();
+</script>
 </body>
 </html>
