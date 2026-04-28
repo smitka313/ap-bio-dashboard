@@ -523,6 +523,7 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <div class="callout"><h3>Student Info</h3><label><strong>Name</strong><br><input id="studentName" type="text" placeholder="Student name"></label><br><label><strong>Class / Period</strong><br><input id="studentPeriod" type="text" placeholder="Example: Period 3"></label><br><button class="btn green" id="saveStudentBtn">Save Student Info</button></div>
 <div class="callout"><h3>Progress</h3><p><strong>Points:</strong> <span id="points">0</span></p><p><strong>Mastery:</strong> <span id="mastery">0%</span></p><div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div><p><strong>Correct:</strong> <span id="correctCount">0</span> / <span id="attemptCount">0</span></p><p><strong>Weakest unit:</strong> <span id="weakestUnit">Not enough data yet</span></p><button class="btn" id="exportBtn">Export CSV</button><button class="btn red" id="resetBtn">Reset</button></div>
 </div>
+<details open><summary>Question Count by Unit</summary><div><table id="countTable"></table></div></details>
 <details open><summary>Progress by Unit</summary><div><table id="unitProgressTable"><tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr></table></div></details>
 <div class="callout gold"><h3>Quiz Controls</h3>
 <label><strong>Mode</strong><select id="quizMode"><option value="adaptive">Adaptive: target weakest areas</option><option value="mixed">Mixed AP review</option><option value="unit">Specific unit</option></select></label><br>
@@ -640,9 +641,10 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <article id="exam" class="card section searchable hidden" data-keywords="exam simulation timed mcq frq">
 <div class="card-header"><h2>AP Exam Simulation</h2><div class="pill-row"><span class="pill red">Timed</span><span class="pill gold">CED weighted</span></div></div>
 <div class="card-body">
-<div class="two-col"><div class="callout gold"><label><strong>MCQ Count</strong><select id="examMcqCount"><option value="15">15-question sprint</option><option value="30" selected>30-question half simulation</option><option value="60">60-question full MCQ practice</option></select></label><br><button class="btn green" id="startExamBtn">Start Exam</button><button class="btn" id="submitExamBtn">Submit Exam</button></div>
+<div class="two-col"><div class="callout gold"><label><strong>MCQ Count</strong><select id="examMcqCount"><option value="15">15-question sprint</option><option value="30" selected>30-question half simulation</option><option value="60">60-question full MCQ practice</option></select></label><br><label><strong>FRQ Count</strong><select id="examFrqCount"><option value="0">MCQ only</option><option value="2" selected>2 FRQs</option><option value="4">4 FRQs</option><option value="6">6 FRQs</option></select></label><br><button class="btn green" id="startExamBtn">Start Exam</button><button class="btn" id="submitExamBtn">Submit Exam</button></div>
 <div class="callout"><h3>Status</h3><p id="examTimer" style="font-size:1.3rem;font-weight:900;color:var(--red)">Not started</p><p id="examStatus">Choose settings, then start.</p><div id="examResults"></div></div></div>
 <details open><summary>MCQ Section</summary><div id="examMcqContainer"><p class="small">Start the simulation to generate MCQs.</p></div></details>
+<details open><summary>FRQ Section</summary><div id="examFrqContainer"><p class="small">Start the simulation to generate FRQs.</p></div></details>
 </div></article>
 
 <article id="mistakes" class="card section searchable hidden" data-keywords="mistakes missed questions">
@@ -901,9 +903,42 @@ $('exportBtn').addEventListener('click', () => {
   const a = document.createElement('a'); a.href=url; a.download='ap-biology-progress-report.csv'; a.click(); URL.revokeObjectURL(url);
 });
 
+
+const examFrqPrompts = [
+  {title:'Enzymes & Energetics', prompt:'A graph shows enzyme activity increasing from 10°C to 37°C and decreasing sharply above 45°C. Describe the trend, explain why activity decreases at high temperature, predict the effect of changing pH far from the optimum, and justify your prediction using protein structure.'},
+  {title:'Cellular Respiration Data', prompt:'A researcher measures oxygen consumption in germinating seeds at 10°C, 22°C, and 35°C. Identify the dependent variable, explain why oxygen consumption can be used as a measure of cellular respiration, predict which temperature will likely show the highest respiration rate, and justify your prediction using enzyme activity and metabolism.'},
+  {title:'Photosynthesis Experiment', prompt:'Students use floating leaf disks to test photosynthesis rate under different light intensities. Identify the independent variable, identify one appropriate control, explain why disks float as photosynthesis occurs, and predict how increasing light intensity affects the rate until another factor becomes limiting.'},
+  {title:'Cell Transport & Osmosis', prompt:'A plant cell is placed in a hypertonic solution. Describe the direction of net water movement, explain the effect on the plant cell, predict the long-term outcome if the cell remains in the solution, and justify using membrane properties and water potential/osmosis.'},
+  {title:'Cell Communication', prompt:'A mutation changes the shape of a membrane receptor involved in a hormone signaling pathway. Describe the normal sequence of a signal transduction pathway, explain how the receptor mutation could affect the pathway, predict one possible cellular response if the ligand cannot bind, and justify your prediction using structure-function reasoning.'},
+  {title:'Meiosis & Heredity', prompt:'Two genes are located on the same chromosome. Offspring phenotypes do not match the expected independent assortment ratio. Explain why linked genes may not assort independently, describe how crossing over can produce recombinant offspring, predict how distance between genes affects recombination frequency, and justify your prediction.'},
+  {title:'Gene Expression & Mutation', prompt:'A point mutation changes a codon in a gene that codes for an enzyme. Describe transcription and translation, explain how the mutation could affect protein function, predict one possible phenotypic effect, and justify using structure-function reasoning.'},
+  {title:'Gene Regulation', prompt:'Bacteria are grown in a medium containing lactose but no glucose. Predict whether the lac operon will be active, explain the role of lactose/allolactose in regulation, explain why absence of glucose increases lac operon transcription, and justify how this regulation benefits the cell.'},
+  {title:'Hardy-Weinberg', prompt:'In a population of 500 individuals, 45 individuals show a recessive phenotype. Calculate q², calculate q and p, calculate the expected frequency of heterozygotes, and identify one condition required for Hardy-Weinberg equilibrium.'},
+  {title:'Natural Selection', prompt:'A bacterial population becomes increasingly resistant to an antibiotic after repeated exposure. Explain how natural selection leads to resistance, describe the role of genetic variation, predict the change in allele frequency over time, and justify using evolutionary principles.'},
+  {title:'Ecology + Evolution', prompt:'A drought reduces available food and water in an ecosystem. A small mammal population declines sharply. Explain how carrying capacity changes, describe how population growth is affected, predict how natural selection may act on the population, and justify using ecology and evolution together.'},
+  {title:'Chi-Square Genetics', prompt:'A monohybrid cross is expected to produce a 3:1 phenotype ratio. The observed offspring are 80 dominant and 20 recessive. Calculate the expected numbers for 100 offspring, calculate χ², identify degrees of freedom, and explain whether the results support the expected ratio if the critical value is 3.84.'}
+];
+let currentExamFrqs = [];
+function renderExamFrqs(count) {
+  const box = $('examFrqContainer');
+  if (!box) return;
+  currentExamFrqs = [];
+  if (count === 0) {
+    box.innerHTML = '<p class="small">FRQs were not selected for this simulation.</p>';
+    return;
+  }
+  currentExamFrqs = examFrqPrompts.slice().sort(() => Math.random() - 0.5).slice(0, count);
+  let html = '';
+  currentExamFrqs.forEach((item, i) => {
+    html += `<div class="frq-card"><h3>FRQ ${i + 1}: ${item.title}</h3><p>${item.prompt}</p><textarea class="exam-frq-response" placeholder="Write your FRQ response here..."></textarea></div>`;
+  });
+  box.innerHTML = html;
+}
+
 let examItems = [];
 function startExam() {
   const count = Number($('examMcqCount').value);
+  const frqCount = $('examFrqCount') ? Number($('examFrqCount').value) : 0;
   examItems = [];
   const used = new Set();
   while (examItems.length < count && used.size < 500) {
@@ -923,6 +958,7 @@ function startExam() {
   $('examStatus').textContent = 'Exam running. Submit when finished.';
   $('examTimer').textContent = 'Started';
   $('examResults').innerHTML = '';
+  renderExamFrqs(frqCount);
 }
 function submitExam() {
   if (!examItems.length) return;
@@ -932,7 +968,9 @@ function submitExam() {
     const selected = document.querySelector(`input[name="exam${i}"]:checked`);
     if (selected && Number(selected.value) === item.answer) { correct++; breakdown[item.unit].c++; }
   });
-  let html = `<div class="correct-feedback"><h3>Exam Results</h3><p><strong>MCQ Score:</strong> ${correct}/${examItems.length} (${Math.round(100*correct/examItems.length)}%)</p><ul>`;
+  const frqResponses = qsa('.exam-frq-response');
+  const frqCompleted = frqResponses.filter(t => (t.value || '').trim().split(/\s+/).filter(Boolean).length >= 25).length;
+  let html = `<div class="correct-feedback"><h3>Exam Results</h3><p><strong>MCQ Score:</strong> ${correct}/${examItems.length} (${Math.round(100*correct/examItems.length)}%)</p><p><strong>FRQs with developed responses:</strong> ${frqCompleted}/${frqResponses.length}</p><ul>`;
   Object.keys(breakdown).forEach(u => html += `<li>${u}: ${breakdown[u].c}/${breakdown[u].a}</li>`);
   html += '</ul></div>';
   $('examResults').innerHTML = html;
@@ -955,532 +993,6 @@ renderProgress();
 renderMistakes();
 renderQuiz();
 showSection('overview');
-</script>
-  <script>
-/* AP Biology Dashboard Integrated Patch
-   Paste immediately before closing </body>.
-   This patch is designed to layer safely over the current clean rebuild.
-*/
-(function () {
-  "use strict";
-
-  function $(id){ return document.getElementById(id); }
-  function qsa(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
-  function safeText(value){ return String(value == null ? "" : value); }
-
-  const CED_ADDENDA = {
-    unit1: `
-      <details><summary>CED Gap Fill: Functional Groups, pH, Buffers, and Isomers</summary><div>
-        <ul>
-          <li><strong>Functional groups</strong> help determine molecule behavior: hydroxyl groups increase polarity, carboxyl groups can donate H+, amino groups can accept H+, and phosphate groups can store/transfer energy.</li>
-          <li><strong>pH</strong> affects protein structure because changes in H+ concentration can disrupt ionic and hydrogen bonds.</li>
-          <li><strong>Buffers</strong> resist pH changes by accepting or donating H+, helping maintain homeostasis.</li>
-          <li><strong>Isomers</strong> have the same molecular formula but different structures; different shapes can produce different biological functions.</li>
-        </ul>
-        <div class="callout gold"><strong>AP trap:</strong> Do not say pH “kills” enzymes. Say pH can alter bonding, tertiary structure, active-site shape, and substrate binding.</div>
-      </div></details>`,
-    unit2: `
-      <details><summary>CED Gap Fill: Membrane Fluidity, Endosymbiosis, and Bulk Transport</summary><div>
-        <ul>
-          <li><strong>Membrane fluidity</strong> is affected by fatty acid saturation, temperature, and cholesterol.</li>
-          <li><strong>Endosymbiotic theory</strong> is supported by mitochondria/chloroplasts having their own DNA, ribosomes, double membranes, and division by binary fission-like processes.</li>
-          <li><strong>Receptor-mediated endocytosis</strong> brings specific molecules into the cell after ligand-receptor binding.</li>
-          <li><strong>Compartmentalization</strong> increases efficiency by separating reactions and maintaining specialized internal environments.</li>
-        </ul>
-      </div></details>`,
-    unit3: `
-      <details><summary>CED Gap Fill: Redox, ATP Coupling, Energy Diagrams, and Inhibition</summary><div>
-        <ul>
-          <li><strong>Redox:</strong> oxidation = loss of electrons; reduction = gain of electrons. NADH and FADH2 carry high-energy electrons to the ETC.</li>
-          <li><strong>ATP coupling:</strong> exergonic ATP hydrolysis can drive endergonic cellular work.</li>
-          <li><strong>Energy diagrams:</strong> enzymes lower activation energy, but they do not change ΔG or equilibrium.</li>
-          <li><strong>Competitive inhibitors</strong> bind active sites; <strong>noncompetitive inhibitors</strong> bind elsewhere and alter enzyme function.</li>
-        </ul>
-      </div></details>`,
-    unit4: `
-      <details><summary>CED Gap Fill: Signal Amplification, Second Messengers, and Receptor Types</summary><div>
-        <ul>
-          <li><strong>Signal amplification</strong> allows one ligand-binding event to activate many downstream molecules.</li>
-          <li><strong>Second messengers</strong> such as cAMP and Ca2+ relay signals inside cells.</li>
-          <li><strong>G-protein coupled receptors</strong> activate intracellular G proteins that relay signals.</li>
-          <li><strong>Steroid hormones</strong> can cross membranes and bind intracellular receptors that affect transcription.</li>
-        </ul>
-      </div></details>`,
-    unit5: `
-      <details><summary>CED Gap Fill: Pedigrees, Chi-Square, and Non-Mendelian Inheritance</summary><div>
-        <ul>
-          <li><strong>Pedigrees</strong> can identify likely autosomal dominant, autosomal recessive, or sex-linked inheritance patterns.</li>
-          <li><strong>Chi-square</strong> tests whether observed results differ significantly from expected ratios.</li>
-          <li><strong>Incomplete dominance</strong> produces intermediate heterozygote phenotypes; <strong>codominance</strong> expresses both alleles.</li>
-          <li><strong>Polygenic traits</strong> are controlled by multiple genes and often show continuous variation.</li>
-        </ul>
-      </div></details>`,
-    unit6: `
-      <details><summary>CED Gap Fill: Eukaryotic Gene Regulation and Protein Processing</summary><div>
-        <ul>
-          <li><strong>DNA methylation</strong> near promoters usually reduces transcription.</li>
-          <li><strong>Histone acetylation</strong> usually loosens chromatin and increases transcription.</li>
-          <li><strong>Enhancers and silencers</strong> regulate transcription by binding transcription factors.</li>
-          <li><strong>Post-translational modification</strong> can activate, deactivate, modify, or target proteins after translation.</li>
-        </ul>
-      </div></details>`,
-    unit7: `
-      <details><summary>CED Gap Fill: Cladograms, Homology, Analogy, and Speciation</summary><div>
-        <ul>
-          <li><strong>Homologous structures</strong> suggest common ancestry; <strong>analogous structures</strong> may result from convergent evolution.</li>
-          <li><strong>Shared derived traits</strong> define clades on cladograms.</li>
-          <li><strong>Nodes</strong> represent common ancestors.</li>
-          <li><strong>Geographic isolation</strong> can reduce gene flow and lead to allopatric speciation.</li>
-        </ul>
-      </div></details>`,
-    unit8: `
-      <details><summary>CED Gap Fill: Succession, r/K Selection, Trophic Efficiency, and Ecosystem Stability</summary><div>
-        <ul>
-          <li><strong>Primary succession</strong> begins without soil; <strong>secondary succession</strong> occurs where soil remains after disturbance.</li>
-          <li><strong>r-selected species</strong> produce many offspring with little parental care; <strong>K-selected species</strong> produce fewer offspring with more investment.</li>
-          <li><strong>Trophic efficiency</strong> is often around 10%, because much energy is lost through metabolism and heat.</li>
-          <li><strong>Higher biodiversity</strong> can increase ecosystem resilience after disturbance.</li>
-        </ul>
-      </div></details>`
-  };
-
-  function installCedAddenda(){
-    Object.keys(CED_ADDENDA).forEach(function(id){
-      var article = $(id);
-      if (!article || article.getAttribute("data-ced-patched") === "yes") return;
-      var body = article.querySelector(".card-body");
-      if (!body) return;
-      body.insertAdjacentHTML("beforeend", CED_ADDENDA[id]);
-      article.setAttribute("data-ced-patched", "yes");
-    });
-  }
-
-  const graphSectionHtml = `
-    <article id="graphs" class="card section searchable hidden" data-keywords="graph data interpretation rate slope table gel electrophoresis population enzyme photosynthesis chi-square experimental design error bars">
-      <div class="card-header">
-        <h2>Graph & Data Interpretation Practice</h2>
-        <div class="pill-row"><span class="pill critical">High AP value</span><span class="pill ced">Science Practice</span></div>
-      </div>
-      <div class="card-body">
-        <div class="callout gold"><strong>AP data formula:</strong> Describe the trend with numbers → explain the biological mechanism → connect the data to the claim.</div>
-
-        <div class="practice">
-          <h3>Data Set 1: Enzyme Rate vs. Temperature</h3>
-          <table class="data-table"><tr><th>Temperature (°C)</th><th>Rate (units/min)</th></tr><tr><td>10</td><td>4</td></tr><tr><td>25</td><td>12</td></tr><tr><td>37</td><td>22</td></tr><tr><td>55</td><td>3</td></tr></table>
-          <p><strong>Question:</strong> Describe the trend and explain the low rate at 55°C.</p>
-          <button class="answer-btn" type="button">Reveal answer</button>
-          <div class="answer">Rate increases from 4 units/min at 10°C to 22 units/min at 37°C, then decreases to 3 units/min at 55°C. At high temperature, bonds maintaining tertiary structure may be disrupted, altering the active site and reducing substrate binding.</div>
-        </div>
-
-        <div class="practice">
-          <h3>Data Set 2: Photosynthesis and Limiting Factors</h3>
-          <table class="data-table"><tr><th>Light Intensity</th><th>O₂ bubbles/min</th></tr><tr><td>Low</td><td>6</td></tr><tr><td>Medium</td><td>18</td></tr><tr><td>High</td><td>21</td></tr></table>
-          <p><strong>Question:</strong> Explain why the rate levels off from medium to high light.</p>
-          <button class="answer-btn" type="button">Reveal answer</button>
-          <div class="answer">The rate increases greatly from low to medium light, but only slightly from medium to high light. This suggests light is no longer the main limiting factor; CO₂ availability, temperature, or enzyme capacity may limit the rate.</div>
-        </div>
-
-        <div class="practice">
-          <h3>Data Set 3: Logistic Population Growth</h3>
-          <table class="data-table"><tr><th>Day</th><th>Population</th></tr><tr><td>0</td><td>20</td></tr><tr><td>5</td><td>60</td></tr><tr><td>10</td><td>140</td></tr><tr><td>15</td><td>190</td></tr><tr><td>20</td><td>200</td></tr></table>
-          <p><strong>Question:</strong> Identify the growth pattern and estimate carrying capacity.</p>
-          <button class="answer-btn" type="button">Reveal answer</button>
-          <div class="answer">The population shows logistic growth because it rises rapidly and then levels off. Carrying capacity is about 200 individuals.</div>
-        </div>
-
-        <div class="practice">
-          <h3>Data Set 4: Gel Electrophoresis</h3>
-          <p>Lane A has bands near 100 bp and 800 bp. Lane B has bands near 100 bp, 400 bp, and 800 bp.</p>
-          <p><strong>Question:</strong> Which lane has more fragments, and which fragments traveled farthest?</p>
-          <button class="answer-btn" type="button">Reveal answer</button>
-          <div class="answer">Lane B has more fragments. The 100 bp fragments traveled farthest because smaller DNA fragments move farther through the gel matrix.</div>
-        </div>
-
-        <div class="practice">
-          <h3>Data Set 5: Chi-Square Genetics</h3>
-          <p>Expected: 75 dominant, 25 recessive. Observed: 80 dominant, 20 recessive.</p>
-          <p><strong>Question:</strong> Calculate χ² and interpret if critical value = 3.84.</p>
-          <button class="answer-btn" type="button">Reveal answer</button>
-          <div class="answer">χ² = (80−75)²/75 + (20−25)²/25 = 25/75 + 25/25 = 1.33. Since 1.33 < 3.84, fail to reject the null hypothesis; the data are consistent with the expected 3:1 ratio.</div>
-        </div>
-      </div>
-    </article>`;
-
-  function installGraphSection(){
-    var existing = $("graphs");
-    if (existing && existing.querySelector(".practice")) return;
-    if (existing) existing.outerHTML = graphSectionHtml;
-    else {
-      var grid = document.querySelector(".dashboard-grid");
-      if (grid) grid.insertAdjacentHTML("beforeend", graphSectionHtml);
-    }
-    var nav = document.querySelector("nav");
-    if (nav && !document.querySelector('.nav-btn[data-target="graphs"]')) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "nav-btn";
-      btn.setAttribute("data-target", "graphs");
-      btn.textContent = "Graph/Data Practice";
-      btn.addEventListener("click", function(){ if (window.showSection) window.showSection("graphs"); });
-      var frqBtn = document.querySelector('.nav-btn[data-target="frq"]');
-      nav.insertBefore(btn, frqBtn || null);
-    }
-  }
-
-  const frqRubricsDetailed = [
-    {title:"Enzymes & Energetics", required:[
-      {label:"a. Describes trend with data", terms:["increase","decrease","37","45","10","optimum","trend"]},
-      {label:"b. Explains high-temperature denaturation", terms:["denature","tertiary","active site","bond","shape","substrate"]},
-      {label:"c. Predicts reduced activity at nonoptimal pH", terms:["ph","reduced","decrease","lower","nonoptimal","optimum"]},
-      {label:"d. Justifies using protein structure", terms:["structure","hydrogen","ionic","r group","tertiary","active site"]}
-    ]},
-    {title:"Respiration Data", required:[
-      {label:"a. Identifies dependent variable", terms:["oxygen consumption","rate","dependent variable","measured"]},
-      {label:"b. Connects oxygen to ETC", terms:["oxygen","final electron acceptor","electron transport","etc","aerobic respiration"]},
-      {label:"c. Predicts highest rate at moderate/optimal temperature", terms:["22","35","highest","optimal","moderate","enzyme"]},
-      {label:"d. Justifies with enzyme/metabolic activity", terms:["enzyme","metabolism","temperature","denature","kinetic energy"]}
-    ]},
-    {title:"Photosynthesis Experiment", required:[
-      {label:"a. Identifies independent variable", terms:["light intensity","independent variable"]},
-      {label:"b. Identifies appropriate control/constants", terms:["control","dark","constant","co2","temperature","same"]},
-      {label:"c. Explains O2 causes floating", terms:["oxygen","o2","float","buoyancy","photosynthesis"]},
-      {label:"d. Predicts rate increases then levels off", terms:["increase","limiting factor","co2","enzyme","plateau","levels off"]}
-    ]},
-    {title:"Osmosis", required:[
-      {label:"a. Describes water leaving cell", terms:["water leaves","out of cell","osmosis","net movement"]},
-      {label:"b. Explains loss of turgor/plasmolysis", terms:["turgor","plasmolysis","shrinks","membrane","cell wall"]},
-      {label:"c. Predicts long-term loss of function", terms:["remain","die","wilts","loss","function","plasmolyzed"]},
-      {label:"d. Justifies with water potential/solute gradient", terms:["water potential","higher solute","lower water potential","hypertonic","selectively permeable"]}
-    ]},
-    {title:"Cell Communication", required:[
-      {label:"a. Describes reception-transduction-response", terms:["reception","transduction","response","ligand","receptor"]},
-      {label:"b. Explains receptor mutation effect", terms:["mutation","shape","binding","ligand","activation"]},
-      {label:"c. Predicts reduced/absent cellular response", terms:["reduced","absent","no response","gene expression","enzyme"]},
-      {label:"d. Justifies structure-function link", terms:["structure","function","shape","specific","binding"]}
-    ]},
-    {title:"Cell Cycle & Cancer", required:[
-      {label:"a. Describes checkpoint role", terms:["checkpoint","damage","cell cycle","pause","repair"]},
-      {label:"b. Explains uncontrolled division", terms:["uncontrolled","division","cancer","tumor","mutation accumulation"]},
-      {label:"c. Predicts apoptosis removes damaged cells", terms:["apoptosis","programmed cell death","damaged","remove"]},
-      {label:"d. Justifies regulatory gene effects", terms:["regulatory","downstream","tumor suppressor","proto-oncogene","gene"]}
-    ]},
-    {title:"Meiosis & Heredity", required:[
-      {label:"a. Explains linked genes", terms:["linked","same chromosome","not assort independently"]},
-      {label:"b. Describes crossing over", terms:["crossing over","prophase i","homologous","recombinant"]},
-      {label:"c. Predicts distance effect", terms:["farther","closer","distance","recombination frequency"]},
-      {label:"d. Justifies probability of crossover", terms:["more likely","between","crossover","frequency"]}
-    ]},
-    {title:"Gene Expression & Mutation", required:[
-      {label:"a. Describes transcription/translation", terms:["transcription","translation","mrna","ribosome","codon"]},
-      {label:"b. Explains protein function change", terms:["amino acid","protein","folding","active site","enzyme"]},
-      {label:"c. Predicts phenotypic effect", terms:["phenotype","trait","effect","reduced","changed"]},
-      {label:"d. Justifies structure-function chain", terms:["dna","mrna","amino acid","protein structure","function"]}
-    ]},
-    {title:"Gene Regulation", required:[
-      {label:"a. Predicts lac operon active", terms:["active","on","lac operon","transcription"]},
-      {label:"b. Explains allolactose/repressor", terms:["allolactose","lactose","repressor","operator","bind"]},
-      {label:"c. Explains low glucose/cAMP-CAP", terms:["glucose","camp","cap","activator","transcription"]},
-      {label:"d. Justifies energy/resource efficiency", terms:["efficient","energy","resources","only when","benefit"]}
-    ]},
-    {title:"Hardy-Weinberg", required:[
-      {label:"a. Calculates q² = 0.09", terms:["45/500","0.09","q²","q2"]},
-      {label:"b. Calculates q = 0.30 and p = 0.70", terms:["0.30","0.3","0.70","0.7","p","q"]},
-      {label:"c. Calculates 2pq = 0.42", terms:["2pq","0.42","42"]},
-      {label:"d. Identifies equilibrium condition", terms:["random mating","no selection","no mutation","no migration","large population"]}
-    ]},
-    {title:"Natural Selection", required:[
-      {label:"a. Explains selection for resistance", terms:["natural selection","resistant","survive","reproduce"]},
-      {label:"b. Describes genetic variation", terms:["variation","mutation","allele","heritable"]},
-      {label:"c. Predicts resistance allele increases", terms:["allele frequency","increase","more common","population"]},
-      {label:"d. Justifies using fitness/environment", terms:["fitness","antibiotic","environment","selection pressure"]}
-    ]},
-    {title:"Ecology + Evolution", required:[
-      {label:"a. Explains carrying capacity decreases", terms:["carrying capacity","decrease","resources","food","water"]},
-      {label:"b. Describes population growth effect", terms:["population","decline","negative","growth slows"]},
-      {label:"c. Predicts selection on drought traits", terms:["natural selection","survival","reproduction","traits","drought"]},
-      {label:"d. Justifies ecology-evolution connection", terms:["selection pressure","environment","fitness","allele"]}
-    ]},
-    {title:"Chi-Square Genetics", required:[
-      {label:"a. Calculates expected 75 and 25", terms:["75","25","expected"]},
-      {label:"b. Calculates chi-square 1.33", terms:["1.33","chi-square","χ²","25/75","25/25"]},
-      {label:"c. Identifies df = 1", terms:["df","degrees of freedom","1"]},
-      {label:"d. Interprets fail to reject", terms:["fail to reject","less than 3.84","consistent","null"]}
-    ]},
-    {title:"Cladograms", required:[
-      {label:"a. Identifies A and B", terms:["a and b","species a","species b"]},
-      {label:"b. Explains node", terms:["node","common ancestor"]},
-      {label:"c. Describes shared derived traits", terms:["shared derived","derived trait","clade"]},
-      {label:"d. Justifies DNA evidence", terms:["dna","sequence","similar","common ancestry","evolutionary relationship"]}
-    ]}
-  ];
-
-  function includesAny(text, terms){
-    return terms.some(function(term){ return text.indexOf(term.toLowerCase()) !== -1; });
-  }
-
-  function detailedFrqFeedback(text, index){
-    var lower = text.toLowerCase();
-    var rubric = frqRubricsDetailed[index] || frqRubricsDetailed[0];
-    var hits = 0;
-    var html = '<div class="feedback-score">Auto-feedback: ' + rubric.title + '</div>';
-    html += '<ul class="feedback-list">';
-    rubric.required.forEach(function(row){
-      var ok = includesAny(lower, row.terms);
-      if (ok) hits++;
-      html += '<li>' + (ok ? '<span class="feedback-hit">✓</span> ' : '<span class="feedback-miss">✗</span> ') + row.label + '</li>';
-    });
-    var wc = lower.split(/\s+/).filter(Boolean).length;
-    var hasBecause = /\bbecause\b|\btherefore\b|\bleads to\b|\bresults in\b|\bcauses\b/.test(lower);
-    if (wc >= 35) hits++;
-    if (hasBecause) hits++;
-    html += '<li>' + (wc >= 35 ? '<span class="feedback-hit">✓</span>' : '<span class="feedback-miss">✗</span>') + ' Developed explanation length</li>';
-    html += '<li>' + (hasBecause ? '<span class="feedback-hit">✓</span>' : '<span class="feedback-miss">✗</span>') + ' Uses cause-and-effect reasoning</li>';
-    html += '</ul>';
-    html += '<p class="small"><strong>Score estimate:</strong> ' + Math.min(6,hits) + '/6. Revise any missing rows above. Strong AP answers usually name the process, cite prompt data, explain the mechanism, and justify the claim.</p>';
-    return html;
-  }
-
-  function installFrqScoring(){
-    document.addEventListener("click", function(e){
-      var btn = e.target.closest ? e.target.closest(".frq-feedback-btn") : null;
-      if (!btn) return;
-      var card = btn.closest(".frq-card");
-      if (!card) return;
-      var cards = qsa("#frq .frq-card");
-      var index = cards.indexOf(card);
-      var ta = card.querySelector("textarea");
-      var panel = card.querySelector(".feedback-panel");
-      if (!panel) return;
-      panel.innerHTML = detailedFrqFeedback(ta ? ta.value : "", index);
-      panel.classList.add("show");
-    }, true);
-  }
-
-  const stimulusSets = [
-    {
-      unit:"Unit 3",
-      title:"Respiration and Temperature",
-      stimulus:"A scientist measures oxygen consumption in cells at 10°C, 25°C, 37°C, and 50°C. The rate rises through 37°C and then drops sharply at 50°C.",
-      questions:[
-        {q:"What is the dependent variable?", choices:["Temperature","Oxygen consumption rate","Cell type","Time interval"], answer:1, explain:"The measured outcome is oxygen consumption rate."},
-        {q:"Why does rate decrease at 50°C?", choices:["Respiratory enzymes may denature","Oxygen becomes glucose","ATP can no longer store energy","Cells stop needing enzymes"], answer:0, explain:"High temperature can disrupt enzyme structure and reduce reaction rates."},
-        {q:"Why is oxygen consumption evidence of respiration?", choices:["Oxygen is final electron acceptor in the ETC","Oxygen is produced in glycolysis","Oxygen directly makes pyruvate","Oxygen replaces ATP"], answer:0, explain:"In aerobic respiration, oxygen accepts electrons at the end of the ETC."}
-      ]
-    },
-    {
-      unit:"Unit 2",
-      title:"Osmosis Dialysis Bag",
-      stimulus:"A dialysis bag containing sucrose solution is placed in distilled water. After 30 minutes, the bag gains mass.",
-      questions:[
-        {q:"Which process caused mass gain?", choices:["Osmosis","Active transport","Endocytosis","Protein synthesis"], answer:0, explain:"Water moved into the bag by osmosis."},
-        {q:"Why did water enter the bag?", choices:["The bag had lower water potential because of solute","Distilled water had more solute","Sucrose pumped water inward","Water moved toward lower solute concentration"], answer:0, explain:"Water moves toward lower water potential/higher solute concentration."},
-        {q:"What would be an important constant?", choices:["Starting volume of each bag","Changing bag size each trial","Using different temperatures","Changing sucrose concentration randomly"], answer:0, explain:"Constants prevent confounding variables."}
-      ]
-    },
-    {
-      unit:"Unit 7",
-      title:"Antibiotic Resistance",
-      stimulus:"A bacterial population contains rare resistant variants. After repeated antibiotic exposure, most surviving bacteria are resistant.",
-      questions:[
-        {q:"What mechanism explains the increase in resistance?", choices:["Natural selection","Individual choice","All bacteria becoming stronger by need","No genetic variation"], answer:0, explain:"Resistant bacteria survive and reproduce more."},
-        {q:"What happens to the resistance allele frequency?", choices:["It increases","It must decrease","It stays exactly constant","It disappears"], answer:0, explain:"Alleles linked to higher fitness become more common."},
-        {q:"Which answer avoids a common misconception?", choices:["The population evolves over generations","Each bacterium evolves during its life","The antibiotic creates the needed allele in every cell","All mutations are beneficial"], answer:0, explain:"Populations, not individuals, evolve."}
-      ]
-    },
-    {
-      unit:"Unit 6",
-      title:"Mutation and Protein Function",
-      stimulus:"A point mutation changes one codon in a gene for an enzyme. The altered enzyme has reduced activity.",
-      questions:[
-        {q:"Which sequence best explains the effect?", choices:["DNA change → mRNA codon → amino acid → protein structure","Protein → DNA → RNA → phenotype","ATP → DNA → protein → codon","Osmosis → transcription → mutation"], answer:0, explain:"Mutations can alter codons, amino acids, protein folding, and phenotype."},
-        {q:"What is most likely if the active site changes?", choices:["Substrate binding decreases","DNA replication stops permanently","The enzyme always works faster","The enzyme becomes a lipid"], answer:0, explain:"Active-site shape determines substrate binding."},
-        {q:"Which mutation may have no amino acid effect?", choices:["Silent mutation","Early frameshift","Nonsense mutation","One-base deletion"], answer:0, explain:"Silent mutations can code for the same amino acid."}
-      ]
-    }
-  ];
-
-  function installStimulusUI(){
-    var quizBody = $("#quiz") && $("#quiz").querySelector(".card-body");
-    if (!quizBody || $("#stimulusPatchBtn")) return;
-    var block = document.createElement("div");
-    block.className = "callout gold";
-    block.innerHTML = '<h3>AP-Style Stimulus Practice</h3><p>Practice short College Board-style scenarios with linked questions.</p><button type="button" class="quiz-btn" id="stimulusPatchBtn">Try Stimulus Set</button>';
-    var quizContainer = $("#quizContainer");
-    quizBody.insertBefore(block, quizContainer || null);
-    $("#stimulusPatchBtn").addEventListener("click", renderStimulusSet);
-  }
-
-  function shuffleQuestion(item){
-    var idx = item.choices.map(function(_, i){ return i; });
-    for (var i = idx.length - 1; i > 0; i--){
-      var j = Math.floor(Math.random() * (i+1));
-      var tmp = idx[i]; idx[i] = idx[j]; idx[j] = tmp;
-    }
-    var choices = [], answer = 0;
-    idx.forEach(function(oldIndex, newIndex){
-      choices.push(item.choices[oldIndex]);
-      if (oldIndex === item.answer) answer = newIndex;
-    });
-    return {q:item.q, choices:choices, answer:answer, explain:item.explain, unit:item.unit};
-  }
-
-  function renderStimulusSet(){
-    var box = $("#quizContainer");
-    if (!box) return;
-    var set = stimulusSets[Math.floor(Math.random() * stimulusSets.length)];
-    var qs = set.questions.map(function(q){ q.unit = set.unit; return shuffleQuestion(q); });
-    var html = '<h3>AP-Style Stimulus Set <span class="pill">' + set.unit + '</span></h3>';
-    html += '<div class="callout"><strong>Scenario:</strong> ' + set.stimulus + '</div>';
-    qs.forEach(function(item, qi){
-      html += '<div class="exam-question"><p><strong>' + (qi+1) + '. ' + item.q + '</strong></p>';
-      item.choices.forEach(function(choice, ci){
-        html += '<button type="button" class="choice" data-stim-q="' + qi + '" data-stim-c="' + ci + '">' + choice + '</button>';
-      });
-      html += '<div id="stimFeed' + qi + '" class="answer small">Choose an answer.</div></div>';
-    });
-    box.innerHTML = html;
-    qsa("[data-stim-q]", box).forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var qi = Number(btn.getAttribute("data-stim-q"));
-        var ci = Number(btn.getAttribute("data-stim-c"));
-        var item = qs[qi];
-        var buttons = qsa('[data-stim-q="' + qi + '"]', box);
-        buttons.forEach(function(b){
-          b.disabled = true;
-          var bi = Number(b.getAttribute("data-stim-c"));
-          if (bi === item.answer) b.classList.add("correct");
-          if (bi === ci && ci !== item.answer) b.classList.add("incorrect");
-        });
-        recordAnswer(item.unit, ci === item.answer, ci === item.answer ? 12 : 0);
-        var feed = $("#stimFeed" + qi);
-        if (feed){
-          feed.innerHTML = ci === item.answer
-            ? '<strong>Correct!</strong><div class="correct-feedback">' + item.explain + '</div>'
-            : '<strong>Not quite.</strong> Correct answer: <strong>' + item.choices[item.answer] + '</strong><div class="trap-feedback">' + apTrapFeedback(item.q) + '</div><div class="correct-feedback">' + item.explain + '</div>';
-          feed.classList.add("show");
-        }
-      });
-    });
-  }
-
-  function blankState(){ return {points:0, correct:0, attempted:0, badges:[], unitStats:{}}; }
-  function loadState(){ try { return JSON.parse(localStorage.getItem("apBioQuizState")) || blankState(); } catch(e){ return blankState(); } }
-  function saveState(s){ try { localStorage.setItem("apBioQuizState", JSON.stringify(s)); } catch(e){} }
-
-  function normalizeUnit(unit){
-    if (!unit) return "Unit 1";
-    return unit.replace("Units 8-9","Unit 8");
-  }
-
-  function recordAnswer(unit, correct, points){
-    var state = loadState();
-    unit = normalizeUnit(unit);
-    state.attempted++;
-    if (correct) state.correct++;
-    state.points += points || 0;
-    if (!state.unitStats[unit]) state.unitStats[unit] = {correct:0, attempted:0};
-    state.unitStats[unit].attempted++;
-    if (correct) state.unitStats[unit].correct++;
-    saveState(state);
-    renderProgressPatch();
-  }
-
-  function renderProgressPatch(){
-    var state = loadState();
-    var pct = state.attempted ? Math.round((state.correct / state.attempted) * 100) : 0;
-    if ($("points")) $("points").textContent = state.points;
-    if ($("mastery")) $("mastery").textContent = pct + "%";
-    if ($("progressBar")) $("progressBar").style.width = pct + "%";
-    if ($("correctCount")) $("correctCount").textContent = state.correct;
-    if ($("attemptCount")) $("attemptCount").textContent = state.attempted;
-
-    var units = ["Unit 1","Unit 2","Unit 3","Unit 4","Unit 5","Unit 6","Unit 7","Unit 8"];
-    var weakest = "Not enough data yet", weakestPct = 101;
-    var table = $("unitProgressTable");
-    if (table){
-      var html = '<tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr>';
-      units.forEach(function(unit){
-        var u = state.unitStats[unit] || {correct:0, attempted:0};
-        var upct = u.attempted ? Math.round((u.correct / u.attempted) * 100) : 0;
-        if (u.attempted >= 2 && upct < weakestPct){ weakestPct = upct; weakest = unit; }
-        var action = u.attempted === 0 ? "Start practice" : upct < 70 ? "Review unit content + retry" : upct < 85 ? "Move to FRQ practice" : "Mastery: maintain with mixed review";
-        html += '<tr><td>' + unit + '</td><td>' + u.correct + '</td><td>' + u.attempted + '</td><td>' + upct + '%</td><td>' + action + '</td></tr>';
-      });
-      table.innerHTML = html;
-    }
-    if ($("weakestUnit")) $("weakestUnit").textContent = weakest;
-    if ($("adaptiveText") && weakest !== "Not enough data yet"){
-      $("adaptiveText").innerHTML = 'Current recommendation: focus on <strong>' + weakest + '</strong>. Use unit mode, then write one FRQ tied to that unit.';
-    }
-  }
-
-  function patchGradeQuiz(){
-    var oldGrade = window.gradeQuiz;
-    window.gradeQuiz = function(choice, item){
-      if (typeof oldGrade === "function") {
-        oldGrade(choice, item);
-      } else {
-        recordAnswer(item && item.unit, choice === item.answer, choice === item.answer ? 10 : 0);
-      }
-      renderProgressPatch();
-    };
-  }
-
-  function apTrapFeedback(question){
-    var q = safeText(question).toLowerCase();
-    if (/water|osmosis|hypertonic|hypotonic/.test(q)) return "AP trap: state the direction of water movement and justify it with water potential or solute concentration.";
-    if (/enzyme|activation|denature/.test(q)) return "AP trap: enzymes lower activation energy but do not change ΔG or equilibrium.";
-    if (/evolution|selection|allele|fitness|resistant/.test(q)) return "AP trap: populations evolve; individuals do not. Fitness means reproductive success.";
-    if (/transcription|translation|mutation|codon/.test(q)) return "AP trap: connect DNA change → mRNA/codon → amino acid/protein → phenotype.";
-    if (/photosynthesis|respiration|oxygen|atp/.test(q)) return "AP trap: explain electron/proton movement and energy transformation, not just the process name.";
-    return "AP trap: choose the answer that explains the biological mechanism, not just a related vocabulary term.";
-  }
-
-  function reinstallAnswerButtons(){
-    document.addEventListener("click", function(e){
-      var btn = e.target.closest ? e.target.closest(".answer-btn") : null;
-      if (!btn) return;
-      var answer = btn.nextElementSibling;
-      if (!answer || !answer.classList.contains("answer")) return;
-      answer.classList.toggle("show");
-      btn.textContent = answer.classList.contains("show") ? "Hide answer" : (btn.textContent.indexOf("scoring") !== -1 ? "Reveal scoring guide" : "Reveal answer");
-    }, true);
-  }
-
-  function questionCountPanel(){
-    var quiz = $("quiz");
-    if (!quiz || $("questionCountPatchPanel")) return;
-    var body = quiz.querySelector(".card-body");
-    if (!body) return;
-    var counts = {};
-    try {
-      Object.keys(window.quizBank || quizBank || {}).forEach(function(unit){
-        counts[unit] = (window.quizBank || quizBank)[unit].length;
-      });
-    } catch(e) { counts = {}; }
-    var keys = Object.keys(counts);
-    if (!keys.length) return;
-    var total = keys.reduce(function(sum,k){ return sum + counts[k]; }, 0);
-    var html = '<details id="questionCountPatchPanel" open><summary>Question Count by Unit</summary><div><table><tr><th>Unit</th><th>Questions</th></tr>';
-    keys.forEach(function(k){ html += '<tr><td>' + k + '</td><td>' + counts[k] + '</td></tr>'; });
-    html += '<tr><th>Total</th><th>' + total + '</th></tr></table></div></details>';
-    body.insertAdjacentHTML("beforeend", html);
-  }
-
-  function run(){
-    installCedAddenda();
-    installGraphSection();
-    installFrqScoring();
-    installStimulusUI();
-    renderProgressPatch();
-    patchGradeQuiz();
-    reinstallAnswerButtons();
-    questionCountPanel();
-  }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
-  else run();
-})();
 </script>
 </body>
 </html>
