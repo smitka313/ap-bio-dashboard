@@ -2298,6 +2298,30 @@ df = categories − 1</div>
         if (byId('progressBar')) byId('progressBar').style.width = pct + '%';
         if (byId('correctCount')) byId('correctCount').textContent = state.correct || 0;
         if (byId('attemptCount')) byId('attemptCount').textContent = state.attempted || 0;
+
+        var table = byId('unitProgressTable');
+        if (table) {
+          var units = ['Unit 1','Unit 2','Unit 3','Unit 4','Unit 5','Unit 6','Unit 7','Unit 8'];
+          var html = '<tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>Recommended Action</th></tr>';
+          var weakest = null;
+          var weakestPct = 101;
+          for (var i = 0; i < units.length; i++) {
+            var unit = units[i];
+            var stats = state.unitStats && state.unitStats[unit] ? state.unitStats[unit] : { correct:0, attempted:0 };
+            var unitPct = stats.attempted ? Math.round((stats.correct / stats.attempted) * 100) : 0;
+            if (stats.attempted > 0 && unitPct < weakestPct) {
+              weakestPct = unitPct;
+              weakest = unit;
+            }
+            var action = 'Start practice';
+            if (stats.attempted >= 3 && unitPct < 70) action = 'Review notes + retry quiz';
+            if (stats.attempted >= 3 && unitPct >= 70) action = 'Move to FRQ practice';
+            if (stats.attempted >= 5 && unitPct >= 85) action = 'Mastery: maintain with mixed review';
+            html += '<tr><td>' + unit + '</td><td>' + stats.correct + '</td><td>' + stats.attempted + '</td><td>' + unitPct + '%</td><td>' + action + '</td></tr>';
+          }
+          table.innerHTML = html;
+          if (byId('weakestUnit')) byId('weakestUnit').textContent = weakest || 'Not enough data yet';
+        }
       }
 
       function chooseWorkingQuestion() {
@@ -2352,13 +2376,96 @@ df = categories − 1</div>
       }
 
       function renderWorkingStimulus() {
-        try {
-          if (typeof renderStimulusSet === 'function') {
-            renderStimulusSet();
-            return;
+        var box = byId('quizContainer');
+        if (!box) return;
+
+        var workingStimulusBank = [
+          {
+            unit: 'Unit 3',
+            title: 'Cellular Respiration and Temperature',
+            stimulus: 'A scientist measures oxygen consumption in cells at different temperatures. The rate increases from 10°C to 37°C, then decreases sharply at 50°C.',
+            questions: [
+              {q:'What is the dependent variable in this investigation?',choices:['Temperature','Oxygen consumption rate','Cell type','Enzyme concentration'],answer:1,explain:'The dependent variable is what is measured. Here, the scientist measures oxygen consumption rate.'},
+              {q:'Why does the oxygen consumption rate most likely decrease at 50°C?',choices:['Enzymes involved in respiration may denature','Oxygen becomes the product of glycolysis','Cells stop needing ATP at high temperatures','Glucose can no longer contain chemical energy'],answer:0,explain:'High temperature can disrupt enzyme structure, reducing activity in respiration pathways.'},
+              {q:'Which cellular process is most directly measured by oxygen consumption?',choices:['Photosynthesis','Cellular respiration','Translation','Osmosis'],answer:1,explain:'Oxygen is the final electron acceptor in aerobic cellular respiration, so oxygen consumption can indicate respiration rate.'}
+            ]
+          },
+          {
+            unit: 'Unit 7',
+            title: 'Antibiotic Resistance',
+            stimulus: 'A bacterial population is exposed to an antibiotic. After several generations, most surviving bacteria are resistant to the antibiotic.',
+            questions: [
+              {q:'Which mechanism best explains the increase in resistant bacteria?',choices:['Natural selection','Gene flow from mammals','Individuals choosing to adapt','Reduced DNA replication accuracy in all cells'],answer:0,explain:'Resistant bacteria survive and reproduce more under antibiotic selection pressure.'},
+              {q:'What most likely happened to the resistance allele frequency?',choices:['It increased','It decreased','It stayed exactly the same','It disappeared completely'],answer:0,explain:'Because resistant bacteria had higher fitness, the resistance allele became more common over generations.'},
+              {q:'Which statement best avoids a common AP Biology misconception?',choices:['Resistance was already present in some bacteria and was selected for','The antibiotic caused every bacterium to become resistant because they needed to survive','Individual bacteria evolved during their lifetime','The population became resistant because all mutations are beneficial'],answer:0,explain:'Natural selection acts on existing heritable variation; populations evolve over generations, not individuals by choice.'}
+            ]
+          },
+          {
+            unit: 'Unit 2',
+            title: 'Osmosis in a Dialysis Bag',
+            stimulus: 'A dialysis bag containing sucrose solution is placed in distilled water. After 30 minutes, the bag gains mass.',
+            questions: [
+              {q:'Which process caused the bag to gain mass?',choices:['Osmosis','Active transport','Endocytosis','Facilitated diffusion of sucrose'],answer:0,explain:'Water moved into the bag by osmosis.'},
+              {q:'Why did water move into the dialysis bag?',choices:['The inside of the bag had higher solute concentration and lower water potential','The outside solution had higher solute concentration','Sucrose moved freely out of the bag','ATP pumped water inward'],answer:0,explain:'Water moves toward lower water potential, which corresponds to higher solute concentration.'},
+              {q:'Which experimental flaw would most weaken the conclusion?',choices:['Using bags with different starting volumes','Measuring final mass','Using distilled water outside the bag','Recording time'],answer:0,explain:'Different starting volumes introduce a confounding variable that affects mass change.'}
+            ]
           }
+        ];
+
+        var sourceBank = workingStimulusBank;
+        try {
+          if (typeof stimulusBank !== 'undefined' && stimulusBank && stimulusBank.length) sourceBank = stimulusBank;
         } catch (e) {}
-        renderWorkingQuiz();
+
+        var set = sourceBank[Math.floor(Math.random() * sourceBank.length)];
+        var shuffledQuestions = [];
+        for (var i = 0; i < set.questions.length; i++) {
+          shuffledQuestions.push(basicShuffleQuestion({ unit:set.unit, d:'stimulus', q:set.questions[i].q, choices:set.questions[i].choices, answer:set.questions[i].answer, explain:set.questions[i].explain }));
+        }
+
+        var html = '<h3>AP-Style Stimulus Set <span class="pill">' + set.unit + '</span></h3>';
+        html += '<div class="callout"><strong>Scenario:</strong> ' + set.stimulus + '</div>';
+        for (var q = 0; q < shuffledQuestions.length; q++) {
+          var item = shuffledQuestions[q];
+          html += '<div class="exam-question"><p><strong>' + (q + 1) + '. ' + item.q + '</strong></p>';
+          for (var c = 0; c < item.choices.length; c++) {
+            html += '<button type="button" class="choice" data-safe-stim-q="' + q + '" data-safe-stim-c="' + c + '">' + item.choices[c] + '</button>';
+          }
+          html += '<div id="safeStimFeedback' + q + '" class="answer small">Choose an answer.</div></div>';
+        }
+        box.innerHTML = html;
+
+        var buttons = box.querySelectorAll('[data-safe-stim-q]');
+        for (var b = 0; b < buttons.length; b++) {
+          buttons[b].addEventListener('click', function() {
+            var qIndex = Number(this.getAttribute('data-safe-stim-q'));
+            var choice = Number(this.getAttribute('data-safe-stim-c'));
+            var item = shuffledQuestions[qIndex];
+            var state = getWorkingState();
+            state.attempted += 1;
+            if (!state.unitStats[item.unit]) state.unitStats[item.unit] = { correct:0, attempted:0 };
+            state.unitStats[item.unit].attempted += 1;
+            var qButtons = box.querySelectorAll('[data-safe-stim-q="' + qIndex + '"]');
+            for (var x = 0; x < qButtons.length; x++) {
+              qButtons[x].disabled = true;
+              var idx = Number(qButtons[x].getAttribute('data-safe-stim-c'));
+              if (idx === item.answer) qButtons[x].classList.add('correct');
+              if (idx === choice && choice !== item.answer) qButtons[x].classList.add('incorrect');
+            }
+            var feedback = byId('safeStimFeedback' + qIndex);
+            if (choice === item.answer) {
+              state.correct += 1;
+              state.points += 12;
+              state.unitStats[item.unit].correct += 1;
+              feedback.innerHTML = '<strong>Correct!</strong><div class="correct-feedback">' + item.explain + '</div>';
+            } else {
+              feedback.innerHTML = '<strong>Not quite.</strong> Correct answer: <strong>' + item.choices[item.answer] + '</strong><div class="correct-feedback">' + item.explain + '</div>';
+            }
+            feedback.classList.add('show');
+            saveWorkingState(state);
+            updateWorkingProgress();
+          });
+        }
       }
 
       document.addEventListener('click', function(event) {
