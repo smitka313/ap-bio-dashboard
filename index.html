@@ -684,6 +684,11 @@
                 </select>
               </label>
             </div>
+            <div class="callout gold">
+              <h3>AP-Style Stimulus Practice</h3>
+              <p>Practice AP Biology-style question sets built around one scenario, graph, experiment, or data table.</p>
+              <button type="button" class="quiz-btn" id="stimulusBtn">Try AP-Style Stimulus Set</button>
+            </div>
             <div id="quizContainer" class="quiz-box"></div>
             <button class="quiz-btn" id="nextQuizBtn">Next Question</button>
           </div>
@@ -1371,7 +1376,49 @@ df = categories − 1</div>
       return selected;
     }
 
-    var quizQuestions = flattenQuizBank();
+    var // Additional missing CED-aligned questions (final gaps)
+    quizBank['Unit 1'].push(
+      {d:'medium',q:'If pH decreases from 7 to 5, how does hydrogen ion concentration change?',choices:['It increases by 100x','It decreases by 100x','It doubles','It stays the same'],answer:0,explain:'Each pH unit is a 10x change; a drop of 2 units increases [H+] by 100x.'},
+      {d:'hard',q:'How do biological buffers help maintain homeostasis?',choices:['They resist changes in pH by binding or releasing H+','They permanently remove acids','They increase temperature','They prevent enzyme function'],answer:0,explain:'Buffers stabilize pH by accepting or donating hydrogen ions.'}
+    );
+
+    quizBank['Unit 2'].push(
+      {d:'medium',q:'Which evidence best supports the endosymbiotic theory for mitochondria?',choices:['They have their own DNA and double membranes','They only exist in eukaryotes','They are larger than nuclei','They contain ribosomes identical to eukaryotic cytoplasm'],answer:0,explain:'Mitochondria have circular DNA and double membranes, consistent with bacterial ancestry.'},
+      {d:'medium',q:'Why does compartmentalization improve efficiency in eukaryotic cells?',choices:['It separates incompatible processes and increases local concentration of enzymes','It eliminates the need for enzymes','It stops all diffusion','It reduces surface area'],answer:0,explain:'Membrane-bound organelles create optimal environments for specific reactions.'}
+    );
+
+    quizBank['Unit 3'].push(
+      {d:'medium',q:'In a redox reaction, which molecule is reduced?',choices:['The molecule that gains electrons','The molecule that loses electrons','The molecule that loses protons','The molecule that gains oxygen'],answer:0,explain:'Reduction is gain of electrons.'},
+      {d:'hard',q:'In an energy diagram, what does the peak represent?',choices:['Activation energy barrier','Equilibrium point','ΔG of reaction','Final product energy'],answer:0,explain:'The peak corresponds to activation energy required to start the reaction.'}
+    );
+
+    quizBank['Unit 4'].push(
+      {d:'medium',q:'Which signaling molecules typically bind intracellular receptors?',choices:['Steroid hormones','Peptide hormones','Neurotransmitters','Ions'],answer:0,explain:'Steroid hormones are nonpolar and can cross membranes to bind intracellular receptors.'}
+    );
+
+    quizBank['Unit 5'].push(
+      {d:'hard',q:'If a chi-square test rejects the null hypothesis, what does this indicate?',choices:['Observed data differ significantly from expected ratios','The experiment failed','The data are perfectly accurate','No variation exists'],answer:0,explain:'Rejecting the null means differences are unlikely due to chance.'},
+      {d:'hard',q:'If recombination frequency between two genes is 8%, what is their map distance?',choices:['8 map units','0.8 map units','80 map units','1 map unit'],answer:0,explain:'Recombination percentage approximates map distance in centimorgans.'}
+    );
+
+    quizBank['Unit 6'].push(
+      {d:'medium',q:'Which RNA molecule carries amino acids to the ribosome?',choices:['tRNA','mRNA','rRNA','snRNA'],answer:0,explain:'tRNA delivers amino acids during translation.'},
+      {d:'medium',q:'What is the role of rRNA?',choices:['Forms part of ribosome structure and catalyzes peptide bonds','Carries amino acids','Stores genetic information','Cuts DNA'],answer:0,explain:'rRNA is structural and catalytic in ribosomes.'},
+      {d:'hard',q:'Post-translational modification of proteins can affect...',choices:['Protein function and localization','DNA replication','Allele frequency','Water potential'],answer:0,explain:'Modifications after translation can activate, deactivate, or target proteins.'}
+    );
+
+    quizBank['Unit 7'].push(
+      {d:'medium',q:'Which graph best represents stabilizing selection?',choices:['A narrowing curve around the mean','A shift toward one extreme','Two peaks forming','A flat line'],answer:0,explain:'Stabilizing selection favors intermediate phenotypes, reducing variation.'},
+      {d:'medium',q:'Why is molecular evidence often stronger than morphological evidence for evolutionary relationships?',choices:['DNA sequences directly reflect genetic similarity','Morphology is always identical','DNA does not mutate','Molecules are visible traits'],answer:0,explain:'DNA comparisons provide direct evidence of genetic relatedness.'}
+    );
+
+    quizBank['Unit 8'].push(
+      {d:'medium',q:'What distinguishes primary from secondary succession?',choices:['Primary begins without soil; secondary occurs where soil remains','Primary is faster','Secondary occurs only in oceans','Primary involves animals only'],answer:0,explain:'Primary succession starts from bare substrate, while secondary begins after disturbance with soil intact.'},
+      {d:'medium',q:'Which organism is most likely r-selected?',choices:['A species producing many offspring with little parental care','A large mammal with few offspring','A long-lived tree','A species with stable population size'],answer:0,explain:'r-selected species reproduce quickly with many offspring.'},
+      {d:'medium',q:'How does a food web differ from a food chain?',choices:['A food web shows multiple feeding relationships; a food chain shows one pathway','They are identical','Food webs exclude producers','Food chains show only energy loss'],answer:0,explain:'Food webs are more complex and realistic representations of ecosystems.'}
+    );
+
+    quizQuestions = flattenQuizBank();
 
     // Additional CED gap questions added without removing any existing quiz-bank items.
     // These strengthen coverage of functional groups, enzyme inhibition, energy coupling,
@@ -1431,6 +1478,61 @@ df = categories − 1</div>
     );
 
     quizQuestions = flattenQuizBank();
+
+    var stimulusBank = [
+      {
+        unit: 'Unit 3',
+        title: 'Cellular Respiration and Temperature',
+        stimulus: 'A scientist measures oxygen consumption in cells at different temperatures. The rate increases from 10°C to 37°C, then decreases sharply at 50°C.',
+        questions: [
+          {q:'What is the dependent variable in this investigation?',choices:['Temperature','Oxygen consumption rate','Cell type','Enzyme concentration'],answer:1,explain:'The dependent variable is what is measured. Here, the scientist measures oxygen consumption rate.'},
+          {q:'Why does the oxygen consumption rate most likely decrease at 50°C?',choices:['Enzymes involved in respiration may denature','Oxygen becomes the product of glycolysis','Cells stop needing ATP at high temperatures','Glucose can no longer contain chemical energy'],answer:0,explain:'High temperature can disrupt enzyme structure, reducing activity in respiration pathways.'},
+          {q:'Which cellular process is most directly measured by oxygen consumption?',choices:['Photosynthesis','Cellular respiration','Translation','Osmosis'],answer:1,explain:'Oxygen is the final electron acceptor in aerobic cellular respiration, so oxygen consumption can indicate respiration rate.'}
+        ]
+      },
+      {
+        unit: 'Unit 7',
+        title: 'Antibiotic Resistance',
+        stimulus: 'A bacterial population is exposed to an antibiotic. After several generations, most surviving bacteria are resistant to the antibiotic.',
+        questions: [
+          {q:'Which mechanism best explains the increase in resistant bacteria?',choices:['Natural selection','Gene flow from mammals','Individuals choosing to adapt','Reduced DNA replication accuracy in all cells'],answer:0,explain:'Resistant bacteria survive and reproduce more under antibiotic selection pressure.'},
+          {q:'What most likely happened to the resistance allele frequency?',choices:['It increased','It decreased','It stayed exactly the same','It disappeared completely'],answer:0,explain:'Because resistant bacteria had higher fitness, the resistance allele became more common over generations.'},
+          {q:'Which statement best avoids a common AP Biology misconception?',choices:['Resistance was already present in some bacteria and was selected for','The antibiotic caused every bacterium to become resistant because they needed to survive','Individual bacteria evolved during their lifetime','The population became resistant because all mutations are beneficial'],answer:0,explain:'Natural selection acts on existing heritable variation; populations evolve over generations, not individuals by choice.'}
+        ]
+      },
+      {
+        unit: 'Unit 2',
+        title: 'Osmosis in a Dialysis Bag',
+        stimulus: 'A dialysis bag containing sucrose solution is placed in distilled water. After 30 minutes, the bag gains mass.',
+        questions: [
+          {q:'Which process caused the bag to gain mass?',choices:['Osmosis','Active transport','Endocytosis','Facilitated diffusion of sucrose'],answer:0,explain:'Water moved into the bag by osmosis.'},
+          {q:'Why did water move into the dialysis bag?',choices:['The inside of the bag had higher solute concentration and lower water potential','The outside solution had higher solute concentration','Sucrose moved freely out of the bag','ATP pumped water inward'],answer:0,explain:'Water moves toward lower water potential, which corresponds to higher solute concentration.'},
+          {q:'Which experimental flaw would most weaken the conclusion?',choices:['Using bags with different starting volumes','Measuring final mass','Using distilled water outside the bag','Recording time'],answer:0,explain:'Different starting volumes introduce a confounding variable that affects mass change.'}
+        ]
+      },
+      {
+        unit: 'Unit 6',
+        title: 'Gene Expression and Mutation',
+        stimulus: 'A point mutation changes one codon in a gene that codes for an enzyme. The enzyme has reduced activity compared with the original enzyme.',
+        questions: [
+          {q:'Which sequence best explains the reduced enzyme activity?',choices:['DNA change → mRNA codon change → amino acid change → altered protein structure','Protein change → DNA change → mRNA change → phenotype','Ribosome change → DNA replication → allele frequency change','Osmosis → transcription → enzyme activation'],answer:0,explain:'A mutation can alter codons, amino acid sequence, protein folding, and enzyme function.'},
+          {q:'Which outcome would be most likely if the mutation changed the active site?',choices:['Substrate binding could decrease','The enzyme would necessarily become faster','The gene would no longer contain nucleotides','The cell membrane would become impermeable'],answer:0,explain:'Active site shape affects substrate binding and catalytic activity.'},
+          {q:'Which type of mutation is least likely to affect the protein sequence?',choices:['Silent mutation','Nonsense mutation','Frameshift mutation','Deletion of one nucleotide'],answer:0,explain:'Silent mutations do not change the amino acid sequence because of redundancy in the genetic code.'}
+        ]
+      },
+      {
+        unit: 'Unit 8',
+        title: 'Population Growth and Carrying Capacity',
+        stimulus: 'A population grows rapidly for several generations and then levels off near 500 individuals after food and nesting space become limited.',
+        questions: [
+          {q:'Which growth model best fits the population?',choices:['Logistic growth','Exponential growth with no limits','Hardy-Weinberg equilibrium','Primary succession'],answer:0,explain:'Logistic growth levels off as the population approaches carrying capacity.'},
+          {q:'What is the approximate carrying capacity?',choices:['500 individuals','50 individuals','The initial population size','The number of predators only'],answer:0,explain:'Carrying capacity is the population size the environment can support, shown where the graph levels off.'},
+          {q:'Which factor is density-dependent in this scenario?',choices:['Competition for food and nesting space','A volcanic eruption','A sudden freeze','A wildfire caused by lightning'],answer:0,explain:'Competition becomes stronger as population density increases, making it density-dependent.'}
+        ]
+      }
+    ];
+
+    var currentStimulusSet = null;
 
     var miniLessons = {
       'Unit 1':'Mini-lesson: For chemistry questions, always connect molecular structure to function. Water properties come from hydrogen bonding; protein function depends on amino acid sequence, R-group interactions, and folding.',
@@ -1719,6 +1821,78 @@ df = categories − 1</div>
       }
     }
 
+    function shuffleStimulusQuestion(q) {
+      var item = { unit: currentStimulusSet ? currentStimulusSet.unit : 'Stimulus', q: q.q, choices: q.choices, answer: q.answer, explain: q.explain, d: 'stimulus' };
+      return shuffleQuestion(item);
+    }
+
+    function renderStimulusSet() {
+      var box = document.getElementById('quizContainer');
+      if (!box) return;
+      var set = stimulusBank[Math.floor(Math.random() * stimulusBank.length)];
+      currentStimulusSet = {
+        unit: set.unit,
+        title: set.title,
+        stimulus: set.stimulus,
+        questions: set.questions.map(function(q) { return shuffleStimulusQuestion(q); })
+      };
+      var html = '<h3>AP-Style Stimulus Set <span class="pill">' + currentStimulusSet.unit + '</span></h3>';
+      html += '<div class="callout"><strong>Scenario:</strong> ' + currentStimulusSet.stimulus + '</div>';
+      for (var i = 0; i < currentStimulusSet.questions.length; i++) {
+        var q = currentStimulusSet.questions[i];
+        html += '<div class="exam-question"><p><strong>' + (i + 1) + '. ' + q.q + '</strong></p>';
+        for (var c = 0; c < q.choices.length; c++) {
+          html += '<button type="button" class="choice" data-stimulus-question="' + i + '" data-stimulus-choice="' + c + '">' + q.choices[c] + '</button>';
+        }
+        html += '<div id="stimulusFeedback' + i + '" class="answer small">Choose an answer.</div></div>';
+      }
+      box.innerHTML = html;
+      var buttons = box.querySelectorAll('.choice');
+      for (var b = 0; b < buttons.length; b++) {
+        buttons[b].addEventListener('click', function() {
+          gradeStimulus(Number(this.getAttribute('data-stimulus-question')), Number(this.getAttribute('data-stimulus-choice')));
+        });
+      }
+    }
+
+    function gradeStimulus(qIndex, choiceIndex) {
+      if (!currentStimulusSet || !currentStimulusSet.questions[qIndex]) return;
+      var item = currentStimulusSet.questions[qIndex];
+      var state = loadQuizState();
+      state.attempted += 1;
+      if (!state.unitStats[item.unit]) state.unitStats[item.unit] = { correct: 0, attempted: 0 };
+      state.unitStats[item.unit].attempted += 1;
+      var container = document.getElementById('quizContainer');
+      var buttons = container.querySelectorAll('[data-stimulus-question="' + qIndex + '"]');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+        var idx = Number(buttons[i].getAttribute('data-stimulus-choice'));
+        if (idx === item.answer) buttons[i].classList.add('correct');
+        if (idx === choiceIndex && choiceIndex !== item.answer) buttons[i].classList.add('incorrect');
+      }
+      var isCorrect = choiceIndex === item.answer;
+      if (isCorrect) {
+        state.correct += 1;
+        state.points += 12;
+        state.unitStats[item.unit].correct += 1;
+      }
+      updateBadges(state);
+      saveQuizState(state);
+      var selectedText = item.choices[choiceIndex];
+      var correctText = item.choices[item.answer];
+      var feedback = document.getElementById('stimulusFeedback' + qIndex);
+      if (feedback) {
+        if (isCorrect) {
+          feedback.innerHTML = '<strong>Correct!</strong><div class="correct-feedback">' + item.explain + '</div>';
+        } else {
+          saveMistake(item, selectedText, correctText);
+          feedback.innerHTML = '<strong>Not quite.</strong> Correct answer: <strong>' + correctText + '</strong><div class="trap-feedback">' + getDistractorFeedback(item, selectedText) + '</div><div class="correct-feedback"><strong>Why the correct answer works:</strong> ' + item.explain + '</div>';
+        }
+        feedback.classList.add('show');
+      }
+      renderProgress();
+    }
+
     function getChoiceExplanation(item, choiceIndex) {
       if (choiceIndex === item.answer) return 'Correct: this choice directly matches the biological mechanism tested in the question. ' + item.explain;
       return getDistractorFeedback(item, item.choices[choiceIndex]);
@@ -1845,6 +2019,11 @@ df = categories − 1</div>
 
     var nextQuizBtn = document.getElementById('nextQuizBtn');
     if (nextQuizBtn) nextQuizBtn.addEventListener('click', function() { currentQuestion += 1; renderQuiz(); });
+
+    var stimulusBtn = document.getElementById('stimulusBtn');
+    if (stimulusBtn) stimulusBtn.addEventListener('click', function() {
+      renderStimulusSet();
+    });
 
     var quizMode = document.getElementById('quizMode');
     function updateQuizControlHelp() {
@@ -2038,6 +2217,208 @@ df = categories − 1</div>
     renderQuiz();
 
     showSection('overview');
+  </script>
+<script>
+    // Fail-safe quiz repair layer: reconnects quiz controls if the main quiz initializer is interrupted.
+    (function() {
+      function byId(id) { return document.getElementById(id); }
+
+      function basicShuffleQuestion(item) {
+        var indices = item.choices.map(function(_, i) { return i; });
+        for (var i = indices.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = indices[i];
+          indices[i] = indices[j];
+          indices[j] = temp;
+        }
+        var newChoices = [];
+        var newAnswer = 0;
+        for (var k = 0; k < indices.length; k++) {
+          newChoices.push(item.choices[indices[k]]);
+          if (indices[k] === item.answer) newAnswer = k;
+        }
+        return { unit:item.unit, d:item.d || 'review', q:item.q, choices:newChoices, answer:newAnswer, explain:item.explain };
+      }
+
+      var fallbackQuizBank = {
+        'Unit 1': [
+          {d:'medium',q:'Which property of water results from hydrogen bonding?',choices:['Cohesion','Lack of polarity','Low specific heat','Inability to dissolve ions'],answer:0,explain:'Hydrogen bonding creates cohesion between water molecules.'},
+          {d:'medium',q:'Which part of an amino acid most directly affects protein folding?',choices:['R group','Amino group only','Carboxyl group only','Central carbon only'],answer:0,explain:'R-group chemistry determines interactions that affect folding.'}
+        ],
+        'Unit 2': [
+          {d:'medium',q:'A cell placed in a hypertonic solution will most likely...',choices:['Lose water','Gain water','Stop osmosis','Replicate DNA'],answer:0,explain:'Water moves toward higher solute concentration/lower water potential.'},
+          {d:'medium',q:'Why do small cells exchange materials efficiently?',choices:['They have a high surface area-to-volume ratio','They have no membranes','They contain no organelles','They cannot divide'],answer:0,explain:'Higher SA:V improves exchange across the membrane.'}
+        ],
+        'Unit 3': [
+          {d:'medium',q:'Oxygen is the final electron acceptor in...',choices:['Cellular respiration','Calvin cycle','Glycolysis only','Translation'],answer:0,explain:'Oxygen accepts electrons at the end of the mitochondrial ETC.'},
+          {d:'medium',q:'ATP synthase uses energy from...',choices:['A proton gradient','DNA replication','Carbon fixation','Crossing over'],answer:0,explain:'Chemiosmosis uses proton flow through ATP synthase to make ATP.'}
+        ],
+        'Unit 4': [
+          {d:'medium',q:'The correct order of cell signaling is...',choices:['Reception → transduction → response','Response → reception → transduction','Transcription → translation → mutation','G1 → S → G2'],answer:0,explain:'Cell signaling begins with reception, then transduction, then response.'}
+        ],
+        'Unit 5': [
+          {d:'medium',q:'Crossing over occurs during...',choices:['Prophase I','Metaphase II','G1','Translation'],answer:0,explain:'Crossing over occurs during prophase I of meiosis.'}
+        ],
+        'Unit 6': [
+          {d:'medium',q:'The central dogma is...',choices:['DNA → RNA → protein','Protein → RNA → DNA','ATP → DNA → RNA','RNA → lipid → protein'],answer:0,explain:'Genetic information usually flows from DNA to RNA to protein.'}
+        ],
+        'Unit 7': [
+          {d:'medium',q:'Evolution is best defined as a change in...',choices:['Allele frequencies in a population','An individual’s traits during life','Cell size','ATP concentration'],answer:0,explain:'Evolution occurs when allele frequencies change across generations.'}
+        ],
+        'Unit 8': [
+          {d:'medium',q:'Energy in ecosystems...',choices:['Flows through trophic levels and is lost as heat','Cycles perfectly like matter','Is created by consumers','Never leaves the system'],answer:0,explain:'Energy flows through ecosystems and dissipates as heat.'}
+        ]
+      };
+
+      function getWorkingBank() {
+        try {
+          if (typeof quizBank !== 'undefined' && quizBank && quizBank['Unit 1']) return quizBank;
+        } catch (e) {}
+        return fallbackQuizBank;
+      }
+
+      function getWorkingState() {
+        try {
+          var saved = localStorage.getItem('apBioQuizState');
+          return saved ? JSON.parse(saved) : { points:0, correct:0, attempted:0, badges:[], unitStats:{} };
+        } catch (e) {
+          return { points:0, correct:0, attempted:0, badges:[], unitStats:{} };
+        }
+      }
+
+      function saveWorkingState(state) {
+        try { localStorage.setItem('apBioQuizState', JSON.stringify(state)); } catch (e) {}
+      }
+
+      function updateWorkingProgress() {
+        var state = getWorkingState();
+        var pct = state.attempted ? Math.round((state.correct / state.attempted) * 100) : 0;
+        if (byId('points')) byId('points').textContent = state.points || 0;
+        if (byId('mastery')) byId('mastery').textContent = pct + '%';
+        if (byId('progressBar')) byId('progressBar').style.width = pct + '%';
+        if (byId('correctCount')) byId('correctCount').textContent = state.correct || 0;
+        if (byId('attemptCount')) byId('attemptCount').textContent = state.attempted || 0;
+      }
+
+      function chooseWorkingQuestion() {
+        var bank = getWorkingBank();
+        var mode = byId('quizMode') ? byId('quizMode').value : 'mixed';
+        var unit = byId('quizUnitSelect') ? byId('quizUnitSelect').value : 'Unit 1';
+        if (mode !== 'unit') {
+          var units = Object.keys(bank);
+          unit = units[Math.floor(Math.random() * units.length)];
+        }
+        var list = bank[unit] || bank['Unit 1'];
+        var raw = list[Math.floor(Math.random() * list.length)];
+        return basicShuffleQuestion({ unit:unit, d:raw.d, q:raw.q, choices:raw.choices, answer:raw.answer, explain:raw.explain });
+      }
+
+      function renderWorkingQuiz() {
+        var box = byId('quizContainer');
+        if (!box) return;
+        var item = chooseWorkingQuestion();
+        var html = '<h3>' + item.unit + ' Quiz <span class="pill">' + item.d + '</span></h3><p><strong>' + item.q + '</strong></p>';
+        for (var i = 0; i < item.choices.length; i++) {
+          html += '<button type="button" class="choice" data-fallback-choice="' + i + '">' + item.choices[i] + '</button>';
+        }
+        html += '<div id="quizFeedback" class="answer show small">Choose an answer.</div>';
+        box.innerHTML = html;
+        var buttons = box.querySelectorAll('[data-fallback-choice]');
+        for (var b = 0; b < buttons.length; b++) {
+          buttons[b].addEventListener('click', function() {
+            var choice = Number(this.getAttribute('data-fallback-choice'));
+            var state = getWorkingState();
+            state.attempted += 1;
+            if (!state.unitStats[item.unit]) state.unitStats[item.unit] = { correct:0, attempted:0 };
+            state.unitStats[item.unit].attempted += 1;
+            for (var x = 0; x < buttons.length; x++) {
+              buttons[x].disabled = true;
+              var idx = Number(buttons[x].getAttribute('data-fallback-choice'));
+              if (idx === item.answer) buttons[x].classList.add('correct');
+              if (idx === choice && choice !== item.answer) buttons[x].classList.add('incorrect');
+            }
+            if (choice === item.answer) {
+              state.correct += 1;
+              state.points += 10;
+              state.unitStats[item.unit].correct += 1;
+              byId('quizFeedback').innerHTML = '<strong>Correct!</strong><div class="correct-feedback">' + item.explain + '</div>';
+            } else {
+              byId('quizFeedback').innerHTML = '<strong>Not quite.</strong> Correct answer: <strong>' + item.choices[item.answer] + '</strong><div class="correct-feedback">' + item.explain + '</div>';
+            }
+            saveWorkingState(state);
+            updateWorkingProgress();
+          });
+        }
+      }
+
+      function renderWorkingStimulus() {
+        try {
+          if (typeof renderStimulusSet === 'function') {
+            renderStimulusSet();
+            return;
+          }
+        } catch (e) {}
+        renderWorkingQuiz();
+      }
+
+      document.addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'nextQuizBtn') {
+          event.preventDefault();
+          renderWorkingQuiz();
+        }
+        if (event.target && event.target.id === 'adaptiveBtn') {
+          event.preventDefault();
+          renderWorkingQuiz();
+        }
+        if (event.target && event.target.id === 'stimulusBtn') {
+          event.preventDefault();
+          renderWorkingStimulus();
+        }
+      });
+
+      window.renderQuiz = renderWorkingQuiz;
+      window.renderProgress = updateWorkingProgress;
+      setTimeout(function() {
+        updateWorkingProgress();
+        var box = byId('quizContainer');
+        if (box && !box.innerHTML.trim()) renderWorkingQuiz();
+      }, 0);
+    })();
+
+  </script>
+
+  <script>
+    // Fail-safe navigation layer: keeps dashboard section buttons working even if another script has an error.
+    (function() {
+      function safeShowSection(targetId) {
+        var target = document.getElementById(targetId);
+        if (!target) {
+          console.warn('Missing dashboard section:', targetId);
+          return;
+        }
+        var allSections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+        var allButtons = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+        for (var i = 0; i < allSections.length; i++) {
+          allSections[i].classList.toggle('hidden', allSections[i].id !== targetId);
+        }
+        for (var j = 0; j < allButtons.length; j++) {
+          allButtons[j].classList.toggle('active', allButtons[j].getAttribute('data-target') === targetId);
+        }
+        var search = document.getElementById('search');
+        if (search) search.value = '';
+      }
+
+      window.showSection = safeShowSection;
+
+      document.addEventListener('click', function(event) {
+        var btn = event.target.closest ? event.target.closest('.nav-btn') : null;
+        if (!btn) return;
+        var targetId = btn.getAttribute('data-target');
+        if (!targetId) return;
+        event.preventDefault();
+        safeShowSection(targetId);
+      });
+    })();
   </script>
 </body>
 </html>
