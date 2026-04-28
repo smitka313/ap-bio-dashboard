@@ -2530,5 +2530,71 @@ df = categories − 1</div>
       });
     })();
   </script>
+  <script>
+  // FRQ repair layer
+  (function () {
+    function scoreFrq(text) {
+      var lower = (text || "").toLowerCase();
+      var words = lower.trim().split(/\s+/).filter(Boolean).length;
+
+      var vocab = [
+        "enzyme", "active site", "denature", "protein", "temperature",
+        "ph", "structure", "substrate", "bond", "tertiary",
+        "increase", "decrease", "because", "therefore", "causes",
+        "data", "graph", "trend", "function"
+      ];
+
+      var hits = 0;
+      for (var i = 0; i < vocab.length; i++) {
+        if (lower.indexOf(vocab[i]) !== -1) hits++;
+      }
+
+      var score = 0;
+      if (words >= 20) score++;
+      if (hits >= 3) score++;
+      if (lower.indexOf("because") !== -1 || lower.indexOf("causes") !== -1 || lower.indexOf("leads") !== -1) score++;
+      if (lower.indexOf("denature") !== -1 || lower.indexOf("active site") !== -1 || lower.indexOf("protein") !== -1) score++;
+      if (lower.indexOf("increase") !== -1 || lower.indexOf("decrease") !== -1 || lower.indexOf("trend") !== -1) score++;
+
+      return { score: score, words: words, hits: hits };
+    }
+
+    function feedbackHtml(result) {
+      var level = result.score >= 4 ? "Strong AP-style response" :
+                  result.score >= 3 ? "Developing response" :
+                  "Needs revision";
+
+      return `
+        <div class="feedback-score">Auto-feedback: ${result.score}/5 — ${level}</div>
+        <ul class="feedback-list">
+          <li>${result.words >= 20 ? "✓" : "✗"} Developed response length</li>
+          <li>${result.hits >= 3 ? "✓" : "✗"} Uses key biology vocabulary</li>
+          <li>${result.score >= 3 ? "✓" : "✗"} Explains a biological mechanism</li>
+        </ul>
+        <p class="small"><strong>Revision tip:</strong> Describe the trend, explain the mechanism, and connect structure to function.</p>
+      `;
+    }
+
+    document.addEventListener("click", function (event) {
+      if (!event.target.classList.contains("frq-feedback-btn")) return;
+
+      var card = event.target.closest(".frq-card");
+      if (!card) return;
+
+      var textarea = card.querySelector("textarea");
+      var panel = card.querySelector(".feedback-panel");
+
+      if (!panel) {
+        panel = document.createElement("div");
+        panel.className = "feedback-panel";
+        card.appendChild(panel);
+      }
+
+      var result = scoreFrq(textarea ? textarea.value : "");
+      panel.innerHTML = feedbackHtml(result);
+      panel.classList.add("show");
+    });
+  })();
+</script>
 </body>
 </html>
