@@ -1579,13 +1579,15 @@ showSection('overview');
 
     setTimeout(function () {
       var card =
-        btn.closest(".exam-question") ||
-        btn.closest(".quiz-box") ||
-        btn.closest(".practice") ||
-        btn.closest(".lesson-card") ||
-        btn.parentElement;
-
+      btn.closest(".exam-question") ||
+      btn.closest(".quiz-box") ||
+      btn.closest(".practice");
+      
+      // 🚫 STOP if it's not a real question container
       if (!card) return;
+
+      // Don't attach if no actual question text exists
+      if (!card.querySelector("p, h3")) return;
 
       var text = card.innerText || "";
       var wasCorrect =
