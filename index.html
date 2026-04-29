@@ -1398,5 +1398,101 @@ showSection('overview');
   }
 })();
 </script>
+  <script>
+(function () {
+  if (window.__confidencePatchLoaded) return;
+  window.__confidencePatchLoaded = true;
+
+  function getConfidenceLog() {
+    try {
+      return JSON.parse(localStorage.getItem("apBioConfidenceLog")) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveConfidence(unit, question, confidence, wasCorrect) {
+    var log = getConfidenceLog();
+
+    log.unshift({
+      date: new Date().toLocaleString(),
+      unit: unit || "Unknown unit",
+      question: question || "Unknown question",
+      confidence: confidence,
+      wasCorrect: wasCorrect
+    });
+
+    if (log.length > 200) log = log.slice(0, 200);
+    localStorage.setItem("apBioConfidenceLog", JSON.stringify(log));
+  }
+
+  function addConfidenceButtons(feedbackEl, item, wasCorrect) {
+    if (!feedbackEl || feedbackEl.querySelector(".confidence-box")) return;
+
+    var box = document.createElement("div");
+    box.className = "confidence-box";
+    box.style.marginTop = "12px";
+    box.style.padding = "12px";
+    box.style.borderRadius = "12px";
+    box.style.background = "#f8fafc";
+    box.style.border = "1px solid var(--border)";
+
+    box.innerHTML = `
+      <strong>How confident were you?</strong>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <button type="button" class="quiz-btn confidence-btn" data-confidence="low" style="background:var(--red);">Guessed</button>
+        <button type="button" class="quiz-btn confidence-btn" data-confidence="medium" style="background:var(--gold);">Somewhat sure</button>
+        <button type="button" class="quiz-btn confidence-btn" data-confidence="high" style="background:var(--green);">Very confident</button>
+      </div>
+      <p class="small confidence-message" style="margin-bottom:0;"></p>
+    `;
+
+    feedbackEl.appendChild(box);
+
+    box.querySelectorAll(".confidence-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var confidence = btn.getAttribute("data-confidence");
+        saveConfidence(item.unit, item.q, confidence, wasCorrect);
+
+        box.querySelector(".confidence-message").textContent =
+          "Saved. This will help identify questions you got right but were unsure about.";
+
+        box.querySelectorAll(".confidence-btn").forEach(function (b) {
+          b.disabled = true;
+          b.style.opacity = "0.65";
+        });
+      });
+    });
+  }
+
+  var originalGradeQuiz = window.gradeQuiz;
+
+  if (typeof originalGradeQuiz === "function") {
+    window.gradeQuiz = function (choice, item) {
+      originalGradeQuiz(choice, item);
+
+      var feedbackEl = document.getElementById("quizFeedback");
+      var wasCorrect = choice === item.answer;
+
+      addConfidenceButtons(feedbackEl, item, wasCorrect);
+    };
+  }
+
+  var originalGradeStimulus = window.gradeStimulus;
+
+  if (typeof originalGradeStimulus === "function") {
+    window.gradeStimulus = function (qIndex, choiceIndex) {
+      originalGradeStimulus(qIndex, choiceIndex);
+
+      try {
+        var item = currentStimulusSet.questions[qIndex];
+        var feedbackEl = document.getElementById("stimulusFeedback" + qIndex);
+        var wasCorrect = choiceIndex === item.answer;
+        addConfidenceButtons(feedbackEl, item, wasCorrect);
+      } catch (e) {}
+    };
+  }
+})();
+</script>
 </body>
 </html>
