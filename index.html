@@ -1190,6 +1190,213 @@ showSection('overview');
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize);else initialize();
 })();
 </script>
+<script>
+(function () {
+  if (window.__cramPacketPatchLoaded) return;
+  window.__cramPacketPatchLoaded = true;
 
+  function getState() {
+    try {
+      return JSON.parse(localStorage.getItem("apBioQuizState")) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function getMistakes() {
+    try {
+      return JSON.parse(localStorage.getItem("apBioMistakes")) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function pct(correct, attempted) {
+    return attempted ? Math.round((correct / attempted) * 100) : 0;
+  }
+
+  function getWeakUnits(state) {
+    var unitStats = state.unitStats || {};
+    return Object.keys(unitStats)
+      .map(function (unit) {
+        var s = unitStats[unit] || { correct: 0, attempted: 0 };
+        return {
+          unit: unit,
+          correct: s.correct || 0,
+          attempted: s.attempted || 0,
+          mastery: pct(s.correct || 0, s.attempted || 0)
+        };
+      })
+      .filter(function (u) {
+        return u.attempted > 0;
+      })
+      .sort(function (a, b) {
+        return a.mastery - b.mastery;
+      })
+      .slice(0, 3);
+  }
+
+  var cramSummaries = {
+    "Unit 1": "Focus on water properties, macromolecule structure/function, protein folding, enzymes, and how R-groups affect protein shape.",
+    "Unit 2": "Focus on membrane transport, osmosis, water potential, organelles, endomembrane system, and surface area-to-volume ratio.",
+    "Unit 3": "Focus on enzymes, ATP, cellular respiration, photosynthesis, electron transport chains, proton gradients, and chemiosmosis.",
+    "Unit 4": "Focus on cell signaling, reception-transduction-response, feedback, homeostasis, cell cycle regulation, checkpoints, and cancer.",
+    "Unit 5": "Focus on meiosis, crossing over, independent assortment, linked genes, nondisjunction, pedigrees, and probability.",
+    "Unit 6": "Focus on DNA replication, transcription, translation, mutations, gene regulation, operons, biotechnology, PCR, gels, and CRISPR.",
+    "Unit 7": "Focus on natural selection, allele frequency changes, Hardy-Weinberg, genetic drift, gene flow, mutation, speciation, and phylogeny.",
+    "Unit 8": "Focus on population ecology, carrying capacity, energy flow, matter cycling, community interactions, biodiversity, and ecosystem stability."
+  };
+
+  var apTraps = [
+    "Individuals do not evolve; populations evolve.",
+    "Fitness means reproductive success, not strength.",
+    "Plants perform cellular respiration.",
+    "Enzymes lower activation energy but do not change ΔG or equilibrium.",
+    "Water moves toward lower water potential / higher solute concentration.",
+    "Dominant does not mean common or beneficial.",
+    "Natural selection acts on phenotypes but changes allele frequencies.",
+    "Energy flows through ecosystems; matter cycles."
+  ];
+
+  function buildCramPacket() {
+    var state = getState();
+    var mistakes = getMistakes();
+    var weakUnits = getWeakUnits(state);
+
+    var name = localStorage.getItem("apBioStudentName") || "Student";
+    var period = localStorage.getItem("apBioStudentPeriod") || "";
+    var mastery = state.attempted ? pct(state.correct || 0, state.attempted || 0) : 0;
+
+    var html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AP Biology Personalized Cram Packet</title>
+<style>
+  body { font-family: Arial, sans-serif; line-height: 1.5; color: #111827; margin: 32px; }
+  h1, h2, h3 { color: #14532d; }
+  .box { border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 18px; margin: 16px 0; }
+  .gold { background: #fff7df; border-left: 6px solid #b7791f; }
+  .green { background: #e7f5ec; border-left: 6px solid #256f46; }
+  .blue { background: #eaf1ff; border-left: 6px solid #2563eb; }
+  .red { background: #fee2e2; border-left: 6px solid #b91c1c; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; }
+  @media print { button { display: none; } body { margin: 20px; } }
+</style>
+</head>
+<body>
+<button onclick="window.print()">Print / Save as PDF</button>
+
+<h1>AP Biology Personalized Cram Packet</h1>
+<p><strong>Name:</strong> ${name}<br>
+<strong>Class / Period:</strong> ${period}<br>
+<strong>Date:</strong> ${new Date().toLocaleString()}</p>
+
+<div class="box blue">
+  <h2>Progress Snapshot</h2>
+  <p><strong>Overall mastery:</strong> ${mastery}%</p>
+  <p><strong>Correct:</strong> ${state.correct || 0} / ${state.attempted || 0}</p>
+  <p><strong>Points:</strong> ${state.points || 0}</p>
+</div>
+
+<div class="box gold">
+  <h2>Your Priority Units</h2>
+  ${
+    weakUnits.length
+      ? `<table><tr><th>Unit</th><th>Correct</th><th>Attempted</th><th>Mastery</th><th>What to Review</th></tr>` +
+        weakUnits.map(function (u) {
+          return `<tr><td>${u.unit}</td><td>${u.correct}</td><td>${u.attempted}</td><td>${u.mastery}%</td><td>${cramSummaries[u.unit] || "Review this unit’s core concepts, vocabulary, graphs, and FRQs."}</td></tr>`;
+        }).join("") +
+        `</table>`
+      : `<p>No quiz data yet. Start with Units 3, 6, 7, and 8 for high-yield review.</p>`
+  }
+</div>
+
+<div class="box red">
+  <h2>Your Recent Missed Questions</h2>
+  ${
+    mistakes.length
+      ? mistakes.slice(0, 12).map(function (m) {
+          return `<div class="box">
+            <h3>${m.unit || "AP Biology"} — ${m.difficulty || "practice"}</h3>
+            <p><strong>Question:</strong> ${m.question || ""}</p>
+            <p><strong>Your answer:</strong> ${m.selected || ""}</p>
+            <p><strong>Correct answer:</strong> ${m.correct || ""}</p>
+            <p><strong>Review:</strong> ${m.explanation || ""}</p>
+          </div>`;
+        }).join("")
+      : `<p>No missed questions recorded yet.</p>`
+  }
+</div>
+
+<div class="box green">
+  <h2>High-Yield AP Bio Traps</h2>
+  <ul>${apTraps.map(function (trap) { return `<li>${trap}</li>`; }).join("")}</ul>
+</div>
+
+<div class="box blue">
+  <h2>FRQ Sentence Starters</h2>
+  <ul>
+    <li><strong>Describe:</strong> “As ___ increases/decreases, ___ changes from ___ to ___.”</li>
+    <li><strong>Explain:</strong> “This occurs because ___ causes ___, which leads to ___.”</li>
+    <li><strong>Justify:</strong> “The data support this claim because ___.”</li>
+    <li><strong>Predict:</strong> “I predict ___ because ___.”</li>
+    <li><strong>Experimental design:</strong> “The independent variable is ___, the dependent variable is ___, and the control is ___.”</li>
+  </ul>
+</div>
+
+<div class="box gold">
+  <h2>Last-Minute Study Plan</h2>
+  <ol>
+    <li>Review the priority units above first.</li>
+    <li>Redo missed-question concepts without looking at the answer.</li>
+    <li>Write one short FRQ using the sentence starters.</li>
+    <li>Practice one graph/data question and cite numbers in your response.</li>
+    <li>End with high-yield traps and formulas.</li>
+  </ol>
+</div>
+
+</body>
+</html>`;
+
+    var blob = new Blob([html], { type: "text/html" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = "ap-biology-personalized-cram-packet.html";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function addButton() {
+    if (document.getElementById("cramPacketBtn")) return;
+
+    var exportBtn = document.getElementById("exportBtn");
+    if (!exportBtn) return;
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "quiz-btn";
+    btn.id = "cramPacketBtn";
+    btn.textContent = "Download My Cram Packet";
+    btn.style.background = "var(--gold)";
+    btn.style.marginLeft = "6px";
+    btn.addEventListener("click", buildCramPacket);
+
+    exportBtn.insertAdjacentElement("afterend", btn);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addButton);
+  } else {
+    addButton();
+  }
+})();
+</script>
 </body>
 </html>
