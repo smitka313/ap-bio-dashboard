@@ -81,6 +81,8 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <button class="nav-btn" data-target="exam">AP Exam Simulation</button>
 <button class="nav-btn" data-target="mistakes">Mistake Tracker</button>
 <button class="nav-btn" data-target="equations">Equations</button>
+
+<button type="button" class="nav-btn" data-target="cram" onclick="showSection('cram')">Cram Tools</button>
 </nav>
 
 <section class="grid">
@@ -658,6 +660,21 @@ footer{text-align:center;color:var(--muted);padding:30px 16px 60px}
 <h3>Water Potential</h3><div class="formula">Ψ = Ψs + Ψp<br>Ψs = −iCRT</div>
 </div></article>
 
+
+<article id="cram" class="card section searchable hidden" data-keywords="cram 20 minutes confidence night before checklist exam monday">
+  <div class="card-header"><h2>Cram Tools for the Final Stretch</h2><div class="pill-row"><span class="pill red">20-minute mode</span><span class="pill gold">Confidence tracker</span><span class="pill">Night-before checklist</span></div></div>
+  <div class="card-body">
+    <div class="callout gold"><h3>I Have 20 Minutes</h3><p>Fast review: 5 MCQs, 1 graph/data question, and 1 short FRQ.</p><button type="button" class="btn green" id="startCramBtn">Start 20-Minute Cram Set</button><button type="button" class="btn" id="resetCramBtn">Reset Cram Set</button></div>
+    <div id="cramContainer" class="quiz-box"><p class="small">Click the button above to generate a fresh cram set.</p></div>
+    <details open><summary>Confidence Tracker Summary</summary><div><p class="small">After each quiz question, mark whether you guessed, were unsure, or knew it.</p><div id="confidenceSummary" class="callout">No confidence data recorded yet.</div><button type="button" class="btn" id="clearConfidenceBtn">Clear Confidence Data</button></div></details>
+    <details open><summary>Night Before AP Bio Checklist</summary><div>
+      <div class="two-col"><div><h3>Logistics</h3><label><input type="checkbox" class="night-check"> Calculator packed / charged</label><br><label><input type="checkbox" class="night-check"> Pencils and backup pencils ready</label><br><label><input type="checkbox" class="night-check"> Photo ID / school requirements checked</label><br><label><input type="checkbox" class="night-check"> Sleep plan set; no all-night cramming</label><br><label><input type="checkbox" class="night-check"> Breakfast / water plan ready</label></div><div><h3>Last Review Targets</h3><label><input type="checkbox" class="night-check"> Hardy-Weinberg equations</label><br><label><input type="checkbox" class="night-check"> Chi-square interpretation</label><br><label><input type="checkbox" class="night-check"> Water potential / osmosis direction</label><br><label><input type="checkbox" class="night-check"> Photosynthesis vs. respiration</label><br><label><input type="checkbox" class="night-check"> DNA → RNA → protein → phenotype</label></div></div>
+      <div class="callout warning"><strong>Final trap check:</strong> individuals do not evolve, plants do respire, enzymes do not change ΔG, water moves toward lower water potential, and fitness means reproductive success.</div>
+      <div class="callout"><strong>FRQ pacing:</strong> label parts a/b/c/d, answer the command verb, cite data when given, and write mechanism sentences using “because.”</div>
+    </div></details>
+  </div>
+</article>
+
 </section></div></main>
 <footer>AP Biology Ultimate Study Dashboard • Clean Rebuild</footer>
 
@@ -994,574 +1011,185 @@ renderMistakes();
 renderQuiz();
 showSection('overview');
 </script>
-  <style>
-  .exam-boost-toggle-bar {
-    position: sticky;
-    top: 58px;
-    z-index: 9;
-    margin: 0 auto 14px;
-    max-width: 1200px;
-    padding: 10px 16px;
-  }
-
-  .exam-boost-panel {
-    border: 1px solid var(--border);
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: var(--shadow);
-    padding: 14px;
-    margin: 14px 0;
-  }
-
-  .exam-boost-panel h3,
-  .exam-boost-panel h4 {
-    margin-top: 0;
-  }
-
-  .exam-boost-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .exam-boost-btn {
-    border: 0;
-    border-radius: 999px;
-    background: var(--green);
-    color: white;
-    font-weight: 800;
-    padding: 9px 13px;
-    cursor: pointer;
-  }
-
-  .exam-boost-btn.secondary {
-    background: var(--blue);
-  }
-
-  .exam-boost-btn.warning {
-    background: var(--gold);
-  }
-
-  .exam-boost-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .exam-boost-card {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: #fbfdff;
-    padding: 14px;
-  }
-
-  .exam-boost-small {
-    font-size: 0.92rem;
-    color: var(--muted);
-  }
-
-  .exam-boost-hit {
-    border-left: 5px solid var(--green);
-    background: var(--green-2);
-    padding: 10px 12px;
-    border-radius: 12px;
-    margin: 8px 0;
-  }
-
-  .exam-boost-miss {
-    border-left: 5px solid var(--red);
-    background: var(--red-2);
-    padding: 10px 12px;
-    border-radius: 12px;
-    margin: 8px 0;
-  }
-
-  .exam-boost-gold {
-    border-left: 5px solid var(--gold);
-    background: var(--gold-2);
-    padding: 10px 12px;
-    border-radius: 12px;
-    margin: 8px 0;
-  }
-
-  .exam-boost-hidden {
-    display: none !important;
-  }
-
-  body.last-48-mode .last48-focus {
-    outline: 3px solid rgba(183, 121, 31, 0.35);
-  }
-
-  .frq-sentence-builder {
-    margin-top: 10px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 12px;
-    background: #fff;
-  }
-
-  .frq-sentence-builder summary {
-    padding: 0;
-    color: var(--blue);
-  }
-
-  .frq-stem {
-    margin: 8px 0;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: var(--blue-2);
-  }
-
-  @media (max-width: 900px) {
-    .exam-boost-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .exam-boost-toggle-bar {
-      top: 0;
-    }
-  }
-
-  @media print {
-    .exam-boost-toggle-bar,
-    .exam-boost-actions,
-    .exam-boost-btn {
-      display: none !important;
-    }
-  }
-</style>
 
 <script>
-(function() {
-  'use strict';
-
-  function byId(id) {
-    return document.getElementById(id);
-  }
-
-  function safeText(value) {
-    return String(value == null ? '' : value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
-
-  function insertAfter(referenceNode, newNode) {
-    if (!referenceNode || !referenceNode.parentNode) return;
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-  }
-
-  function getMistakes() {
-    try {
-      return JSON.parse(localStorage.getItem('apBioMistakes')) || [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  var trapConcepts = [
-    {
-      label: 'Water potential / osmosis direction',
-      keywords: ['osmosis', 'water potential', 'hypertonic', 'hypotonic', 'solute', 'plasmolysis'],
-      review: 'Water moves toward lower water potential, usually toward higher solute concentration. State the direction, the gradient, and the cell effect.'
-    },
-    {
-      label: 'Enzymes and active-site mechanism',
-      keywords: ['enzyme', 'activation energy', 'active site', 'denature', 'substrate', 'inhibitor'],
-      review: 'Enzymes lower activation energy. Temperature or pH can disrupt tertiary structure, changing the active site and reducing substrate binding.'
-    },
-    {
-      label: 'Respiration, ETC, and ATP synthase',
-      keywords: ['respiration', 'oxygen', 'etc', 'electron transport', 'atp synthase', 'proton gradient'],
-      review: 'Oxygen is the final electron acceptor. Electron transport pumps protons; ATP synthase uses the proton gradient to make ATP.'
-    },
-    {
-      label: 'Photosynthesis light reactions vs. Calvin cycle',
-      keywords: ['photosynthesis', 'light reaction', 'calvin', 'chloroplast', 'oxygen', 'co2', 'nadph'],
-      review: 'Light reactions produce ATP/NADPH and release O2. The Calvin cycle uses ATP/NADPH to fix CO2 into sugar.'
-    },
-    {
-      label: 'Signal transduction sequence',
-      keywords: ['signal', 'ligand', 'receptor', 'transduction', 'phosphorylation', 'response'],
-      review: 'Use the chain: ligand binds receptor -> transduction/amplification -> cellular response. Receptor shape determines specificity.'
-    },
-    {
-      label: 'Cell cycle regulation and cancer',
-      keywords: ['cell cycle', 'checkpoint', 'cancer', 'tumor suppressor', 'oncogene', 'apoptosis'],
-      review: 'Checkpoints prevent damaged cells from dividing. Cancer often involves failed regulation, mutation accumulation, or failed apoptosis.'
-    },
-    {
-      label: 'Meiosis, linkage, and recombination',
-      keywords: ['meiosis', 'crossing over', 'linked', 'recombination', 'independent assortment', 'nondisjunction'],
-      review: 'Crossing over occurs in prophase I. Linked genes travel together unless crossing over separates them; farther genes recombine more often.'
-    },
-    {
-      label: 'Gene expression and mutation effects',
-      keywords: ['transcription', 'translation', 'mutation', 'codon', 'operon', 'lac', 'protein'],
-      review: 'Use the chain: DNA change -> mRNA/codon change -> amino acid/protein change -> phenotype. Not all mutations affect phenotype.'
-    },
-    {
-      label: 'Evolution and allele frequency',
-      keywords: ['evolution', 'natural selection', 'fitness', 'allele', 'hardy', 'weinberg', 'drift'],
-      review: 'Populations evolve, not individuals. Fitness means reproductive success. Selection changes allele frequencies across generations.'
-    },
-    {
-      label: 'Ecology energy flow and carrying capacity',
-      keywords: ['carrying capacity', 'ecosystem', 'trophic', 'biodiversity', 'succession', 'population'],
-      review: 'Energy flows and is lost as heat; matter cycles. Carrying capacity depends on resources, competition, and environmental limits.'
-    },
-    {
-      label: 'Experimental design',
-      keywords: ['control', 'independent variable', 'dependent variable', 'constant', 'replicate', 'sample size'],
-      review: 'Always identify IV, DV, control group, constants, replication, and expected result tied to the hypothesis.'
-    },
-    {
-      label: 'Graph and data interpretation',
-      keywords: ['graph', 'data', 'trend', 'rate', 'slope', 'table', 'error bar'],
-      review: 'Describe the trend with numbers first, then explain the biological mechanism. For rates, use change in y divided by change in x.'
-    }
+(function(){
+  function byId(id){return document.getElementById(id);}
+  function all(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel));}
+  const CRAM_GRAPHS=[
+    {title:'Enzyme Rate Data',table:[['Temperature (°C)','Rate (units/min)'],['10','4'],['25','12'],['37','22'],['55','3']],prompt:'Describe the trend and explain the rate at 55°C.',answer:'Rate increases from 10°C to 37°C, then drops sharply at 55°C because high temperature can denature the enzyme and alter the active site.'},
+    {title:'Photosynthesis Data',table:[['Light intensity','O₂ bubbles/min'],['Low','6'],['Medium','18'],['High','21']],prompt:'Explain why the rate levels off from medium to high light.',answer:'Photosynthesis increases with light at first, then levels off because another factor, such as CO₂ concentration, temperature, or enzyme capacity, becomes limiting.'},
+    {title:'Population Growth Data',table:[['Day','Population'],['0','20'],['5','60'],['10','140'],['15','190'],['20','200']],prompt:'Identify the growth pattern and estimate carrying capacity.',answer:'The data show logistic growth because the population rises rapidly then levels off. Carrying capacity is about 200 individuals.'}
   ];
-
-  function scoreMistakeConcepts() {
-    var mistakes = getMistakes();
-    var scores = trapConcepts.map(function(concept) {
-      var count = 0;
-
-      for (var i = 0; i < mistakes.length; i++) {
-        var combined = [
-          mistakes[i].unit,
-          mistakes[i].question,
-          mistakes[i].selected,
-          mistakes[i].correct,
-          mistakes[i].explanation
-        ].join(' ').toLowerCase();
-
-        for (var k = 0; k < concept.keywords.length; k++) {
-          if (combined.indexOf(concept.keywords[k]) !== -1) {
-            count++;
-            break;
-          }
-        }
-      }
-
-      return {
-        label: concept.label,
-        count: count,
-        review: concept.review
-      };
-    });
-
-    scores.sort(function(a, b) {
-      return b.count - a.count;
-    });
-
-    return scores;
-  }
-
-  function renderMostMissedConcepts() {
-    var target = byId('mostMissedConceptsBox');
-    if (!target) return;
-
-    var mistakes = getMistakes();
-
-    if (!mistakes.length) {
-      target.innerHTML =
-        '<div class="exam-boost-gold"><strong>No mistake data yet.</strong><br>' +
-        'Once students miss quiz questions, this panel will identify their top trouble areas automatically.</div>';
-      return;
-    }
-
-    var scores = scoreMistakeConcepts().filter(function(item) {
-      return item.count > 0;
-    }).slice(0, 5);
-
-    if (!scores.length) {
-      target.innerHTML =
-        '<div class="exam-boost-gold"><strong>Mistakes found, but no clear pattern yet.</strong><br>' +
-        'Have students answer more mixed questions, then refresh this panel.</div>';
-      return;
-    }
-
-    var html = '<ol>';
-
-    for (var i = 0; i < scores.length; i++) {
-      html += '<li><strong>' + safeText(scores[i].label) + '</strong> ' +
-        '<span class="pill critical">' + scores[i].count + ' hit' + (scores[i].count === 1 ? '' : 's') + '</span>' +
-        '<div class="exam-boost-hit">' + safeText(scores[i].review) + '</div></li>';
-    }
-
-    html += '</ol>';
-    target.innerHTML = html;
-  }
-
-  function buildExamBoostPanel() {
-    if (byId('examBoostPanel')) return;
-
-    var main = document.querySelector('main');
-    if (!main) return;
-
-    var bar = document.createElement('section');
-    bar.className = 'exam-boost-toggle-bar';
-    bar.innerHTML =
-      '<div id="examBoostPanel" class="exam-boost-panel">' +
-        '<div class="exam-boost-actions">' +
-          '<button type="button" class="exam-boost-btn warning" id="last48ToggleBtn">Turn On Last 48 Hours Mode</button>' +
-          '<button type="button" class="exam-boost-btn secondary" id="refreshMissedConceptsBtn">Refresh Most Missed Concepts</button>' +
-          '<span class="exam-boost-small">Exam boost tools are added without replacing existing quiz, FRQ, progress, or exam features.</span>' +
-        '</div>' +
-        '<div id="last48Summary" class="exam-boost-hidden">' +
-          '<div class="exam-boost-grid" style="margin-top:12px;">' +
-            '<div class="exam-boost-card">' +
-              '<h3>Last 48 Hours Focus</h3>' +
-              '<ul>' +
-                '<li>Do mixed MCQ practice, not long reading.</li>' +
-                '<li>Review missed concepts before taking more questions.</li>' +
-                '<li>Practice short FRQ answers using AP wording.</li>' +
-                '<li>Use graph/data questions daily.</li>' +
-              '</ul>' +
-            '</div>' +
-            '<div class="exam-boost-card">' +
-              '<h3>High-Yield AP Bio Traps</h3>' +
-              '<ul>' +
-                '<li>Individuals do not evolve; populations evolve.</li>' +
-                '<li>Fitness means reproductive success.</li>' +
-                '<li>Plants perform cellular respiration.</li>' +
-                '<li>Enzymes lower activation energy, not delta G.</li>' +
-                '<li>Water moves toward lower water potential.</li>' +
-              '</ul>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
-    main.insertBefore(bar, main.firstChild);
-
-    var toggle = byId('last48ToggleBtn');
-
-    if (toggle) {
-      toggle.addEventListener('click', function() {
-        var on = !document.body.classList.contains('last-48-mode');
-        document.body.classList.toggle('last-48-mode', on);
-
-        var summary = byId('last48Summary');
-        if (summary) summary.classList.toggle('exam-boost-hidden', !on);
-
-        toggle.textContent = on ? 'Turn Off Last 48 Hours Mode' : 'Turn On Last 48 Hours Mode';
-      });
-    }
-
-    var refresh = byId('refreshMissedConceptsBtn');
-
-    if (refresh) {
-      refresh.addEventListener('click', function() {
-        renderMostMissedConcepts();
-
-        if (byId('quiz') && typeof window.showSection === 'function') {
-          window.showSection('quiz');
-        }
-      });
-    }
-  }
-
-  function addMostMissedPanelToQuiz() {
-    if (byId('mostMissedConceptsBox')) return;
-
-    var quizBody = document.querySelector('#quiz .card-body');
-    if (!quizBody) return;
-
-    var panel = document.createElement('div');
-    panel.className = 'exam-boost-panel last48-focus';
-    panel.innerHTML =
-      '<h3>Most Missed Concepts</h3>' +
-      '<p class="exam-boost-small">This uses the existing local mistake log. It does not change quiz grading or progress tracking.</p>' +
-      '<div id="mostMissedConceptsBox"></div>' +
-      '<div class="exam-boost-actions">' +
-        '<button type="button" class="exam-boost-btn secondary" id="quizRefreshMostMissedBtn">Refresh Most Missed Concepts</button>' +
-      '</div>';
-
-    var progressTable = byId('unitProgressTable');
-    var progressDetails = progressTable ? progressTable.closest('details') : null;
-
-    if (progressDetails) {
-      insertAfter(progressDetails, panel);
-    } else {
-      quizBody.insertBefore(panel, quizBody.firstChild);
-    }
-
-    var refresh = byId('quizRefreshMostMissedBtn');
-    if (refresh) refresh.addEventListener('click', renderMostMissedConcepts);
-
-    renderMostMissedConcepts();
-  }
-
-  function addFrqSentenceBuilders() {
-    var cards = Array.prototype.slice.call(document.querySelectorAll('#frq .frq-card'));
-
-    for (var i = 0; i < cards.length; i++) {
-      if (cards[i].getAttribute('data-sentence-builder-ready') === 'yes') continue;
-
-      var textarea = cards[i].querySelector('textarea');
-      if (!textarea) continue;
-
-      var builder = document.createElement('details');
-      builder.className = 'frq-sentence-builder last48-focus';
-      builder.innerHTML =
-        '<summary><strong>FRQ Sentence Builder</strong></summary>' +
-        '<div>' +
-          '<div class="frq-stem"><strong>Describe:</strong> The data show that __________ changes from __________ to __________.</div>' +
-          '<div class="frq-stem"><strong>Explain:</strong> This occurs because __________ affects __________, which causes __________.</div>' +
-          '<div class="frq-stem"><strong>Predict:</strong> I predict that __________ will __________ because __________.</div>' +
-          '<div class="frq-stem"><strong>Justify:</strong> This is supported by __________ because it shows __________.</div>' +
-          '<div class="frq-stem"><strong>Experimental design:</strong> The independent variable is __________, the dependent variable is __________, and the control group is __________.</div>' +
-        '</div>';
-
-      insertAfter(textarea, builder);
-      cards[i].setAttribute('data-sentence-builder-ready', 'yes');
-    }
-  }
-
-  var apWordingExamples = [
-    {
-      weak: 'The enzyme stops working.',
-      strong: 'High temperature disrupts bonds that maintain tertiary structure, altering the active site and reducing substrate binding.'
-    },
-    {
-      weak: 'The bacteria got used to the antibiotic.',
-      strong: 'Bacteria with resistance alleles survive and reproduce more, increasing the resistance allele frequency in the population.'
-    },
-    {
-      weak: 'Water leaves the cell.',
-      strong: 'Water moves out of the cell by osmosis because the surrounding solution has lower water potential due to higher solute concentration.'
-    },
-    {
-      weak: 'The signal does not happen.',
-      strong: 'If the receptor shape changes, the ligand may not bind, preventing transduction and reducing the cellular response.'
-    },
-    {
-      weak: 'The graph went up and then down.',
-      strong: 'The rate increased from the lower value to the maximum, then decreased, suggesting the condition exceeded the optimum and disrupted the biological mechanism.'
-    },
-    {
-      weak: 'The population changed.',
-      strong: 'Allele frequencies changed over generations because individuals with advantageous heritable traits had higher reproductive success.'
-    }
+  const CRAM_FRQS=[
+    {title:'Osmosis',prompt:'A plant cell is placed in a hypertonic solution. Predict water movement and justify using water potential.',keywords:['water','osmosis','hypertonic','solute','water potential','plasmolysis','turgor'],model:'Water leaves the plant cell by osmosis because the hypertonic solution has higher solute concentration and lower water potential. The cell loses turgor pressure and may plasmolyze.'},
+    {title:'Natural Selection',prompt:'A bacterial population becomes resistant to an antibiotic. Explain how allele frequencies change over time.',keywords:['variation','mutation','resistant','survive','reproduce','fitness','allele frequency','population'],model:'Resistant variants survive and reproduce more under antibiotic pressure, so resistance alleles increase in frequency over generations.'},
+    {title:'Gene Expression',prompt:'A point mutation changes a codon in an enzyme-coding gene. Explain how this could affect phenotype.',keywords:['dna','mrna','codon','amino acid','protein','folding','active site','phenotype'],model:'A mutation can change an mRNA codon and amino acid sequence. If folding or the active site changes, enzyme function and phenotype may change.'}
   ];
-
-  function addApWordingToggle() {
-    if (byId('apWordingTogglePanel')) return;
-
-    var skillsBody = document.querySelector('#skills .card-body') || document.querySelector('#frq .card-body');
-    if (!skillsBody) return;
-
-    var panel = document.createElement('div');
-    panel.id = 'apWordingTogglePanel';
-    panel.className = 'exam-boost-panel last48-focus';
-    panel.innerHTML =
-      '<h3>Explain It Like AP Wants</h3>' +
-      '<p class="exam-boost-small">Use this to help students revise vague answers into point-earning AP Biology explanations.</p>' +
-      '<div class="exam-boost-actions">' +
-        '<button type="button" class="exam-boost-btn secondary" id="toggleApWordingBtn">Show AP Wording Examples</button>' +
-      '</div>' +
-      '<div id="apWordingExamplesBox" class="exam-boost-hidden"></div>';
-
-    skillsBody.insertBefore(panel, skillsBody.firstChild);
-
-    var btn = byId('toggleApWordingBtn');
-    var box = byId('apWordingExamplesBox');
-
-    if (btn && box) {
-      btn.addEventListener('click', function() {
-        var show = box.classList.contains('exam-boost-hidden');
-        box.classList.toggle('exam-boost-hidden', !show);
-        btn.textContent = show ? 'Hide AP Wording Examples' : 'Show AP Wording Examples';
-
-        if (show && !box.innerHTML) {
-          var html = '<div class="exam-boost-grid" style="margin-top:12px;">';
-
-          for (var i = 0; i < apWordingExamples.length; i++) {
-            html += '<div class="exam-boost-card">' +
-              '<div class="exam-boost-miss"><strong>Weak:</strong> ' + safeText(apWordingExamples[i].weak) + '</div>' +
-              '<div class="exam-boost-hit"><strong>AP-style:</strong> ' + safeText(apWordingExamples[i].strong) + '</div>' +
-            '</div>';
-          }
-
-          html += '</div>';
-          box.innerHTML = html;
-        }
-      });
-    }
+  function shuffleItem(item){const a=(item.choices||[]).map((choice,index)=>({choice,index}));for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return {unit:item.unit||'Mixed',d:item.d||'review',q:item.q,choices:a.map(x=>x.choice),answer:a.findIndex(x=>x.index===item.answer),explain:item.explain||''};}
+  function flatBank(){try{if(typeof quizBank!=='undefined'&&quizBank){const out=[];Object.keys(quizBank).forEach(u=>(quizBank[u]||[]).forEach(q=>out.push(Object.assign({unit:u},q))));if(out.length)return out;}}catch(e){}return [{unit:'Unit 1',d:'review',q:'Which property of water is caused by hydrogen bonding?',choices:['Cohesion','Low polarity','Peptide bonding','No solvent ability'],answer:0,explain:'Hydrogen bonding causes cohesion and other life-supporting properties of water.'}];}
+  function startCramSet(){
+    const box=byId('cramContainer');if(!box)return;
+    const bank=flatBank(),picked=[],used={};let safety=0;
+    while(picked.length<5&&safety<500){safety++;const raw=bank[Math.floor(Math.random()*bank.length)],key=(raw.unit||'')+'|'+raw.q;if(used[key])continue;used[key]=true;picked.push(shuffleItem(raw));}
+    const graph=CRAM_GRAPHS[Math.floor(Math.random()*CRAM_GRAPHS.length)],frq=CRAM_FRQS[Math.floor(Math.random()*CRAM_FRQS.length)];
+    let html='<h3>20-Minute Cram Set</h3><p class="small">Suggested pacing: 8 minutes MCQ, 5 minutes graph/data, 7 minutes FRQ.</p>';
+    picked.forEach((item,qi)=>{html+=`<div class="exam-question cram-mcq" data-answer="${item.answer}" data-explain="${encodeURIComponent(item.explain)}"><h3>MCQ ${qi+1} <span class="pill">${item.unit}</span> <span class="pill gold">${item.d}</span></h3><p><strong>${item.q}</strong></p>`;item.choices.forEach((c,ci)=>html+=`<button type="button" class="choice cram-choice" data-q="${qi}" data-c="${ci}">${c}</button>`);html+=`<div class="answer small cram-feedback" id="cramFeedback${qi}">Choose an answer.</div></div>`;});
+    html+=`<div class="practice"><h3>Graph/Data Question: ${graph.title}</h3><table class="data-table">`;
+    graph.table.forEach((row,ri)=>{html+='<tr>'+row.map(cell=>ri===0?`<th>${cell}</th>`:`<td>${cell}</td>`).join('')+'</tr>';});
+    html+=`</table><p><strong>Question:</strong> ${graph.prompt}</p><button type="button" class="btn cram-reveal">Reveal graph answer</button><div class="answer">${graph.answer}</div></div>`;
+    html+=`<div class="frq-card"><h3>Short FRQ: ${frq.title}</h3><p>${frq.prompt}</p><textarea id="cramFrqResponse" placeholder="Write a concise AP-style response..."></textarea><button type="button" class="btn green" id="checkCramFrqBtn">Check Short FRQ</button><button type="button" class="btn model-btn" id="showCramModelBtn">View Model Answer</button><div id="cramFrqFeedback" class="feedback-panel"></div><div id="cramFrqModel" class="model-answer">${frq.model}</div></div>`;
+    box.innerHTML=html;
+    all('.cram-choice',box).forEach(btn=>btn.addEventListener('click',function(){const qi=Number(this.dataset.q),choice=Number(this.dataset.c),parent=this.closest('.cram-mcq'),answer=Number(parent.dataset.answer);all('.cram-choice[data-q="'+qi+'"]',box).forEach(b=>{b.disabled=true;const idx=Number(b.dataset.c);if(idx===answer)b.classList.add('correct');if(idx===choice&&choice!==answer)b.classList.add('incorrect');});const fb=byId('cramFeedback'+qi),explain=decodeURIComponent(parent.dataset.explain||'');fb.innerHTML=choice===answer?'<strong>Correct!</strong><div class="correct-feedback">'+explain+'</div>':'<strong>Not quite.</strong><div class="correct-feedback"><strong>Why the correct answer works:</strong> '+explain+'</div>';fb.classList.add('show');}));
+    all('.cram-reveal',box).forEach(btn=>btn.addEventListener('click',function(){const ans=this.nextElementSibling;if(ans)ans.classList.toggle('show');this.textContent=ans&&ans.classList.contains('show')?'Hide graph answer':'Reveal graph answer';}));
+    const checkBtn=byId('checkCramFrqBtn');if(checkBtn)checkBtn.addEventListener('click',function(){const response=(byId('cramFrqResponse')?byId('cramFrqResponse').value:'').toLowerCase(),hits=frq.keywords.filter(k=>response.indexOf(k.toLowerCase())!==-1),hasBecause=/because|therefore|causes|leads to|results in|so that|due to/.test(response),wordCount=response.split(/\s+/).filter(Boolean).length,panel=byId('cramFrqFeedback'),score=Math.min(5,(wordCount>=20?1:0)+(hits.length>=3?2:hits.length>=1?1:0)+(hasBecause?1:0)+(wordCount>=35?1:0));panel.innerHTML=`<div class="feedback-score">Short FRQ check: ${score}/5</div><ul class="feedback-list"><li>${wordCount>=20?'✓':'✗'} Developed enough for a short response</li><li>${hits.length>=3?'✓':'✗'} Uses prompt-specific vocabulary: ${hits.length?hits.join(', '):'none detected yet'}</li><li>${hasBecause?'✓':'✗'} Includes mechanism/reasoning language</li></ul><p class="small"><strong>Revision move:</strong> Add one sentence that uses “because” and directly connects the scenario to the biological outcome.</p>`;panel.classList.add('show');});
+    const modelBtn=byId('showCramModelBtn');if(modelBtn)modelBtn.addEventListener('click',function(){const model=byId('cramFrqModel');if(!model)return;model.classList.toggle('show');this.textContent=model.classList.contains('show')?'Hide Model Answer':'View Model Answer';});
   }
-
-  function addWhatA5LooksLike() {
-    if (byId('whatA5LooksLikePanel')) return;
-
-    var finalBody = document.querySelector('#final .card-body') || document.querySelector('#skills .card-body');
-    if (!finalBody) return;
-
-    var panel = document.createElement('div');
-    panel.id = 'whatA5LooksLikePanel';
-    panel.className = 'exam-boost-panel last48-focus';
-    panel.innerHTML =
-      '<h3>What a 5 Looks Like</h3>' +
-      '<p class="exam-boost-small">Students should aim for concise, mechanism-based answers. A 5-level response is not longer just to be longer; it is specific, evidence-based, and biologically accurate.</p>' +
-      '<div class="exam-boost-grid">' +
-        '<div class="exam-boost-card">' +
-          '<h4>MCQ Habits</h4>' +
-          '<ul>' +
-            '<li>Eliminates answer choices with extreme words like always, never, only.</li>' +
-            '<li>Looks for the biological mechanism, not just familiar vocabulary.</li>' +
-            '<li>Uses the graph or data before reading into the scenario.</li>' +
-            '<li>Checks whether the question asks for cause, effect, evidence, or prediction.</li>' +
-          '</ul>' +
-        '</div>' +
-        '<div class="exam-boost-card">' +
-          '<h4>FRQ Habits</h4>' +
-          '<ul>' +
-            '<li>Labels parts a, b, c, d.</li>' +
-            '<li>Answers the command term directly.</li>' +
-            '<li>Uses scenario evidence or numbers when available.</li>' +
-            '<li>Explains the mechanism: structure -> function -> outcome.</li>' +
-            '<li>Avoids vague phrases like it adapts, it helps, or it stops working.</li>' +
-          '</ul>' +
-        '</div>' +
-        '<div class="exam-boost-card">' +
-          '<h4>2-Point vs. 4-Point Answer</h4>' +
-          '<div class="exam-boost-miss"><strong>Basic:</strong> The enzyme works less at high temperature.</div>' +
-          '<div class="exam-boost-hit"><strong>Stronger:</strong> High temperature disrupts bonds maintaining tertiary structure, changing the active site and reducing substrate binding, so the reaction rate decreases.</div>' +
-        '</div>' +
-        '<div class="exam-boost-card">' +
-          '<h4>Final Weekend Study Rule</h4>' +
-          '<div class="exam-boost-gold">Do fewer passive notes and more active reps: mixed MCQs, graph explanations, and short FRQ responses with AP wording.</div>' +
-        '</div>' +
-      '</div>';
-
-    finalBody.appendChild(panel);
-  }
-
-  function initializeExamBoostPatch() {
-    buildExamBoostPanel();
-    addMostMissedPanelToQuiz();
-    addFrqSentenceBuilders();
-    addApWordingToggle();
-    addWhatA5LooksLike();
-
-    document.addEventListener('click', function(event) {
-      var target = event.target;
-      if (!target) return;
-
-      if (target.id === 'nextQuizBtn' || target.classList.contains('choice')) {
-        setTimeout(renderMostMissedConcepts, 0);
-      }
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeExamBoostPatch);
-  } else {
-    initializeExamBoostPatch();
-  }
+  function getConf(){try{return JSON.parse(localStorage.getItem('apBioConfidenceLog'))||[];}catch(e){return[];}} function saveConf(d){try{localStorage.setItem('apBioConfidenceLog',JSON.stringify(d.slice(-300)));}catch(e){}}
+  function renderConf(){const box=byId('confidenceSummary');if(!box)return;const data=getConf();if(!data.length){box.innerHTML='No confidence data recorded yet.';return;}const c={guessed:0,unsure:0,knew:0};data.forEach(x=>{if(c[x.level]!=null)c[x.level]++;});box.innerHTML=`<strong>${data.length}</strong> confidence marks recorded.<br>Guessed: <strong>${c.guessed}</strong> | Unsure: <strong>${c.unsure}</strong> | Knew it: <strong>${c.knew}</strong><p class="small"><strong>Study move:</strong> Revisit guessed/unsure questions first. “Knew it but missed it” means slow down and check wording.</p>`;}
+  function appendConf(){const feedback=byId('quizFeedback'),container=byId('quizContainer');if(!feedback||!container||feedback.querySelector('.confidence-box'))return;const qText=((container.querySelector('p strong')||container.querySelector('p')||{}).textContent)||'Quiz question';const div=document.createElement('div');div.className='confidence-box callout';div.innerHTML='<strong>Confidence check:</strong> How did that question feel?<br><button type="button" class="btn confidence-btn" data-level="guessed">I guessed</button><button type="button" class="btn confidence-btn" data-level="unsure">I was unsure</button><button type="button" class="btn green confidence-btn" data-level="knew">I knew it</button><p class="small confidence-saved"></p>';feedback.appendChild(div);all('.confidence-btn',div).forEach(btn=>btn.addEventListener('click',function(){const data=getConf();data.push({date:new Date().toLocaleString(),level:this.dataset.level,question:qText});saveConf(data);const saved=div.querySelector('.confidence-saved');if(saved)saved.textContent='Saved. Use the Cram Tools section to review your confidence pattern.';renderConf();}));}
+  document.addEventListener('click',function(event){if(event.target&&event.target.closest&&event.target.closest('#quizContainer .choice'))setTimeout(appendConf,75);},true);
+  function saveNight(){const values=all('.night-check').map(x=>x.checked);try{localStorage.setItem('apBioNightChecklist',JSON.stringify(values));}catch(e){}} function restoreNight(){let values=[];try{values=JSON.parse(localStorage.getItem('apBioNightChecklist'))||[];}catch(e){}all('.night-check').forEach((x,i)=>{x.checked=!!values[i];x.addEventListener('change',saveNight);});}
+  document.addEventListener('DOMContentLoaded',function(){const start=byId('startCramBtn');if(start)start.addEventListener('click',startCramSet);const reset=byId('resetCramBtn');if(reset)reset.addEventListener('click',function(){const box=byId('cramContainer');if(box)box.innerHTML='<p class="small">Click the button above to generate a fresh cram set.</p>';});const clear=byId('clearConfidenceBtn');if(clear)clear.addEventListener('click',function(){localStorage.removeItem('apBioConfidenceLog');renderConf();});restoreNight();renderConf();});
 })();
 </script>
+
+
+
+<!-- Fully integrated exam-boost bridge patch: Last 48 Hours Mode + Most Missed Concepts active quiz integration -->
+<style>
+  .exam-boost-toggle-bar{position:relative;z-index:1;margin:0 auto 22px;max-width:1200px;padding:10px 16px;}
+  .exam-boost-panel{border:1px solid var(--border);background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:14px;margin:14px 0;}
+  .exam-boost-panel h3,.exam-boost-panel h4{margin-top:0;}
+  .exam-boost-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .exam-boost-btn{border:0;border-radius:999px;background:var(--green);color:white;font-weight:800;padding:9px 13px;cursor:pointer;}
+  .exam-boost-btn.secondary{background:var(--blue);}
+  .exam-boost-btn.warning{background:var(--gold);}
+  .exam-boost-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .exam-boost-card{border:1px solid var(--border);border-radius:16px;background:#fbfdff;padding:14px;}
+  .exam-boost-small{font-size:.92rem;color:var(--muted);}
+  .exam-boost-hit{border-left:5px solid var(--green);background:var(--green-2);padding:10px 12px;border-radius:12px;margin:8px 0;}
+  .exam-boost-miss{border-left:5px solid var(--red);background:var(--red-2);padding:10px 12px;border-radius:12px;margin:8px 0;}
+  .exam-boost-gold{border-left:5px solid var(--gold);background:var(--gold-2);padding:10px 12px;border-radius:12px;margin:8px 0;}
+  .exam-boost-hidden{display:none!important;}
+  body.last-48-mode .last48-focus{outline:3px solid rgba(183,121,31,.35);}
+  .frq-sentence-builder{margin-top:10px;border:1px solid var(--border);border-radius:14px;padding:12px;background:#fff;}
+  .frq-sentence-builder summary{padding:0;color:var(--blue);}
+  .frq-stem{margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--blue-2);}
+  @media (max-width:900px){.exam-boost-grid{grid-template-columns:1fr}}
+  @media print{.exam-boost-toggle-bar,.exam-boost-actions,.exam-boost-btn{display:none!important}}
+</style>
+<script>
+(function(){
+  'use strict';
+  function byId(id){return document.getElementById(id);}
+  function safeText(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function insertAfter(ref,node){if(ref&&ref.parentNode)ref.parentNode.insertBefore(node,ref.nextSibling);}
+  function getMistakes(){try{return JSON.parse(localStorage.getItem('apBioMistakes'))||[];}catch(e){return[];}}
+  function getState(){try{return JSON.parse(localStorage.getItem('apBioState')||localStorage.getItem('apBioQuizState'))||{unitStats:{},history:[]};}catch(e){return{unitStats:{},history:[]};}}
+  function isLast48On(){return localStorage.getItem('apBioLast48Mode')==='on' || document.body.classList.contains('last-48-mode');}
+  const trapConcepts=[
+    {label:'Water potential / osmosis direction',unit:'Unit 2',keywords:['osmosis','water potential','hypertonic','hypotonic','solute','plasmolysis','turgor'],review:'Water moves toward lower water potential, usually toward higher solute concentration. State the direction, gradient, and cell effect.'},
+    {label:'Enzymes and active-site mechanism',unit:'Unit 3',keywords:['enzyme','activation energy','active site','denature','substrate','inhibitor','temperature','ph'],review:'Enzymes lower activation energy. Temperature or pH can disrupt tertiary structure, changing the active site and reducing substrate binding.'},
+    {label:'Respiration, ETC, and ATP synthase',unit:'Unit 3',keywords:['respiration','oxygen','etc','electron transport','atp synthase','proton gradient','nadh'],review:'Oxygen is the final electron acceptor. Electron transport pumps protons; ATP synthase uses the proton gradient to make ATP.'},
+    {label:'Photosynthesis light reactions vs. Calvin cycle',unit:'Unit 3',keywords:['photosynthesis','light reaction','calvin','chloroplast','oxygen','co2','nadph'],review:'Light reactions produce ATP/NADPH and release O2. The Calvin cycle uses ATP/NADPH to fix CO2 into sugar.'},
+    {label:'Signal transduction sequence',unit:'Unit 4',keywords:['signal','ligand','receptor','transduction','phosphorylation','response'],review:'Use the chain: ligand binds receptor -> transduction/amplification -> cellular response. Receptor shape determines specificity.'},
+    {label:'Cell cycle regulation and cancer',unit:'Unit 4',keywords:['cell cycle','checkpoint','cancer','tumor suppressor','oncogene','apoptosis'],review:'Checkpoints prevent damaged cells from dividing. Cancer often involves failed regulation, mutation accumulation, or failed apoptosis.'},
+    {label:'Meiosis, linkage, and recombination',unit:'Unit 5',keywords:['meiosis','crossing over','linked','recombination','independent assortment','nondisjunction'],review:'Crossing over occurs in prophase I. Linked genes travel together unless crossing over separates them; farther genes recombine more often.'},
+    {label:'Gene expression and mutation effects',unit:'Unit 6',keywords:['transcription','translation','mutation','codon','operon','lac','protein','mrna'],review:'Use the chain: DNA change -> mRNA/codon change -> amino acid/protein change -> phenotype. Not all mutations affect phenotype.'},
+    {label:'Evolution and allele frequency',unit:'Unit 7',keywords:['evolution','natural selection','fitness','allele','hardy','weinberg','drift','selection'],review:'Populations evolve, not individuals. Fitness means reproductive success. Selection changes allele frequencies across generations.'},
+    {label:'Ecology energy flow and carrying capacity',unit:'Unit 8',keywords:['carrying capacity','ecosystem','trophic','biodiversity','succession','population','energy'],review:'Energy flows and is lost as heat; matter cycles. Carrying capacity depends on resources, competition, and environmental limits.'},
+    {label:'Experimental design',unit:null,keywords:['control','independent variable','dependent variable','constant','replicate','sample size'],review:'Always identify IV, DV, control group, constants, replication, and expected result tied to the hypothesis.'},
+    {label:'Graph and data interpretation',unit:null,keywords:['graph','data','trend','rate','slope','table','error bar'],review:'Describe the trend with numbers first, then explain the biological mechanism. For rates, use change in y divided by change in x.'}
+  ];
+  function scoreMistakeConcepts(){
+    const mistakes=getMistakes();
+    const scores=trapConcepts.map(concept=>{let count=0;for(const m of mistakes){const combined=[m.unit,m.question,m.selected,m.correct,m.explanation].join(' ').toLowerCase();for(const k of concept.keywords){if(combined.indexOf(k)!==-1){count++;break;}}}return {label:concept.label,unit:concept.unit,count,review:concept.review};});
+    scores.sort((a,b)=>b.count-a.count);return scores;
+  }
+  function getMostMissedUnits(){
+    const scores=scoreMistakeConcepts().filter(x=>x.count>0&&x.unit);
+    const units=[];scores.forEach(x=>{if(units.indexOf(x.unit)===-1)units.push(x.unit);});
+    return units;
+  }
+  function renderMostMissedConcepts(){
+    const target=byId('mostMissedConceptsBox');if(!target)return;
+    const mistakes=getMistakes();
+    if(!mistakes.length){target.innerHTML='<div class="exam-boost-gold"><strong>No mistake data yet.</strong><br>Once students miss quiz questions, this panel will identify their top trouble areas automatically.</div>';return;}
+    const scores=scoreMistakeConcepts().filter(x=>x.count>0).slice(0,5);
+    if(!scores.length){target.innerHTML='<div class="exam-boost-gold"><strong>Mistakes found, but no clear pattern yet.</strong><br>Have students answer more mixed questions, then refresh this panel.</div>';return;}
+    let html='<ol>';scores.forEach(s=>{html+='<li><strong>'+safeText(s.label)+'</strong> <span class="pill critical">'+s.count+' hit'+(s.count===1?'':'s')+'</span><div class="exam-boost-hit">'+safeText(s.review)+'</div></li>';});html+='</ol>';target.innerHTML=html;
+  }
+  function buildExamBoostPanel(){
+    if(byId('examBoostPanel'))return;
+    const main=document.querySelector('main');if(!main)return;
+    const bar=document.createElement('section');bar.className='exam-boost-toggle-bar';
+    bar.innerHTML='<div id="examBoostPanel" class="exam-boost-panel"><div class="exam-boost-actions"><button type="button" class="exam-boost-btn warning" id="last48ToggleBtn">Turn On Last 48 Hours Mode</button><button type="button" class="exam-boost-btn secondary" id="refreshMissedConceptsBtn">Refresh Most Missed Concepts</button><span class="exam-boost-small">These tools now actively bias quiz selection without replacing quiz, FRQ, progress, or exam features.</span></div><div id="last48Summary" class="exam-boost-hidden"><div class="exam-boost-grid" style="margin-top:12px;"><div class="exam-boost-card"><h3>Last 48 Hours Focus</h3><ul><li>Quiz mode shifts toward mixed review and weak units.</li><li>Questions lean medium/hard after a short warm-up.</li><li>Missed-concept units are prioritized when mistake data exists.</li><li>Use short FRQ sentences with biological mechanisms.</li></ul></div><div class="exam-boost-card"><h3>High-Yield AP Bio Traps</h3><ul><li>Individuals do not evolve; populations evolve.</li><li>Fitness means reproductive success.</li><li>Plants perform cellular respiration.</li><li>Enzymes lower activation energy, not ΔG.</li><li>Water moves toward lower water potential.</li></ul></div></div></div></div>';
+    main.insertBefore(bar,main.firstChild);
+    const on=isLast48On();document.body.classList.toggle('last-48-mode',on);const summary=byId('last48Summary');if(summary)summary.classList.toggle('exam-boost-hidden',!on);const toggle=byId('last48ToggleBtn');if(toggle){toggle.textContent=on?'Turn Off Last 48 Hours Mode':'Turn On Last 48 Hours Mode';toggle.addEventListener('click',function(){const now=!isLast48On();localStorage.setItem('apBioLast48Mode',now?'on':'off');document.body.classList.toggle('last-48-mode',now);const sum=byId('last48Summary');if(sum)sum.classList.toggle('exam-boost-hidden',!now);toggle.textContent=now?'Turn Off Last 48 Hours Mode':'Turn On Last 48 Hours Mode';renderMostMissedConcepts();if(typeof window.renderQuiz==='function')window.renderQuiz();});}
+    const refresh=byId('refreshMissedConceptsBtn');if(refresh){refresh.addEventListener('click',function(){renderMostMissedConcepts();if(byId('quiz')&&typeof window.showSection==='function')window.showSection('quiz');});}
+  }
+  function addMostMissedPanelToQuiz(){
+    if(byId('mostMissedConceptsPanel'))return;const quizBody=document.querySelector('#quiz .card-body');if(!quizBody)return;
+    const panel=document.createElement('div');panel.id='mostMissedConceptsPanel';panel.className='exam-boost-panel last48-focus';
+    panel.innerHTML='<h3>Most Missed Concepts</h3><p class="exam-boost-small">Uses the existing local mistake log. When Last 48 Hours Mode is on, these weak units are prioritized in quiz selection.</p><div id="mostMissedConceptsBox"></div><div class="exam-boost-actions"><button type="button" class="exam-boost-btn secondary" id="quizRefreshMostMissedBtn">Refresh Most Missed Concepts</button><button type="button" class="exam-boost-btn warning" id="quizLast48ToggleBtn">Toggle Last 48 Hours Mode</button></div>';
+    const progressTable=byId('unitProgressTable');const progressDetails=progressTable?progressTable.closest('details'):null;if(progressDetails)insertAfter(progressDetails,panel);else quizBody.insertBefore(panel,quizBody.firstChild);
+    const refresh=byId('quizRefreshMostMissedBtn');if(refresh)refresh.addEventListener('click',renderMostMissedConcepts);
+    const t=byId('quizLast48ToggleBtn');if(t)t.addEventListener('click',function(){const main=byId('last48ToggleBtn');if(main)main.click();});
+    renderMostMissedConcepts();
+  }
+  function addFrqSentenceBuilders(){
+    const cards=Array.prototype.slice.call(document.querySelectorAll('#frq .frq-card'));
+    cards.forEach(card=>{if(card.getAttribute('data-sentence-builder-ready')==='yes')return;const textarea=card.querySelector('textarea');if(!textarea)return;const builder=document.createElement('details');builder.className='frq-sentence-builder last48-focus';builder.innerHTML='<summary><strong>FRQ Sentence Builder</strong></summary><div><div class="frq-stem"><strong>Describe:</strong> The data show that __________ changes from __________ to __________.</div><div class="frq-stem"><strong>Explain:</strong> This occurs because __________ affects __________, which causes __________.</div><div class="frq-stem"><strong>Predict:</strong> I predict that __________ will __________ because __________.</div><div class="frq-stem"><strong>Justify:</strong> This is supported by __________ because it shows __________.</div><div class="frq-stem"><strong>Experimental design:</strong> The independent variable is __________, the dependent variable is __________, and the control group is __________.</div></div>';insertAfter(textarea,builder);card.setAttribute('data-sentence-builder-ready','yes');});
+  }
+  function addApWordingToggle(){
+    if(byId('apWordingTogglePanel'))return;const body=document.querySelector('#frq .card-body')||document.querySelector('#cram .card-body')||document.querySelector('#equations .card-body');if(!body)return;
+    const examples=[['The enzyme stops working.','High temperature disrupts bonds that maintain tertiary structure, altering the active site and reducing substrate binding.'],['The bacteria got used to the antibiotic.','Bacteria with resistance alleles survive and reproduce more, increasing the resistance allele frequency in the population.'],['Water leaves the cell.','Water moves out of the cell by osmosis because the surrounding solution has lower water potential due to higher solute concentration.'],['The signal does not happen.','If the receptor shape changes, the ligand may not bind, preventing transduction and reducing the cellular response.'],['The graph went up and then down.','The rate increased to a maximum, then decreased, suggesting the condition exceeded the optimum and disrupted the biological mechanism.']];
+    const panel=document.createElement('div');panel.id='apWordingTogglePanel';panel.className='exam-boost-panel last48-focus';panel.innerHTML='<h3>Explain It Like AP Wants</h3><p class="exam-boost-small">Revise vague answers into point-earning AP Biology explanations.</p><div class="exam-boost-actions"><button type="button" class="exam-boost-btn secondary" id="toggleApWordingBtn">Show AP Wording Examples</button></div><div id="apWordingExamplesBox" class="exam-boost-hidden"></div>';body.insertBefore(panel,body.firstChild);
+    const btn=byId('toggleApWordingBtn'),box=byId('apWordingExamplesBox');if(btn&&box)btn.addEventListener('click',function(){const show=box.classList.contains('exam-boost-hidden');box.classList.toggle('exam-boost-hidden',!show);btn.textContent=show?'Hide AP Wording Examples':'Show AP Wording Examples';if(show&&!box.innerHTML){let html='<div class="exam-boost-grid" style="margin-top:12px;">';examples.forEach(e=>{html+='<div class="exam-boost-card"><div class="exam-boost-miss"><strong>Weak:</strong> '+safeText(e[0])+'</div><div class="exam-boost-hit"><strong>AP-style:</strong> '+safeText(e[1])+'</div></div>';});html+='</div>';box.innerHTML=html;}});
+  }
+  function addWhatA5LooksLike(){
+    if(byId('whatA5LooksLikePanel'))return;const body=document.querySelector('#cram .card-body')||document.querySelector('#exam .card-body')||document.querySelector('#frq .card-body');if(!body)return;
+    const panel=document.createElement('div');panel.id='whatA5LooksLikePanel';panel.className='exam-boost-panel last48-focus';panel.innerHTML='<h3>What a 5 Looks Like</h3><p class="exam-boost-small">Aim for concise, mechanism-based answers. A strong response is specific, evidence-based, and biologically accurate.</p><div class="exam-boost-grid"><div class="exam-boost-card"><h4>MCQ Habits</h4><ul><li>Eliminates extreme wording like always, never, only.</li><li>Looks for the biological mechanism, not just familiar vocabulary.</li><li>Uses graph/data evidence before reading too much into the scenario.</li><li>Checks whether the question asks for cause, effect, evidence, or prediction.</li></ul></div><div class="exam-boost-card"><h4>FRQ Habits</h4><ul><li>Labels parts a, b, c, d.</li><li>Answers the command term directly.</li><li>Uses scenario evidence or numbers when available.</li><li>Explains structure -> function -> outcome.</li><li>Avoids vague phrases like it adapts, it helps, or it stops working.</li></ul></div><div class="exam-boost-card"><h4>Basic vs. Stronger</h4><div class="exam-boost-miss"><strong>Basic:</strong> The enzyme works less at high temperature.</div><div class="exam-boost-hit"><strong>Stronger:</strong> High temperature disrupts bonds maintaining tertiary structure, changing the active site and reducing substrate binding, so reaction rate decreases.</div></div><div class="exam-boost-card"><h4>Final Weekend Rule</h4><div class="exam-boost-gold">Do fewer passive notes and more active reps: mixed MCQs, graph explanations, and short FRQ responses with AP wording.</div></div></div>';body.appendChild(panel);
+  }
+  function installQuizIntegration(){
+    try{
+      const originalChooseUnit=(typeof chooseUnit==='function')?chooseUnit:null;
+      const originalChooseDifficulty=(typeof chooseDifficulty==='function')?chooseDifficulty:null;
+      window.examBoostChooseUnit=function(){
+        if(!isLast48On()&&originalChooseUnit)return originalChooseUnit();
+        const mode=byId('quizMode')?byId('quizMode').value:'adaptive';
+        if(mode==='unit'&&byId('quizUnitSelect'))return byId('quizUnitSelect').value;
+        const weakUnits=getMostMissedUnits();
+        if(weakUnits.length&&Math.random()<0.60)return weakUnits[Math.floor(Math.random()*weakUnits.length)];
+        const s=getState();
+        const stats=s.unitStats||{};let weakest=null,weakPct=2;
+        Object.keys(quizBank).forEach(u=>{const st=stats[u]||{correct:0,attempted:0};if(st.attempted>0){const pct=st.correct/st.attempted;if(pct<weakPct){weakPct=pct;weakest=u;}}});
+        if(weakest&&Math.random()<0.45)return weakest;
+        const high=['Unit 7','Unit 3','Unit 6','Unit 4','Unit 8'];
+        if(Math.random()<0.70)return high[Math.floor(Math.random()*high.length)];
+        const units=Object.keys(quizBank);return units[Math.floor(Math.random()*units.length)];
+      };
+      window.examBoostChooseDifficulty=function(unit){
+        if(!isLast48On()&&originalChooseDifficulty)return originalChooseDifficulty(unit);
+        const s=getState();const st=(s.unitStats&&s.unitStats[unit])?s.unitStats[unit]:{correct:0,attempted:0};
+        if(st.attempted<2)return Math.random()<0.7?'medium':'easy';
+        const pct=st.correct/st.attempted;
+        if(pct<0.55)return Math.random()<0.65?'medium':'easy';
+        if(pct<0.80)return Math.random()<0.60?'hard':'medium';
+        return Math.random()<0.75?'hard':'medium';
+      };
+      if(typeof chooseUnit==='function')chooseUnit=window.examBoostChooseUnit;
+      if(typeof chooseDifficulty==='function')chooseDifficulty=window.examBoostChooseDifficulty;
+    }catch(e){console.warn('Exam boost quiz integration skipped:',e);}
+  }
+  function initialize(){
+    buildExamBoostPanel();addMostMissedPanelToQuiz();addFrqSentenceBuilders();addApWordingToggle();addWhatA5LooksLike();installQuizIntegration();
+    document.addEventListener('click',function(event){const target=event.target;if(!target)return;if(target.id==='nextQuizBtn'||(target.classList&&target.classList.contains('choice'))){setTimeout(renderMostMissedConcepts,0);}},true);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize);else initialize();
+})();
+</script>
+
 </body>
 </html>
