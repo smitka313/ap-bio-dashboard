@@ -994,5 +994,574 @@ renderMistakes();
 renderQuiz();
 showSection('overview');
 </script>
+  <style>
+  .exam-boost-toggle-bar {
+    position: sticky;
+    top: 58px;
+    z-index: 9;
+    margin: 0 auto 14px;
+    max-width: 1200px;
+    padding: 10px 16px;
+  }
+
+  .exam-boost-panel {
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 14px;
+    margin: 14px 0;
+  }
+
+  .exam-boost-panel h3,
+  .exam-boost-panel h4 {
+    margin-top: 0;
+  }
+
+  .exam-boost-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .exam-boost-btn {
+    border: 0;
+    border-radius: 999px;
+    background: var(--green);
+    color: white;
+    font-weight: 800;
+    padding: 9px 13px;
+    cursor: pointer;
+  }
+
+  .exam-boost-btn.secondary {
+    background: var(--blue);
+  }
+
+  .exam-boost-btn.warning {
+    background: var(--gold);
+  }
+
+  .exam-boost-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .exam-boost-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #fbfdff;
+    padding: 14px;
+  }
+
+  .exam-boost-small {
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+
+  .exam-boost-hit {
+    border-left: 5px solid var(--green);
+    background: var(--green-2);
+    padding: 10px 12px;
+    border-radius: 12px;
+    margin: 8px 0;
+  }
+
+  .exam-boost-miss {
+    border-left: 5px solid var(--red);
+    background: var(--red-2);
+    padding: 10px 12px;
+    border-radius: 12px;
+    margin: 8px 0;
+  }
+
+  .exam-boost-gold {
+    border-left: 5px solid var(--gold);
+    background: var(--gold-2);
+    padding: 10px 12px;
+    border-radius: 12px;
+    margin: 8px 0;
+  }
+
+  .exam-boost-hidden {
+    display: none !important;
+  }
+
+  body.last-48-mode .last48-focus {
+    outline: 3px solid rgba(183, 121, 31, 0.35);
+  }
+
+  .frq-sentence-builder {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+  }
+
+  .frq-sentence-builder summary {
+    padding: 0;
+    color: var(--blue);
+  }
+
+  .frq-stem {
+    margin: 8px 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--blue-2);
+  }
+
+  @media (max-width: 900px) {
+    .exam-boost-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .exam-boost-toggle-bar {
+      top: 0;
+    }
+  }
+
+  @media print {
+    .exam-boost-toggle-bar,
+    .exam-boost-actions,
+    .exam-boost-btn {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function safeText(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function insertAfter(referenceNode, newNode) {
+    if (!referenceNode || !referenceNode.parentNode) return;
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+  }
+
+  function getMistakes() {
+    try {
+      return JSON.parse(localStorage.getItem('apBioMistakes')) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  var trapConcepts = [
+    {
+      label: 'Water potential / osmosis direction',
+      keywords: ['osmosis', 'water potential', 'hypertonic', 'hypotonic', 'solute', 'plasmolysis'],
+      review: 'Water moves toward lower water potential, usually toward higher solute concentration. State the direction, the gradient, and the cell effect.'
+    },
+    {
+      label: 'Enzymes and active-site mechanism',
+      keywords: ['enzyme', 'activation energy', 'active site', 'denature', 'substrate', 'inhibitor'],
+      review: 'Enzymes lower activation energy. Temperature or pH can disrupt tertiary structure, changing the active site and reducing substrate binding.'
+    },
+    {
+      label: 'Respiration, ETC, and ATP synthase',
+      keywords: ['respiration', 'oxygen', 'etc', 'electron transport', 'atp synthase', 'proton gradient'],
+      review: 'Oxygen is the final electron acceptor. Electron transport pumps protons; ATP synthase uses the proton gradient to make ATP.'
+    },
+    {
+      label: 'Photosynthesis light reactions vs. Calvin cycle',
+      keywords: ['photosynthesis', 'light reaction', 'calvin', 'chloroplast', 'oxygen', 'co2', 'nadph'],
+      review: 'Light reactions produce ATP/NADPH and release O2. The Calvin cycle uses ATP/NADPH to fix CO2 into sugar.'
+    },
+    {
+      label: 'Signal transduction sequence',
+      keywords: ['signal', 'ligand', 'receptor', 'transduction', 'phosphorylation', 'response'],
+      review: 'Use the chain: ligand binds receptor -> transduction/amplification -> cellular response. Receptor shape determines specificity.'
+    },
+    {
+      label: 'Cell cycle regulation and cancer',
+      keywords: ['cell cycle', 'checkpoint', 'cancer', 'tumor suppressor', 'oncogene', 'apoptosis'],
+      review: 'Checkpoints prevent damaged cells from dividing. Cancer often involves failed regulation, mutation accumulation, or failed apoptosis.'
+    },
+    {
+      label: 'Meiosis, linkage, and recombination',
+      keywords: ['meiosis', 'crossing over', 'linked', 'recombination', 'independent assortment', 'nondisjunction'],
+      review: 'Crossing over occurs in prophase I. Linked genes travel together unless crossing over separates them; farther genes recombine more often.'
+    },
+    {
+      label: 'Gene expression and mutation effects',
+      keywords: ['transcription', 'translation', 'mutation', 'codon', 'operon', 'lac', 'protein'],
+      review: 'Use the chain: DNA change -> mRNA/codon change -> amino acid/protein change -> phenotype. Not all mutations affect phenotype.'
+    },
+    {
+      label: 'Evolution and allele frequency',
+      keywords: ['evolution', 'natural selection', 'fitness', 'allele', 'hardy', 'weinberg', 'drift'],
+      review: 'Populations evolve, not individuals. Fitness means reproductive success. Selection changes allele frequencies across generations.'
+    },
+    {
+      label: 'Ecology energy flow and carrying capacity',
+      keywords: ['carrying capacity', 'ecosystem', 'trophic', 'biodiversity', 'succession', 'population'],
+      review: 'Energy flows and is lost as heat; matter cycles. Carrying capacity depends on resources, competition, and environmental limits.'
+    },
+    {
+      label: 'Experimental design',
+      keywords: ['control', 'independent variable', 'dependent variable', 'constant', 'replicate', 'sample size'],
+      review: 'Always identify IV, DV, control group, constants, replication, and expected result tied to the hypothesis.'
+    },
+    {
+      label: 'Graph and data interpretation',
+      keywords: ['graph', 'data', 'trend', 'rate', 'slope', 'table', 'error bar'],
+      review: 'Describe the trend with numbers first, then explain the biological mechanism. For rates, use change in y divided by change in x.'
+    }
+  ];
+
+  function scoreMistakeConcepts() {
+    var mistakes = getMistakes();
+    var scores = trapConcepts.map(function(concept) {
+      var count = 0;
+
+      for (var i = 0; i < mistakes.length; i++) {
+        var combined = [
+          mistakes[i].unit,
+          mistakes[i].question,
+          mistakes[i].selected,
+          mistakes[i].correct,
+          mistakes[i].explanation
+        ].join(' ').toLowerCase();
+
+        for (var k = 0; k < concept.keywords.length; k++) {
+          if (combined.indexOf(concept.keywords[k]) !== -1) {
+            count++;
+            break;
+          }
+        }
+      }
+
+      return {
+        label: concept.label,
+        count: count,
+        review: concept.review
+      };
+    });
+
+    scores.sort(function(a, b) {
+      return b.count - a.count;
+    });
+
+    return scores;
+  }
+
+  function renderMostMissedConcepts() {
+    var target = byId('mostMissedConceptsBox');
+    if (!target) return;
+
+    var mistakes = getMistakes();
+
+    if (!mistakes.length) {
+      target.innerHTML =
+        '<div class="exam-boost-gold"><strong>No mistake data yet.</strong><br>' +
+        'Once students miss quiz questions, this panel will identify their top trouble areas automatically.</div>';
+      return;
+    }
+
+    var scores = scoreMistakeConcepts().filter(function(item) {
+      return item.count > 0;
+    }).slice(0, 5);
+
+    if (!scores.length) {
+      target.innerHTML =
+        '<div class="exam-boost-gold"><strong>Mistakes found, but no clear pattern yet.</strong><br>' +
+        'Have students answer more mixed questions, then refresh this panel.</div>';
+      return;
+    }
+
+    var html = '<ol>';
+
+    for (var i = 0; i < scores.length; i++) {
+      html += '<li><strong>' + safeText(scores[i].label) + '</strong> ' +
+        '<span class="pill critical">' + scores[i].count + ' hit' + (scores[i].count === 1 ? '' : 's') + '</span>' +
+        '<div class="exam-boost-hit">' + safeText(scores[i].review) + '</div></li>';
+    }
+
+    html += '</ol>';
+    target.innerHTML = html;
+  }
+
+  function buildExamBoostPanel() {
+    if (byId('examBoostPanel')) return;
+
+    var main = document.querySelector('main');
+    if (!main) return;
+
+    var bar = document.createElement('section');
+    bar.className = 'exam-boost-toggle-bar';
+    bar.innerHTML =
+      '<div id="examBoostPanel" class="exam-boost-panel">' +
+        '<div class="exam-boost-actions">' +
+          '<button type="button" class="exam-boost-btn warning" id="last48ToggleBtn">Turn On Last 48 Hours Mode</button>' +
+          '<button type="button" class="exam-boost-btn secondary" id="refreshMissedConceptsBtn">Refresh Most Missed Concepts</button>' +
+          '<span class="exam-boost-small">Exam boost tools are added without replacing existing quiz, FRQ, progress, or exam features.</span>' +
+        '</div>' +
+        '<div id="last48Summary" class="exam-boost-hidden">' +
+          '<div class="exam-boost-grid" style="margin-top:12px;">' +
+            '<div class="exam-boost-card">' +
+              '<h3>Last 48 Hours Focus</h3>' +
+              '<ul>' +
+                '<li>Do mixed MCQ practice, not long reading.</li>' +
+                '<li>Review missed concepts before taking more questions.</li>' +
+                '<li>Practice short FRQ answers using AP wording.</li>' +
+                '<li>Use graph/data questions daily.</li>' +
+              '</ul>' +
+            '</div>' +
+            '<div class="exam-boost-card">' +
+              '<h3>High-Yield AP Bio Traps</h3>' +
+              '<ul>' +
+                '<li>Individuals do not evolve; populations evolve.</li>' +
+                '<li>Fitness means reproductive success.</li>' +
+                '<li>Plants perform cellular respiration.</li>' +
+                '<li>Enzymes lower activation energy, not delta G.</li>' +
+                '<li>Water moves toward lower water potential.</li>' +
+              '</ul>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    main.insertBefore(bar, main.firstChild);
+
+    var toggle = byId('last48ToggleBtn');
+
+    if (toggle) {
+      toggle.addEventListener('click', function() {
+        var on = !document.body.classList.contains('last-48-mode');
+        document.body.classList.toggle('last-48-mode', on);
+
+        var summary = byId('last48Summary');
+        if (summary) summary.classList.toggle('exam-boost-hidden', !on);
+
+        toggle.textContent = on ? 'Turn Off Last 48 Hours Mode' : 'Turn On Last 48 Hours Mode';
+      });
+    }
+
+    var refresh = byId('refreshMissedConceptsBtn');
+
+    if (refresh) {
+      refresh.addEventListener('click', function() {
+        renderMostMissedConcepts();
+
+        if (byId('quiz') && typeof window.showSection === 'function') {
+          window.showSection('quiz');
+        }
+      });
+    }
+  }
+
+  function addMostMissedPanelToQuiz() {
+    if (byId('mostMissedConceptsBox')) return;
+
+    var quizBody = document.querySelector('#quiz .card-body');
+    if (!quizBody) return;
+
+    var panel = document.createElement('div');
+    panel.className = 'exam-boost-panel last48-focus';
+    panel.innerHTML =
+      '<h3>Most Missed Concepts</h3>' +
+      '<p class="exam-boost-small">This uses the existing local mistake log. It does not change quiz grading or progress tracking.</p>' +
+      '<div id="mostMissedConceptsBox"></div>' +
+      '<div class="exam-boost-actions">' +
+        '<button type="button" class="exam-boost-btn secondary" id="quizRefreshMostMissedBtn">Refresh Most Missed Concepts</button>' +
+      '</div>';
+
+    var progressTable = byId('unitProgressTable');
+    var progressDetails = progressTable ? progressTable.closest('details') : null;
+
+    if (progressDetails) {
+      insertAfter(progressDetails, panel);
+    } else {
+      quizBody.insertBefore(panel, quizBody.firstChild);
+    }
+
+    var refresh = byId('quizRefreshMostMissedBtn');
+    if (refresh) refresh.addEventListener('click', renderMostMissedConcepts);
+
+    renderMostMissedConcepts();
+  }
+
+  function addFrqSentenceBuilders() {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('#frq .frq-card'));
+
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].getAttribute('data-sentence-builder-ready') === 'yes') continue;
+
+      var textarea = cards[i].querySelector('textarea');
+      if (!textarea) continue;
+
+      var builder = document.createElement('details');
+      builder.className = 'frq-sentence-builder last48-focus';
+      builder.innerHTML =
+        '<summary><strong>FRQ Sentence Builder</strong></summary>' +
+        '<div>' +
+          '<div class="frq-stem"><strong>Describe:</strong> The data show that __________ changes from __________ to __________.</div>' +
+          '<div class="frq-stem"><strong>Explain:</strong> This occurs because __________ affects __________, which causes __________.</div>' +
+          '<div class="frq-stem"><strong>Predict:</strong> I predict that __________ will __________ because __________.</div>' +
+          '<div class="frq-stem"><strong>Justify:</strong> This is supported by __________ because it shows __________.</div>' +
+          '<div class="frq-stem"><strong>Experimental design:</strong> The independent variable is __________, the dependent variable is __________, and the control group is __________.</div>' +
+        '</div>';
+
+      insertAfter(textarea, builder);
+      cards[i].setAttribute('data-sentence-builder-ready', 'yes');
+    }
+  }
+
+  var apWordingExamples = [
+    {
+      weak: 'The enzyme stops working.',
+      strong: 'High temperature disrupts bonds that maintain tertiary structure, altering the active site and reducing substrate binding.'
+    },
+    {
+      weak: 'The bacteria got used to the antibiotic.',
+      strong: 'Bacteria with resistance alleles survive and reproduce more, increasing the resistance allele frequency in the population.'
+    },
+    {
+      weak: 'Water leaves the cell.',
+      strong: 'Water moves out of the cell by osmosis because the surrounding solution has lower water potential due to higher solute concentration.'
+    },
+    {
+      weak: 'The signal does not happen.',
+      strong: 'If the receptor shape changes, the ligand may not bind, preventing transduction and reducing the cellular response.'
+    },
+    {
+      weak: 'The graph went up and then down.',
+      strong: 'The rate increased from the lower value to the maximum, then decreased, suggesting the condition exceeded the optimum and disrupted the biological mechanism.'
+    },
+    {
+      weak: 'The population changed.',
+      strong: 'Allele frequencies changed over generations because individuals with advantageous heritable traits had higher reproductive success.'
+    }
+  ];
+
+  function addApWordingToggle() {
+    if (byId('apWordingTogglePanel')) return;
+
+    var skillsBody = document.querySelector('#skills .card-body') || document.querySelector('#frq .card-body');
+    if (!skillsBody) return;
+
+    var panel = document.createElement('div');
+    panel.id = 'apWordingTogglePanel';
+    panel.className = 'exam-boost-panel last48-focus';
+    panel.innerHTML =
+      '<h3>Explain It Like AP Wants</h3>' +
+      '<p class="exam-boost-small">Use this to help students revise vague answers into point-earning AP Biology explanations.</p>' +
+      '<div class="exam-boost-actions">' +
+        '<button type="button" class="exam-boost-btn secondary" id="toggleApWordingBtn">Show AP Wording Examples</button>' +
+      '</div>' +
+      '<div id="apWordingExamplesBox" class="exam-boost-hidden"></div>';
+
+    skillsBody.insertBefore(panel, skillsBody.firstChild);
+
+    var btn = byId('toggleApWordingBtn');
+    var box = byId('apWordingExamplesBox');
+
+    if (btn && box) {
+      btn.addEventListener('click', function() {
+        var show = box.classList.contains('exam-boost-hidden');
+        box.classList.toggle('exam-boost-hidden', !show);
+        btn.textContent = show ? 'Hide AP Wording Examples' : 'Show AP Wording Examples';
+
+        if (show && !box.innerHTML) {
+          var html = '<div class="exam-boost-grid" style="margin-top:12px;">';
+
+          for (var i = 0; i < apWordingExamples.length; i++) {
+            html += '<div class="exam-boost-card">' +
+              '<div class="exam-boost-miss"><strong>Weak:</strong> ' + safeText(apWordingExamples[i].weak) + '</div>' +
+              '<div class="exam-boost-hit"><strong>AP-style:</strong> ' + safeText(apWordingExamples[i].strong) + '</div>' +
+            '</div>';
+          }
+
+          html += '</div>';
+          box.innerHTML = html;
+        }
+      });
+    }
+  }
+
+  function addWhatA5LooksLike() {
+    if (byId('whatA5LooksLikePanel')) return;
+
+    var finalBody = document.querySelector('#final .card-body') || document.querySelector('#skills .card-body');
+    if (!finalBody) return;
+
+    var panel = document.createElement('div');
+    panel.id = 'whatA5LooksLikePanel';
+    panel.className = 'exam-boost-panel last48-focus';
+    panel.innerHTML =
+      '<h3>What a 5 Looks Like</h3>' +
+      '<p class="exam-boost-small">Students should aim for concise, mechanism-based answers. A 5-level response is not longer just to be longer; it is specific, evidence-based, and biologically accurate.</p>' +
+      '<div class="exam-boost-grid">' +
+        '<div class="exam-boost-card">' +
+          '<h4>MCQ Habits</h4>' +
+          '<ul>' +
+            '<li>Eliminates answer choices with extreme words like always, never, only.</li>' +
+            '<li>Looks for the biological mechanism, not just familiar vocabulary.</li>' +
+            '<li>Uses the graph or data before reading into the scenario.</li>' +
+            '<li>Checks whether the question asks for cause, effect, evidence, or prediction.</li>' +
+          '</ul>' +
+        '</div>' +
+        '<div class="exam-boost-card">' +
+          '<h4>FRQ Habits</h4>' +
+          '<ul>' +
+            '<li>Labels parts a, b, c, d.</li>' +
+            '<li>Answers the command term directly.</li>' +
+            '<li>Uses scenario evidence or numbers when available.</li>' +
+            '<li>Explains the mechanism: structure -> function -> outcome.</li>' +
+            '<li>Avoids vague phrases like it adapts, it helps, or it stops working.</li>' +
+          '</ul>' +
+        '</div>' +
+        '<div class="exam-boost-card">' +
+          '<h4>2-Point vs. 4-Point Answer</h4>' +
+          '<div class="exam-boost-miss"><strong>Basic:</strong> The enzyme works less at high temperature.</div>' +
+          '<div class="exam-boost-hit"><strong>Stronger:</strong> High temperature disrupts bonds maintaining tertiary structure, changing the active site and reducing substrate binding, so the reaction rate decreases.</div>' +
+        '</div>' +
+        '<div class="exam-boost-card">' +
+          '<h4>Final Weekend Study Rule</h4>' +
+          '<div class="exam-boost-gold">Do fewer passive notes and more active reps: mixed MCQs, graph explanations, and short FRQ responses with AP wording.</div>' +
+        '</div>' +
+      '</div>';
+
+    finalBody.appendChild(panel);
+  }
+
+  function initializeExamBoostPatch() {
+    buildExamBoostPanel();
+    addMostMissedPanelToQuiz();
+    addFrqSentenceBuilders();
+    addApWordingToggle();
+    addWhatA5LooksLike();
+
+    document.addEventListener('click', function(event) {
+      var target = event.target;
+      if (!target) return;
+
+      if (target.id === 'nextQuizBtn' || target.classList.contains('choice')) {
+        setTimeout(renderMostMissedConcepts, 0);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeExamBoostPatch);
+  } else {
+    initializeExamBoostPatch();
+  }
+})();
+</script>
 </body>
 </html>
