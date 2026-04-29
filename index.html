@@ -1494,5 +1494,114 @@ showSection('overview');
   }
 })();
 </script>
+  <script>
+(function () {
+  if (window.__cramConfidencePatchLoaded) return;
+  window.__cramConfidencePatchLoaded = true;
+
+  function getConfidenceLog() {
+    try {
+      return JSON.parse(localStorage.getItem("apBioConfidenceLog")) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveConfidence(unit, question, confidence, wasCorrect, source) {
+    var log = getConfidenceLog();
+
+    log.unshift({
+      date: new Date().toLocaleString(),
+      unit: unit || "Cram Mode",
+      question: question || "Unknown cram question",
+      confidence: confidence,
+      wasCorrect: wasCorrect,
+      source: source || "Cram Mode"
+    });
+
+    if (log.length > 200) log = log.slice(0, 200);
+    localStorage.setItem("apBioConfidenceLog", JSON.stringify(log));
+  }
+
+  function addConfidenceBox(target, unit, question, wasCorrect) {
+    if (!target || target.querySelector(".cram-confidence-box")) return;
+
+    var box = document.createElement("div");
+    box.className = "cram-confidence-box";
+    box.style.marginTop = "12px";
+    box.style.padding = "12px";
+    box.style.borderRadius = "12px";
+    box.style.background = "#f8fafc";
+    box.style.border = "1px solid var(--border)";
+
+    box.innerHTML = `
+      <strong>How confident were you?</strong>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <button type="button" class="quiz-btn cram-confidence-btn" data-confidence="low" style="background:var(--red);">Guessed</button>
+        <button type="button" class="quiz-btn cram-confidence-btn" data-confidence="medium" style="background:var(--gold);">Somewhat sure</button>
+        <button type="button" class="quiz-btn cram-confidence-btn" data-confidence="high" style="background:var(--green);">Very confident</button>
+      </div>
+      <p class="small cram-confidence-message" style="margin-bottom:0;"></p>
+    `;
+
+    target.appendChild(box);
+
+    box.querySelectorAll(".cram-confidence-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var confidence = btn.getAttribute("data-confidence");
+        saveConfidence(unit, question, confidence, wasCorrect, "Cram Mode");
+
+        box.querySelector(".cram-confidence-message").textContent =
+          "Saved. This will be included with your confidence history.";
+
+        box.querySelectorAll(".cram-confidence-btn").forEach(function (b) {
+          b.disabled = true;
+          b.style.opacity = "0.65";
+        });
+      });
+    });
+  }
+
+  document.addEventListener("click", function (event) {
+    var btn = event.target;
+    if (!btn) return;
+
+    var isCramAnswer =
+      btn.closest("#cram") ||
+      btn.closest("#cramMode") ||
+      btn.closest("#fortyEightHourMode") ||
+      btn.closest("[data-cram]") ||
+      btn.classList.contains("cram-choice") ||
+      btn.classList.contains("cram-answer") ||
+      btn.classList.contains("cram-quiz-choice");
+
+    if (!isCramAnswer) return;
+
+    setTimeout(function () {
+      var card =
+        btn.closest(".exam-question") ||
+        btn.closest(".quiz-box") ||
+        btn.closest(".practice") ||
+        btn.closest(".lesson-card") ||
+        btn.parentElement;
+
+      if (!card) return;
+
+      var text = card.innerText || "";
+      var wasCorrect =
+        btn.classList.contains("correct") ||
+        text.toLowerCase().includes("correct!");
+
+      var unitMatch = text.match(/Unit\s+[1-8]/i);
+      var unit = unitMatch ? unitMatch[0] : "Cram Mode";
+
+      var questionEl = card.querySelector("p strong, h3, strong");
+      var question = questionEl ? questionEl.textContent.trim() : text.slice(0, 180);
+
+      addConfidenceBox(card, unit, question, wasCorrect);
+    }, 100);
+  });
+})();
+</script>
 </body>
 </html>
